@@ -1,0 +1,4 @@
+- [x] Add projectDescription variable to Alpine.js data in welcome.blade.php
+- [x] Insert project description div in the header between logo and project name input
+- [x] Integrate search logic into the index function in SnippetController.php
+- [x] Remove the separate serach function from SnippetController.php

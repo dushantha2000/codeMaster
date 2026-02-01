@@ -172,7 +172,7 @@
 </head>
 <body class="text-gray-100" x-data="snippetEditor()" x-cloak>
 
-    <form action="{{ url('spippet/store') }}" method="POST" class="h-full flex flex-col">
+    <form action="{{ url('snippet-store') }}" method="POST" class="h-full flex flex-col">
         {{ csrf_field() }}
 
         <!-- Modern Header -->
@@ -188,13 +188,14 @@
                 </button>
 
                 <!-- Logo -->
-                <div class="hide-on-mobile relative">
-                    <div class="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/10">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                        </svg>
-                    </div>
-                </div>
+                <div class="flex items-center gap-3 md:gap-6 flex-1 min-w-0">
+            <div class="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/10">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+            </div>
+            <h1 class="text-xl font-bold text-white tracking-tight">CodeVault <span class="text-blue-500 text-xs font-normal">v1.0</span></h1>
+        </div>
 
                 <!-- Project Name Input -->
                 <div class="relative flex-1 max-w-md">
@@ -202,6 +203,19 @@
                            name="title" 
                            required 
                            placeholder="Project name..." 
+                           class="header-title w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-3 text-base md:text-lg font-semibold placeholder-gray-600 outline-none focus:border-white/30 focus:bg-white/10 transition-all">
+                    <div class="hide-on-mobile absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                 <div class="relative flex-1 max-w-md">
+                    <input type="text" 
+                           name="description" 
+                           required 
+                           placeholder="Project Description..." 
                            class="header-title w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-3 text-base md:text-lg font-semibold placeholder-gray-600 outline-none focus:border-white/30 focus:bg-white/10 transition-all">
                     <div class="hide-on-mobile absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
