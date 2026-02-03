@@ -1,4 +1,5 @@
-- [x] Add projectDescription variable to Alpine.js data in welcome.blade.php
-- [x] Insert project description div in the header between logo and project name input
-- [x] Integrate search logic into the index function in SnippetController.php
-- [x] Remove the separate serach function from SnippetController.php
+- [x] Replace grid layout with table structure in mysnippets.blade.php
+- [x] Add table headers for Title, Language, Description, Files, Created, Actions
+- [x] Convert snippet cards to table rows
+- [x] Ensure pagination and empty state remain functional
+- [x] Test the table view for responsiveness and functionality
