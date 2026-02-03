@@ -5,16 +5,21 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Snippet;
 use App\Models\SnippetFile;
+use App\Models\User;
 
 class SnippetSeeder extends Seeder
 {
     public function run(): void
     {
+        // Get all users to assign snippets to
+        $users = User::all();
+
         // 1. Image Upload with Storage
         $s1 = Snippet::create([
             'title' => 'Profile Image Upload',
             'description' => 'Validates and stores user profile images in public disk.',
             'language' => 'Laravel',
+            'user_id' => $users->random()->id,
         ]);
         $s1->files()->create([
             'file_name' => 'ProfileController.php',
@@ -28,6 +33,7 @@ class SnippetSeeder extends Seeder
             'title' => 'Admin Access Middleware',
             'description' => 'Checks if the authenticated user has an admin role.',
             'language' => 'Laravel',
+            'user_id' => $users->random()->id,
         ]);
         $s2->files()->create([
             'file_name' => 'IsAdmin.php',
@@ -41,6 +47,7 @@ class SnippetSeeder extends Seeder
             'title' => 'Sanctum API Login',
             'description' => 'Authenticates user via API and returns a PlainTextToken.',
             'language' => 'Laravel',
+            'user_id' => $users->random()->id,
         ]);
         $s3->files()->create([
             'file_name' => 'ApiAuthController.php',
@@ -54,6 +61,7 @@ class SnippetSeeder extends Seeder
             'title' => 'Category-Post Relationship',
             'description' => 'Defining a one-to-many relationship in Eloquent Models.',
             'language' => 'Laravel',
+            'user_id' => $users->random()->id,
         ]);
         $s4->files()->create([
             'file_name' => 'Category.php',
@@ -67,6 +75,7 @@ class SnippetSeeder extends Seeder
             'title' => 'Dynamic Search Scope',
             'description' => 'Reusable local scope for searching multiple columns.',
             'language' => 'Laravel',
+            'user_id' => $users->random()->id,
         ]);
         $s5->files()->create([
             'file_name' => 'User.php',
@@ -80,6 +89,7 @@ class SnippetSeeder extends Seeder
             'title' => 'Welcome Email Mailable',
             'description' => 'Sending a welcome email to newly registered users.',
             'language' => 'Laravel',
+            'user_id' => $users->random()->id,
         ]);
         $s6->files()->create([
             'file_name' => 'WelcomeUser.php',
@@ -93,6 +103,7 @@ class SnippetSeeder extends Seeder
             'title' => 'Database Transactions',
             'description' => 'Ensuring data integrity during multiple DB operations.',
             'language' => 'Laravel',
+            'user_id' => $users->random()->id,
         ]);
         $s7->files()->create([
             'file_name' => 'OrderController.php',
@@ -106,6 +117,7 @@ class SnippetSeeder extends Seeder
             'title' => 'Blade Currency Formatter',
             'description' => 'Creating a custom @money directive for Blade views.',
             'language' => 'Laravel',
+            'user_id' => $users->random()->id,
         ]);
         $s8->files()->create([
             'file_name' => 'AppServiceProvider.php',
@@ -119,6 +131,7 @@ class SnippetSeeder extends Seeder
             'title' => 'User API Resource',
             'description' => 'Hiding sensitive fields like password in API responses.',
             'language' => 'Laravel',
+            'user_id' => $users->random()->id,
         ]);
         $s9->files()->create([
             'file_name' => 'UserResource.php',
@@ -132,6 +145,7 @@ class SnippetSeeder extends Seeder
             'title' => 'Daily Database Cleanup',
             'description' => 'Running a scheduled task to delete old logs.',
             'language' => 'Laravel',
+            'user_id' => $users->random()->id,
         ]);
         $s10->files()->create([
             'file_name' => 'console.php',

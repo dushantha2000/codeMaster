@@ -15,11 +15,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create multiple users
+        User::factory(5)->create();
 
+        // Create a test user with known credentials
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Run the snippet seeder
+        $this->call(SnippetSeeder::class);
     }
 }
