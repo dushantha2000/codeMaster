@@ -34,15 +34,14 @@ Route::middleware('auth:sanctum')->group(function () {
     
 
     Route::get('/snippets-create', function () {
-        return view('snippetcreate');
+        return view('user.snippetcreate');
     })->name('snippets-create');
 
     Route::post('snippet-store', [SnippetController::class, 'store']);
     Route::get('/api/snippets/{id}', [SnippetController::class, 'show']);
     
     Route::delete('/snippets/{id}', [SnippetController::class, 'destroy']);
-
-    // Add other protected routes here
+    Route::get('/search-users', [SnippetController::class, 'UsersSearch'])->name('users.search');
 });
 
 

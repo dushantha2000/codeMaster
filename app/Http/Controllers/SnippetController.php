@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Snippet;
 use App\Models\SnippetFile;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class SnippetController extends Controller
 {
@@ -27,7 +28,7 @@ class SnippetController extends Controller
             ->latest()
             ->cursorPaginate(20);
 
-        return view('dashboard', compact('snippets'));
+        return view('user.dashboard', compact('snippets'));
     }
 
     public function store(Request $request)
@@ -109,7 +110,7 @@ class SnippetController extends Controller
     public function edit($id)
     {
         $snippet = Snippet::with('files')->findOrFail($id);
-        return view('editsnippet', compact('snippet'));
+        return view('user.editsnippet', compact('snippet'));
     }
 
     public function Update(Request $request, $id)
@@ -185,7 +186,7 @@ class SnippetController extends Controller
     {
         // 1. Initialize query with relationships
         $query = Snippet::with('files')
-            ->where('user_id', auth()->id()); 
+            ->where('user_id', auth()->id());
 
         //Search filter 
         if ($request->filled('search')) {
@@ -212,12 +213,29 @@ class SnippetController extends Controller
             $query->orderBy($sortBy, $sortOrder);
         }
         $snippets = $query->paginate($perPage)->appends($request->all());
-        $languages = Snippet::where('user_id', auth()->id())
-            ->select('language')
-            ->whereNotNull('language')
-            ->distinct()
-            ->pluck('language');
+       $languages = DB::table('snippets')
+                ->where('user_id', auth()->id())
+                ->whereNotNull('language')
+                ->distinct()
+                ->pluck('language');
 
         return view('auth.mysnippets', compact('snippets', 'languages'));
+    }
+
+
+    public function UsersSearch(Request $request)
+    {
+        $query = $request->get('term');
+
+        // query එක හිස් නැතිනම් පමණක් search කරන්න (වැඩි ආරක්ෂාවට)
+        if (!$query) {
+            return response()->json([]);
+        }
+
+        $users = User::where('name', 'LIKE', '%' . $query . '%')
+            
+            ->get(['id', 'name']);
+
+        return response()->json($users);
     }
 }
