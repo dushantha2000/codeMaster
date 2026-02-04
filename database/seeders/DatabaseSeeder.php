@@ -15,8 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create multiple users
-        User::factory(5)->create();
+        // Create 50 sample users
+        User::factory(50)->create();
 
         // Create a test user with known credentials
         User::factory()->create([
@@ -25,6 +25,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Run the snippet seeder
-        $this->call(SnippetSeeder::class);
+        // $this->call(SnippetSeeder::class);
     }
 }

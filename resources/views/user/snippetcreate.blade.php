@@ -1,189 +1,15 @@
-<!DOCTYPE html>
-<html lang="en" class="h-full">
+@extends('user.master')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snippet Pro | Edit</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            background: #0a0a0a;
-        }
+@section('title', 'My Profile')
 
-        .code-font {
-            font-family: 'Fira Code', monospace;
-            line-height: 1.7;
-        }
-
-        [x-cloak] {
-            display: none !important;
-        }
-
-        .glass-card {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .tab-active {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .file-item {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .file-item:hover {
-            transform: translateX(4px);
-        }
-
-        .btn-primary {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-primary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .code-editor {
-            background: rgba(10, 10, 10, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .modal-backdrop {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(12px);
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* =======================================
-           RESPONSIVE DESIGN - MOBILE FIRST
-           ======================================= */
-
-        /* Tablet (1024px and below) */
-        @media (max-width: 1024px) {
-            .sidebar-container {
-                width: 16rem;
-            }
-        }
-
-        /* Mobile (768px and below) */
-        @media (max-width: 768px) {
-            .sidebar-container {
-                position: fixed;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                z-index: 40;
-                width: 20rem;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-
-            .sidebar-container.mobile-open {
-                transform: translateX(0);
-            }
-
-            .mobile-overlay {
-                display: none;
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.7);
-                z-index: 30;
-                backdrop-filter: blur(4px);
-            }
-
-            .mobile-overlay.show {
-                display: block;
-            }
-
-            .hide-on-mobile {
-                display: none !important;
-            }
-
-            .show-on-mobile {
-                display: flex !important;
-            }
-        }
-
-        /* Small Mobile (640px and below) */
-        @media (max-width: 640px) {
-            .sidebar-container {
-                width: 18rem;
-            }
-
-            .header-title {
-                font-size: 0.875rem !important;
-                padding: 0.5rem !important;
-            }
-
-            .btn-mobile-sm {
-                padding: 0.5rem !important;
-                font-size: 0.75rem;
-            }
-
-            .btn-text-hide-mobile {
-                display: none;
-            }
-        }
-
-        /* Extra Small Mobile (480px and below) */
-        @media (max-width: 480px) {
-            .sidebar-container {
-                width: 85vw;
-                max-width: 16rem;
-            }
-
-            .modal-mobile {
-                margin: 0.5rem;
-                padding: 1.5rem !important;
-            }
-
-            .file-meta-mobile {
-                grid-template-columns: 1fr !important;
-            }
-        }
-    </style>
-</head>
+@section('content')
 
 <body class="text-gray-100" x-data="snippetEditor()" x-cloak>
 
-    <form action="{{ url('/snippets/update', $snippet->id) }}" method="POST" class="h-full flex flex-col">
+    <form action="{{ url('snippet-store') }}" method="POST" class="h-full flex flex-col">
         {{ csrf_field() }}
-        
-        <!-- Header -->
+
+        <!-- Modern Header -->
         <header class="h-20 flex items-center justify-between px-4 md:px-8 shrink-0 glass-card border-b border-white/5">
             <div class="flex items-center gap-3 md:gap-6 flex-1 min-w-0">
                 <!-- Mobile Menu Button -->
@@ -210,7 +36,7 @@
 
                 <!-- Project Name Input -->
                 <div class="relative flex-1 max-w-md">
-                    <input type="text" name="title" value="{{ $snippet->title }}" required placeholder="Project name..."
+                    <input type="text" name="title" required placeholder="Project name..."
                         class="header-title w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-3 text-base md:text-lg font-semibold placeholder-gray-600 outline-none focus:border-white/30 focus:bg-white/10 transition-all">
                     <div class="hide-on-mobile absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,7 +48,7 @@
                 </div>
 
                 <div class="relative flex-1 max-w-md">
-                    <input type="text" name="description" value="{{ $snippet->description }}" required placeholder="Project Description..."
+                    <input type="text" name="description" required placeholder="Project Description..."
                         class="header-title w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-3 text-base md:text-lg font-semibold placeholder-gray-600 outline-none focus:border-white/30 focus:bg-white/10 transition-all">
                     <div class="hide-on-mobile absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -238,12 +64,7 @@
             <div class="flex items-center gap-2 md:gap-4">
                 <select name="language"
                     class="btn-mobile-sm bg-white/5 border border-white/10 rounded-lg px-2 md:px-4 py-2 md:py-2.5 text-xs md:text-sm outline-none focus:border-white/30 focus:bg-white/10 transition-all cursor-pointer">
-                    <option value="laravel" {{ $snippet->language == 'laravel' ? 'selected' : '' }}>🔸 Laravel</option>
-                    <option value="php" {{ $snippet->language == 'php' ? 'selected' : '' }}>🐘 PHP</option>
-                    <option value="javascript" {{ $snippet->language == 'javascript' ? 'selected' : '' }}>📜 JavaScript</option>
-                    <option value="python" {{ $snippet->language == 'python' ? 'selected' : '' }}>🐍 Python</option>
-                    <option value="html" {{ $snippet->language == 'html' ? 'selected' : '' }}>🌐 HTML</option>
-                    <option value="css" {{ $snippet->language == 'css' ? 'selected' : '' }}>🎨 CSS</option>
+                    <option value="laravel">🔸 Laravel</option>
                 </select>
 
                 <button type="button" @click="showSettings = true"
@@ -265,7 +86,7 @@
                     <span class="btn-text-hide-mobile">Save</span>
                 </button>
 
-                <a href="{{ url('/my-snippets') }}"
+                <a href="{{ url('/dashboard')}}"
                     class="load-btn group flex items-center gap-2 px-4 md:px-6 py-2 md:py-2.5 rounded-lg border border-white/10 bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all text-xs md:text-sm font-bold">
                     <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
@@ -393,7 +214,7 @@
                                         </svg>
                                         File Name
                                     </label>
-                                    <input type="text" x-model="file.name" name="file_names[]"
+                                    <input type="text" x-model="file.name" name="file_names[]" required
                                         placeholder="e.g. UserController.php"
                                         class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm focus:border-white/30 focus:bg-white/10 outline-none transition-all">
                                 </div>
@@ -409,7 +230,7 @@
                                         File Path
                                     </label>
                                     <input type="text" x-model="file.path" name="file_paths[]"
-                                        placeholder="e.g. app/Http/Controllers"
+                                        placeholder="e.g. app/Http/Controllers" required
                                         class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm focus:border-white/30 focus:bg-white/10 outline-none transition-all">
                                 </div>
                             </div>
@@ -437,7 +258,7 @@
 
                         <!-- Code Editor -->
                         <div class="flex-1 relative code-editor">
-                            <textarea name="contents[]" x-model="file.content" @input="updateStats"
+                            <textarea name="contents[]" x-model="file.content" @input="updateStats" required
                                 class="absolute inset-0 w-full h-full bg-transparent p-4 pl-10 md:p-8 md:pl-16 code-font text-xs md:text-sm text-green-400 outline-none resize-none"
                                 placeholder="// Start coding...&#10;// Enjoy! 🚀" spellcheck="false"></textarea>
 
@@ -485,7 +306,8 @@
             <div class="space-y-4 md:space-y-5">
                 <div>
                     <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">File Name</label>
-                    <input type="text" x-model="newFile.name" @keyup.enter="addFile" placeholder="e.g. index.php"
+                    <input type="text" x-model="newFile.name" @keyup.enter="addFile" required
+                        placeholder="e.g. index.php"
                         class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all">
                 </div>
 
@@ -493,7 +315,7 @@
                     <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">File Path
                         (Optional)</label>
                     <input type="text" x-model="newFile.path" @keyup.enter="addFile"
-                        placeholder="e.g. src/components"
+                        placeholder="e.g. src/components" required
                         class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all">
                 </div>
 
@@ -552,7 +374,7 @@
                 <div class="flex items-center justify-between p-3 md:p-4 bg-white/5 rounded-lg border border-white/5">
                     <span class="text-sm md:text-base font-semibold">Line Numbers</span>
                     <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" x-model="showLineNumbers" class="sr-only peer">
+                        <input type="checkbox" x-model="showLineNumbers" required class="sr-only peer">
                         <div
                             class="w-11 h-6 bg-white/10 peer-focus:ring-2 peer-focus:ring-white/20 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-white/30">
                         </div>
@@ -562,7 +384,7 @@
                 <div class="flex items-center justify-between p-3 md:p-4 bg-white/5 rounded-lg border border-white/5">
                     <span class="text-sm md:text-base font-semibold">Auto-save</span>
                     <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" x-model="autoSave" class="sr-only peer">
+                        <input type="checkbox" x-model="autoSave" required class="sr-only peer">
                         <div
                             class="w-11 h-6 bg-white/10 peer-focus:ring-2 peer-focus:ring-white/20 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-white/30">
                         </div>
@@ -626,13 +448,11 @@
                     path: '',
                     content: ''
                 },
-                files: @json($snippet->files->map(function ($file) {
-                    return [
-                        'name' => $file->file_name,
-                        'path' => $file->file_path,
-                        'content' => $file->content
-                    ];
-                })),
+                files: [{
+                    name: 'web.php',
+                    path: 'routes/',
+                    content: ''
+                }],
 
                 toggleMobileSidebar() {
                     this.mobileMenuOpen = !this.mobileMenuOpen;
@@ -710,7 +530,7 @@
                 alert.style.opacity = '0';
                 setTimeout(() => alert.remove(), 500);
             }
-        }, 3000); 
+        }, 3000);
     </script>
 </body>
 

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') | CodeVault</title>
-
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
@@ -51,31 +51,25 @@
     @stack('styles')
 </head>
 
-<body class="text-gray-100 flex items-center justify-center min-h-screen p-4">
+<body class="text-gray-100 min-h-screen flex flex-col">
 
     @include('auth.loading')
 
-    @yield('content')
+    <main class="flex-grow flex items-center justify-center p-4">
+        @yield('content')
+    </main>
+
+    @include('auth.footer')
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script>
         $(document).ready(function() {
-            
-            $('form').on('submit', function() {
-                $('#custom-loader').fadeIn();
-            });
-
-            $('.load-btn').on('click', function() {
-                $('#custom-loader').show();
-            });
+            $('form').on('submit', function() { $('#custom-loader').fadeIn(); });
+            $('.load-btn').on('click', function() { $('#custom-loader').show(); });
         });
-        window.addEventListener('load', function() {
-            $('#custom-loader').fadeOut();
-        });
+        window.addEventListener('load', function() { $('#custom-loader').fadeOut(); });
     </script>
 
     @stack('scripts')
 </body>
-
 </html>
