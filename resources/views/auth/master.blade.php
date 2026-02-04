@@ -51,25 +51,33 @@
     @stack('styles')
 </head>
 
-<body class="text-gray-100 min-h-screen flex flex-col">
+<body class="text-gray-100 flex items-center justify-center min-h-screen p-4">
 
     @include('auth.loading')
 
-    <main class="flex-grow flex items-center justify-center p-4">
-        @yield('content')
-    </main>
-
-    @include('auth.footer')
+    @yield('content')
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
         $(document).ready(function() {
-            $('form').on('submit', function() { $('#custom-loader').fadeIn(); });
-            $('.load-btn').on('click', function() { $('#custom-loader').show(); });
+
+            $('form').on('submit', function() {
+                $('#custom-loader').fadeIn();
+            });
+
+            $('.load-btn').on('click', function() {
+                $('#custom-loader').show();
+            });
         });
-        window.addEventListener('load', function() { $('#custom-loader').fadeOut(); });
+        window.addEventListener('load', function() {
+            $('#custom-loader').fadeOut();
+        });
     </script>
 
     @stack('scripts')
+
+   
 </body>
+
 </html>

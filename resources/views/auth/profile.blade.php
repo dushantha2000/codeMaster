@@ -27,16 +27,21 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             {{-- Sidebar: Profile Card --}}
             <div class="md:col-span-1 space-y-6">
-                <div class="glass-card bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center relative overflow-hidden">
+                <div
+                    class="glass-card bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
 
                     <div class="relative inline-block">
-                        <div class="w-24 h-24 rounded-3xl bg-blue-600/20 border-2 border-blue-500/50 flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-blue-500/20">
+                        <div
+                            class="w-24 h-24 rounded-3xl bg-blue-600/20 border-2 border-blue-500/50 flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-blue-500/20">
                             <span class="text-4xl font-bold text-blue-500">{{ substr(Auth::user()->name, 0, 1) }}</span>
                         </div>
-                        <button class="absolute -bottom-1 -right-1 p-2 bg-slate-800 border border-white/10 rounded-xl hover:bg-slate-700 transition-all text-white">
+                        <button
+                            class="absolute -bottom-1 -right-1 p-2 bg-slate-800 border border-white/10 rounded-xl hover:bg-slate-700 transition-all text-white">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                <path
+                                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
+                                </path>
                                 <path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
                         </button>
@@ -90,7 +95,16 @@
 
                         <div class="pt-4 flex justify-end">
                             <button type="submit"
-                                class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-blue-500/20">
+                                class="btn-primary inline-flex items-center gap-2 text-gray-300 text-sm px-6 py-3 rounded-xl font-semibold shadow-xl hover:text-white group">
+
+                                {{-- Checkmark Icon --}}
+                                <svg class="w-5 h-5 text-gray-400 transition-all duration-300 group-hover:scale-110 group-hover:text-white"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7">
+                                    </path>
+                                </svg>
+
                                 Save Changes
                             </button>
                         </div>
@@ -101,7 +115,9 @@
                 <div class="glass-card bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 relative z-10">
                     <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
                         <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            <path
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                            </path>
                         </svg>
                         Security & Password
                     </h3>
@@ -112,15 +128,18 @@
                                 <p class="text-sm font-medium text-white">Password Protection</p>
                                 <p class="text-xs text-gray-500">Keep your account secure</p>
                             </div>
-                            <button class="text-blue-400 hover:text-blue-300 text-xs font-bold uppercase tracking-widest">Update</button>
+                            <button
+                                class="text-blue-400 hover:text-blue-300 text-xs font-bold uppercase tracking-widest">Update</button>
                         </div>
 
-                        <div class="flex items-center justify-between p-4 bg-red-500/5 border border-red-500/10 rounded-2xl">
+                        <div
+                            class="flex items-center justify-between p-4 bg-red-500/5 border border-red-500/10 rounded-2xl">
                             <div>
                                 <p class="text-sm font-medium text-red-400">Two-Factor Authentication</p>
                                 <p class="text-xs text-gray-500">Add an extra layer of security.</p>
                             </div>
-                            <button class="bg-red-500/20 text-red-400 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-red-500/30 transition-all">Enable</button>
+                            <button
+                                class="bg-red-500/20 text-red-400 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-red-500/30 transition-all">Enable</button>
                         </div>
                     </div>
                 </div>
@@ -150,7 +169,8 @@
                                 suggestions.classList.remove('hidden');
                                 data.forEach(user => {
                                     let div = document.createElement('div');
-                                    div.className = 'px-4 py-3 hover:bg-white/10 cursor-pointer text-sm text-gray-200 border-b border-white/5 last:border-0 transition-colors';
+                                    div.className =
+                                        'px-4 py-3 hover:bg-white/10 cursor-pointer text-sm text-gray-200 border-b border-white/5 last:border-0 transition-colors';
                                     div.textContent = user.name;
                                     div.onclick = function() {
                                         addUser(user.id, user.name);
@@ -182,8 +202,10 @@
                 }
 
                 const tag = document.createElement('div');
-                tag.className = 'flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 text-blue-400 px-3 py-1.5 rounded-full text-xs font-bold animate-in fade-in zoom-in duration-200';
-                tag.innerHTML = `${name} <button type="button" class="remove-btn hover:text-white transition-colors ml-1">×</button>`;
+                tag.className =
+                    'flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 text-blue-400 px-3 py-1.5 rounded-full text-xs font-bold animate-in fade-in zoom-in duration-200';
+                tag.innerHTML =
+                    `${name} <button type="button" class="remove-btn hover:text-white transition-colors ml-1">×</button>`;
 
                 tag.querySelector('.remove-btn').onclick = function() {
                     tag.remove();
