@@ -52,47 +52,58 @@ class SnippetController extends Controller
 
     public function store(Request $request)
     {
+
         //return $request;
-        // Validate the request
+        // Validation 
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'language' => 'required|string|max:255',
             'file_names' => 'required|array|min:1',
             'file_names.*' => 'required|string|max:255',
-            'file_paths' => 'nullable|array',
-            'file_paths.*' => 'nullable|string|max:255',
             'contents' => 'required|array|min:1',
             'contents.*' => 'required|string',
         ]);
 
-        // Create the snippet
-        $snippet = Snippet::create([
-            'user_id' => Auth::user()->id,
-            'title' => $request->title,
-            'description' => $request->description,
-            'language' => $request->language,
-        ]);
+        try {
+            // Transaction
+            return DB::transaction(function () use ($request) {
 
-        // Create snippet files
-        $fileNames = $request->file_names;
-        $filePaths = $request->file_paths ?? [];
-        $contents = $request->contents;
+                //Snippet 
+                $snippetId = DB::table('snippets')->insertGetId([
+                    'user_id' => Auth::user()->id,
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'language' => $request->language,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
 
-        foreach ($fileNames as $index => $fileName) {
-            $extension = pathinfo($fileName, PATHINFO_EXTENSION) ?: 'txt';
+                //Snippet Files 
+                $fileNames = $request->file_names;
+                $filePaths = $request->file_paths ?? [];
+                $contents = $request->contents;
 
-            SnippetFile::create([
-                'snippet_id' => $snippet->id,
-                'file_name' => $fileName,
-                'file_path' => $filePaths[$index] ?? null,
-                'content' => $contents[$index],
-                'extension' => $extension,
-            ]);
+                foreach ($fileNames as $index => $fileName) {
+                    $extension = pathinfo($fileName, PATHINFO_EXTENSION) ?: 'txt';
+
+                    DB::table('snippet_files')->insert([
+                        'snippet_id' => $snippetId,
+                        'file_name' => $fileName,
+                        'file_path' => $filePaths[$index] ?? null,
+                        'content' => $contents[$index],
+                        'extension' => $extension,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+
+                return redirect()->back()->with('success', 'Snippet Added successfully.');
+            });
+
+        } catch (Exception $e) {
+            return back()->with(['error' => 'Something went wrong while loading the page.']);
         }
-        //  return $snippet;
-
-        return redirect()->back()->with('success', 'Snippet Added successfully.');
     }
 
 
@@ -105,12 +116,9 @@ class SnippetController extends Controller
     public function search(Request $request)
     {
         $currentUserId = auth()->id();
-
-        
         $query = Snippet::with(['user:id,name', 'files'])
             ->select('id', 'user_id', 'title', 'description', 'language', 'created_at');
 
-        
         $query->where(function ($q) use ($currentUserId) {
             $q->where('user_id', $currentUserId)
                 ->orWhereExists(function ($sub) use ($currentUserId) {
@@ -121,11 +129,11 @@ class SnippetController extends Controller
                 });
         });
 
-        // 4. Keyword Search - Full-text search 
+        //Keyword Search - Full-text search 
         if ($request->filled('q')) {
             $keyword = $request->q;
             $query->where(function ($q) use ($keyword) {
-                $q->where('title', 'LIKE', "{$keyword}%") 
+                $q->where('title', 'LIKE', "{$keyword}%")
                     ->orWhere('description', 'LIKE', "%{$keyword}%");
             });
         }
@@ -133,8 +141,6 @@ class SnippetController extends Controller
         if ($request->filled('lang')) {
             $query->where('language', $request->lang);
         }
-
-        
         return response()->json($query->latest()->paginate(20));
     }
 
@@ -146,53 +152,57 @@ class SnippetController extends Controller
 
     public function Update(Request $request, $id)
     {
-
-        //return $request;
-        $snippet = Snippet::findOrFail($id);
-
-
-        // Validate the request
+        // Validation
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'language' => 'required|string|max:255',
             'file_names' => 'required|array|min:1',
             'file_names.*' => 'required|string|max:255',
-            'file_paths' => 'nullable|array',
-            'file_paths.*' => 'nullable|string|max:255',
             'contents' => 'required|array|min:1',
             'contents.*' => 'required|string',
         ]);
 
-        // Update the snippet
-        $snippet->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'language' => $request->language,
-        ]);
+        try {
+            return DB::transaction(function () use ($request, $id) {
 
-        // Delete existing files
-        $snippet->files()->delete();
+                //Snippet 
+                DB::table('snippets')
+                    ->where('id', $id)
+                    ->update([
+                        'title' => $request->title,
+                        'description' => $request->description,
+                        'language' => $request->language,
+                        'updated_at' => now(),
+                    ]);
 
-        // Create new files
-        $fileNames = $request->file_names;
-        $filePaths = $request->file_paths ?? [];
-        $contents = $request->contents;
+            
+                DB::table('snippet_files')->where('snippet_id', $id)->delete();
 
-        foreach ($fileNames as $index => $fileName) {
-            $extension = pathinfo($fileName, PATHINFO_EXTENSION) ?: 'txt';
+                //Files 
+                $fileNames = $request->file_names;
+                $filePaths = $request->file_paths ?? [];
+                $contents = $request->contents;
 
-            SnippetFile::create([
-                'snippet_id' => $snippet->id,
-                'file_name' => $fileName,
-                'file_path' => $filePaths[$index] ?? null,
-                'content' => $contents[$index],
-                'extension' => $extension,
-            ]);
+                foreach ($fileNames as $index => $fileName) {
+                    $extension = pathinfo($fileName, PATHINFO_EXTENSION) ?: 'txt';
+
+                    DB::table('snippet_files')->insert([
+                        'snippet_id' => $id,
+                        'file_name' => $fileName,
+                        'file_path' => $filePaths[$index] ?? null,
+                        'content' => $contents[$index],
+                        'extension' => $extension,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+                return redirect()->back()->with('success', 'Snippet updated successfully.');
+            });
+
+        } catch (Exception $e) {
+            return back()->with(['error' => 'Something went wrong while loading the page.']);
         }
-
-        return redirect()->back()->with('success', 'Snippet updated successfully.');
-
     }
 
     public function destroy($id)

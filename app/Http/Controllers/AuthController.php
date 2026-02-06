@@ -15,43 +15,86 @@ use App\Mail\ResetPasswordMail;
 
 class AuthController extends Controller
 {
-    public function Login(Request $request)
+
+
+    public function UpdateProfile(Request $request)
     {
 
-        //dd('wdqwdqw');
-        return view('auth.login');
+   // return $request;
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . auth()->id(),
+        ]);
+
+        try {
+            $user = auth()->user();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->save();
+
+            return redirect()->back()->with('success', 'Profile updated successfully!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update profile. Please try again.');
+        }
+    }
+
+
+
+
+
+    public function Login(Request $request)
+    {
+        try {
+            //dd('wdqwdqw');
+            return view('auth.login');
+        } catch (Exception $e) {
+            return redirect('/')->with('error', 'Critical System Error. Login failed.');
+        }
+
     }
 
     public function userLogin(Request $request)
     {
-        // Validation
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ], [
-            'email.required' => 'Please enter your email address.',
-            'email.email' => 'Please enter a valid email address.',
-            'password.required' => 'Please enter your password.',
-        ]);
 
-        // 2. Attempt login
-        if (Auth::attempt($credentials)) {
-            $id = Auth::user()->id;
-            $name = Auth::user()->name;
-            $email = Auth::user()->email;
+        try {
+            // Validation
+            $credentials = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ], [
+                'email.required' => 'Please enter your email address.',
+                'email.email' => 'Please enter a valid email address.',
+                'password.required' => 'Please enter your password.',
+            ]);
 
-            $request->session()->regenerate();
-            return redirect()->intended('/');
+            //Attempt login
+            if (Auth::attempt($credentials)) {
+                $id = Auth::user()->id;
+                $name = Auth::user()->name;
+                $email = Auth::user()->email;
+
+                $request->session()->regenerate();
+                return redirect()->intended('/');
+            }
+
+            //Return with error and keep the email input
+            return view('auth.login');
+
+        } catch (Exception $e) {
+            return redirect('/')->with('error', 'Critical System Error. Login failed.');
         }
-
-        // 4. Return with error and keep the email input
-        return view('auth.login');
     }
+
 
 
     public function register(Request $request)
     {
-        return view('auth.register');
+        try {
+            return view('auth.register');
+        } catch (Exception $e) {
+            return back()->with(['error' => 'Something went wrong while loading the page.']);
+        }
+
     }
 
 
@@ -106,29 +149,41 @@ class AuthController extends Controller
 
     public function Profile()
     {
-        $currentUserId = auth()->id();
+        try {
+            $currentUserId = auth()->id();
 
-       
-        $partners = DB::table('users')
-            ->join('partnerships', 'users.id', '=', 'partnerships.partner_id')
-            ->where('partnerships.user_id', $currentUserId)
-            ->select('users.id', 'users.name', 'users.email')
-            ->get();
+            $partners = DB::table('users')
+                ->join('partnerships', 'users.id', '=', 'partnerships.partner_id')
+                ->where('partnerships.user_id', $currentUserId)
+                ->select('users.id', 'users.name', 'users.email')
+                ->get();
 
-        return view('auth.profile', [
-            'user' => auth()->user(),
-            'partners' => $partners
-        ]);
+            return view('auth.profile', [
+                'user' => auth()->user(),
+                'partners' => $partners
+            ]);
+
+        } catch (Exception $e) {
+            return back()->with(['error' => 'Something went wrong while loading the page.']);
+        }
     }
 
     public function Settings()
     {
-        return view('auth.settings');
+        try {
+            return view('auth.settings');
+        } catch (Exception $e) {
+            return back()->with(['error' => 'Something went wrong while loading the page.']);
+        }
     }
 
     public function ResetPassword()
     {
-        return view('auth.resetpassword');
+        try {
+            return view('auth.resetpassword');
+        } catch (Exception $e) {
+            return back()->with(['error' => 'Something went wrong while loading the page.']);
+        }
 
     }
 
@@ -217,7 +272,7 @@ class AuthController extends Controller
                 ->where('email', $request->email)
                 ->update(['password' => Hash::make($request->password)]);
 
-            //Delete the token 
+            //Delete the token
             DB::table('password_reset_tokens')->where('email', $request->email)->delete();
 
             return redirect('/')->with('success', 'Your password has been successfully updated! Please login.');
@@ -225,6 +280,57 @@ class AuthController extends Controller
             return back()->with('error', 'Your password has been unsuccessfully updated! Please try again .');
         }
 
+    }
+
+    public function changePassword(Request $request)
+    {
+
+   // return $request;
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = auth()->user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->with('error', 'Current password is incorrect.');
+        }
+
+        try {
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return back()->with('success', 'Password changed successfully!');
+        } catch (Exception $e) {
+            return back()->with('error', 'Failed to change password. Please try again.');
+        }
+    }
+
+    public function destroyProfile(Request $request)
+    {
+
+   // return $request;
+        $user = auth()->user();
+
+        try {
+            // Delete related partnerships
+            DB::table('partnerships')->where('user_id', $user->id)->delete();
+            DB::table('partnerships')->where('partner_id', $user->id)->delete();
+
+            // Delete related snippets
+            DB::table('snippets')->where('user_id', $user->id)->delete();
+
+            // Delete the user
+            $user->delete();
+
+            // Logout the user
+            Auth::logout();
+
+            return redirect('/')->with('success', 'Your account has been deleted successfully.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Failed to delete account. Please try again.');
+        }
     }
 
 
