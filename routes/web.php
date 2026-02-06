@@ -6,13 +6,18 @@ use Illuminate\Support\Facades\Route;
 
 //Not login request Management
 Route::middleware('guest')->group(function () {
-     Route::get('/', [AuthController::class, 'Login']);
+    Route::get('/', [AuthController::class, 'Login'])->name('login');
+
+    Route::get('/fix-cache-now', function () {
+        Artisan::call('route:clear');
+        Artisan::call('config:clear');
+        Artisan::call('cache:clear');
+        return "All Caches Cleared!";
+    });
 
     // Route::get('', function () {
     //     return view('login');
     // })->name('login');
-
-
     Route::post('user-login', [AuthController::class, 'UserLogin']);
     Route::get('register', [AuthController::class, 'register']);
     Route::post('user-register', [AuthController::class, 'UserRegister']);
@@ -21,7 +26,7 @@ Route::middleware('guest')->group(function () {
 
     // This matches the link: /reset-password/64_character_token
     Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/update-password', [AuthController::class, 'UpdatePassword']);
+    Route::post('/reset-password', [AuthController::class, 'UpdatePassword']);
 
 });
 
@@ -30,27 +35,30 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [SnippetController::class, 'index'])->name('dashboard');
     Route::post('/logout', [AuthController::class, 'Logout']);
     Route::get('profile', [AuthController::class, 'Profile']);
-    Route::get('settings', [AuthController::class, 'Settings']);
+    Route::get('/settings', [AuthController::class, 'Settings']);
     Route::get('/api/search', [SnippetController::class, 'search']);
     Route::get('/my-snippets', [SnippetController::class, 'mySnippets'])->name('snippets.index');
     Route::delete('snippets/{id}', [SnippetController::class, 'destroy']);
     Route::get('snippets/{id}/edit', [SnippetController::class, 'edit']);
     Route::post('/snippets/update/{id}', [SnippetController::class, 'Update']);
-
     Route::post('/partners/destroy/{id}', [SnippetController::class, 'destroyPartner']);
-
-
-
+    
+    
     Route::get('/snippets-create', function () {
         return view('user.snippetcreate');
     })->name('snippets-create');
 
     Route::post('snippet-store', [SnippetController::class, 'store']);
     Route::get('/api/snippets/{id}', [SnippetController::class, 'show']);
-
     Route::delete('/snippets/{id}', [SnippetController::class, 'destroy']);
     Route::get('/search-users', [SnippetController::class, 'UsersSearch'])->name('users.search');
     Route::post('/user/partnerships', [SnippetController::class, 'updatePartnerships']);
+
+    Route::post('/profile-destroy', [AuthController::class, 'destroyProfile']);
+    Route::post('/update-password', [AuthController::class, 'changePassword']);
+    Route::post('/setting-profile', [AuthController::class, 'UpdateProfile']);
+
+
 });
 
 
