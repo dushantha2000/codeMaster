@@ -11,10 +11,10 @@ return new class extends Migration
         Schema::create('snippet_files', function (Blueprint $table) {
             $table->id();
             $table->foreignId('snippet_id')->constrained()->onDelete('cascade'); 
-            $table->string('file_name'); // උදා: UserController.php
-            $table->string('file_path')->nullable(); // උදා: app/Http/Controllers
-            $table->longText('content'); // කෝඩ් එක
-            $table->string('extension'); // php, html, js ආදිය
+            $table->string('file_name'); 
+            $table->string('file_path')->nullable(); 
+            $table->longText('content'); 
+            $table->string('extension'); 
             $table->timestamps();
         });
     }

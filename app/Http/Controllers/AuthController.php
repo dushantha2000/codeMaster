@@ -106,12 +106,19 @@ class AuthController extends Controller
 
     public function Profile()
     {
-        try {
-            return view('auth.profile');
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Critical System Error. Profile failed.');
-        }
+        $currentUserId = auth()->id();
 
+       
+        $partners = DB::table('users')
+            ->join('partnerships', 'users.id', '=', 'partnerships.partner_id')
+            ->where('partnerships.user_id', $currentUserId)
+            ->select('users.id', 'users.name', 'users.email')
+            ->get();
+
+        return view('auth.profile', [
+            'user' => auth()->user(),
+            'partners' => $partners
+        ]);
     }
 
     public function Settings()
@@ -128,7 +135,7 @@ class AuthController extends Controller
 
     public function sendResetCode(Request $request)
     {
-        // 1. Validate the email exists in our users table
+        //Validate the email exists in our users table
         $request->validate(['email' => 'required|email|exists:users,email'], [
             'email.exists' => 'We can\'t find a user with that email address.'
         ]);
@@ -215,7 +222,7 @@ class AuthController extends Controller
 
             return redirect('/')->with('success', 'Your password has been successfully updated! Please login.');
         } catch (Exception $e) {
-             return back()->with('error', 'Your password has been unsuccessfully updated! Please try again .');
+            return back()->with('error', 'Your password has been unsuccessfully updated! Please try again .');
         }
 
     }

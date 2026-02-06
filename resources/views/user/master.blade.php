@@ -181,7 +181,7 @@
 
 <body class="text-gray-100" x-data="snippetEditor()" x-cloak>
 
-
+    @include('auth.loading')
 
     @yield('content')
 
@@ -189,30 +189,27 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script>
-        document.addEventListener('click', function(e) {
-            // අපි බලනවා click කරපු element එකේ load-btn class එක තියෙනවද කියලා
-            // එහෙම නැත්නම් click කරපු element එකේ parent ගේ load-btn class එක තියෙනවද කියලා (SVG එකක් click වුණොත් ඕනේ වෙනවා)
-            const btn = e.target.closest('.load-btn');
 
-            if (btn) {
-                // Loader එක පෙන්වන්න
-                const loader = document.getElementById('custom-loader');
-                if (loader) {
-                    loader.style.display = 'flex'; // නැත්නම් fadeIn() එකේ logic එක මෙතනට දාන්න
-                    loader.style.opacity = '1';
-                }
-            }
+    <script>
+        $(document).ready(function() {
+            // 1. Handle Form Submits
+            $(document).on('submit', 'form', function() {
+                $('#custom-loader').css('display', 'flex').fadeIn(200);
+            });
+
+            // 2. Handle Link Clicks (Event Delegation)
+            // This catches clicks on the <a>, the <svg>, or the <path>
+            $(document).on('click', '.load-btn', function() {
+                $('#custom-loader').css('display', 'flex').show();
+            });
         });
 
-        // පිටුව load වුණාම අනිවාර්යයෙන්ම hide කරන්න
-        window.addEventListener('pageshow', function(event) {
-            const loader = document.getElementById('custom-loader');
-            if (loader) {
-                loader.style.display = 'none';
-            }
+        // 3. Robust Hide logic
+        window.addEventListener('pageshow', function() {
+            $('#custom-loader').fadeOut(300);
         });
     </script>
+
 
 
 

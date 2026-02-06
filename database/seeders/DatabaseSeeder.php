@@ -14,17 +14,16 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
-        // Create 50 sample users
-        User::factory(50)->create();
+{
+    // Users ලා 50ක් හදනවා
+    User::factory(50)->create();
 
-        // Create a test user with known credentials
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+    User::factory()->create([
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+    ]);
 
-        // Run the snippet seeder
-        // $this->call(SnippetSeeder::class);
-    }
+    // මේ පේළියේ ඉදිරියෙන් ඇති // ලකුණු අයින් කරන්න
+    $this->call(SnippetSeeder::class); 
+}
 }

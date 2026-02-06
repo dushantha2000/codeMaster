@@ -47,6 +47,17 @@
         .image-glow-red {
             background: radial-gradient(circle at center, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
         }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
     </style>
     @stack('styles')
 </head>
@@ -61,23 +72,27 @@
 
     <script>
         $(document).ready(function() {
-
-            $('form').on('submit', function() {
-                $('#custom-loader').fadeIn();
+            // 1. Handle Form Submits
+            $(document).on('submit', 'form', function() {
+                $('#custom-loader').css('display', 'flex').fadeIn(200);
             });
 
-            $('.load-btn').on('click', function() {
-                $('#custom-loader').show();
+            // 2. Handle Link Clicks (Event Delegation)
+            // This catches clicks on the <a>, the <svg>, or the <path>
+            $(document).on('click', '.load-btn', function() {
+                $('#custom-loader').css('display', 'flex').show();
             });
         });
-        window.addEventListener('load', function() {
-            $('#custom-loader').fadeOut();
+
+        // 3. Robust Hide logic
+        window.addEventListener('pageshow', function() {
+            $('#custom-loader').fadeOut(300);
         });
     </script>
 
     @stack('scripts')
 
-   
+
 </body>
 
 </html>

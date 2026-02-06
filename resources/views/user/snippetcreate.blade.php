@@ -10,93 +10,68 @@
         {{ csrf_field() }}
 
         <!-- Modern Header -->
-        <header class="h-20 flex items-center justify-between px-4 md:px-8 shrink-0 glass-card border-b border-white/5">
-            <div class="flex items-center gap-3 md:gap-6 flex-1 min-w-0">
-                <!-- Mobile Menu Button -->
-                <button type="button" @click="toggleMobileSidebar"
-                    class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
+        <header class="h-20 flex items-center justify-between px-4 md:px-8 shrink-0 glass-card border-b border-white/5 gap-4">
+    
+    <div class="flex items-center gap-3 md:gap-4 shrink-0">
+        <button type="button" @click="toggleMobileSidebar"
+            class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
 
-                <!-- Logo -->
-                <div class="flex items-center gap-3 md:gap-6 flex-1 min-w-0">
-                    <div class="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/10">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                            </path>
-                        </svg>
-                    </div>
-                    <h1 class="text-xl font-bold text-white tracking-tight">CodeVault <span
-                            class="text-blue-500 text-xs font-normal">v1.0</span></h1>
-                </div>
-
-                <!-- Project Name Input -->
-                <div class="relative flex-1 max-w-md">
-                    <input type="text" name="title" required placeholder="Project name..."
-                        class="header-title w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-3 text-base md:text-lg font-semibold placeholder-gray-600 outline-none focus:border-white/30 focus:bg-white/10 transition-all">
-                    <div class="hide-on-mobile absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
-                            </path>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="relative flex-1 max-w-md">
-                    <input type="text" name="description" required placeholder="Project Description..."
-                        class="header-title w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-3 text-base md:text-lg font-semibold placeholder-gray-600 outline-none focus:border-white/30 focus:bg-white/10 transition-all">
-                    <div class="hide-on-mobile absolute right-3 top-1/2 -translate-y-1/2 text-gray-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
-                            </path>
-                        </svg>
-                    </div>
-                </div>
+        <div class="flex items-center gap-3">
+             <div class="w-8 h-8 bg-black-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                    </path>
+                </svg>
             </div>
+            <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile"><a
+                    href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal">v1.0</span>
+            </h1>
+        </div>
+    </div>
 
-            <!-- Action Buttons -->
-            <div class="flex items-center gap-2 md:gap-4">
-                <select name="language"
-                    class="btn-mobile-sm bg-white/5 border border-white/10 rounded-lg px-2 md:px-4 py-2 md:py-2.5 text-xs md:text-sm outline-none focus:border-white/30 focus:bg-white/10 transition-all cursor-pointer">
-                    <option value="laravel">🔸 Laravel</option>
-                </select>
+    <div class="flex-1 flex items-center justify-center gap-3 max-w-2xl px-2">
+        <div class="relative w-full">
+            <input type="text" name="title" required placeholder="Project name..."
+                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm md:text-base font-bold text-white placeholder-gray-600 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all">
+        </div>
 
-                <button type="button" @click="showSettings = true"
-                    class="hide-on-mobile p-2.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                        </path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                </button>
+        <div class="relative w-full hidden md:block">
+            <input type="text" name="description" required placeholder="Brief description..."
+                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm font-medium text-gray-300 placeholder-gray-600 outline-none focus:border-white/20 transition-all">
+        </div>
+    </div>
 
-                <button type="submit"
-                    class="btn-primary text-white px-4 md:px-8 py-2 md:py-2.5 rounded-lg font-bold transition-all flex items-center gap-2 text-xs md:text-base">
-                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    <span class="btn-text-hide-mobile">Save</span>
-                </button>
-
-                <a href="{{ url('/dashboard')}}"
-                    class="load-btn group flex items-center gap-2 px-4 md:px-6 py-2 md:py-2.5 rounded-lg border border-white/10 bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all text-xs md:text-sm font-bold">
-                    <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    <span class="btn-text-hide-mobile">Back</span>
-                </a>
+    <div class="flex items-center gap-2 md:gap-3 shrink-0">
+        <div class="relative hidden sm:block">
+            <select name="language"
+                class="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-2 pr-8 text-xs font-bold text-gray-300 outline-none hover:bg-white/10 transition-all cursor-pointer">
+                <option value="laravel">Laravel</option>
+                <option value="tailwind">Tailwind</option>
+            </select>
+            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
             </div>
-        </header>
+        </div>
+
+        <div class="flex items-center gap-2 border-l border-white/10 pl-2 md:pl-3">
+            <button type="submit"
+                class="bg-blue-600 hover:bg-blue-500 text-white p-2 md:px-5 md:py-2 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span class="hidden md:inline text-sm">Save</span>
+            </button>
+
+            <a href="{{ url('/dashboard')}}"
+                class="p-2 md:px-4 md:py-2 rounded-xl border border-white/10 bg-white/5 text-gray-400 hover:text-white transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </a>
+        </div>
+    </div>
+</header>
 
         <!-- Success/Error Messages -->
         @if(session('success'))

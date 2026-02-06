@@ -6,7 +6,13 @@ use Illuminate\Support\Facades\Route;
 
 //Not login request Management
 Route::middleware('guest')->group(function () {
-    Route::get('/', [AuthController::class, 'Login']);
+     Route::get('/', [AuthController::class, 'Login']);
+
+    // Route::get('', function () {
+    //     return view('login');
+    // })->name('login');
+
+
     Route::post('user-login', [AuthController::class, 'UserLogin']);
     Route::get('register', [AuthController::class, 'register']);
     Route::post('user-register', [AuthController::class, 'UserRegister']);
@@ -15,8 +21,8 @@ Route::middleware('guest')->group(function () {
 
     // This matches the link: /reset-password/64_character_token
     Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/update-password',[AuthController::class, 'UpdatePassword']);
-    
+    Route::post('/update-password', [AuthController::class, 'UpdatePassword']);
+
 });
 
 
@@ -30,8 +36,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('snippets/{id}', [SnippetController::class, 'destroy']);
     Route::get('snippets/{id}/edit', [SnippetController::class, 'edit']);
     Route::post('/snippets/update/{id}', [SnippetController::class, 'Update']);
-    
-    
+
+    Route::post('/partners/destroy/{id}', [SnippetController::class, 'destroyPartner']);
+
+
 
     Route::get('/snippets-create', function () {
         return view('user.snippetcreate');
@@ -39,9 +47,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('snippet-store', [SnippetController::class, 'store']);
     Route::get('/api/snippets/{id}', [SnippetController::class, 'show']);
-    
+
     Route::delete('/snippets/{id}', [SnippetController::class, 'destroy']);
     Route::get('/search-users', [SnippetController::class, 'UsersSearch'])->name('users.search');
+    Route::post('/user/partnerships', [SnippetController::class, 'updatePartnerships']);
 });
 
 
