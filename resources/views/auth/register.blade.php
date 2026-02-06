@@ -27,15 +27,16 @@
 
             <div class="mb-6">
                 <div class="flex items-center gap-2 mb-2">
-                    <div class="bg-white/10 p-1.5 rounded-lg border border-white/10 text-blue-500">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                            </path>
-                        </svg>
-                    </div>
-                    <h1 class="text-xl font-bold text-white tracking-tight">CodeVault <span
-                            class="text-blue-500 text-xs font-normal">v1.0</span></h1>
+                     <div class="w-8 h-8 bg-black-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                    </path>
+                </svg>
+            </div>
+            <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile"><a
+                    href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal">v1.0</span>
+            </h1>
                 </div>
                 <h1 class="text-2xl font-bold text-white">Create Account</h1>
                 <p class="text-gray-500 text-sm mt-1">Start your journey with us today.</p>

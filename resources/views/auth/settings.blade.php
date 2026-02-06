@@ -3,89 +3,239 @@
 @section('title', 'System Settings')
 
 @section('content')
-<div class="w-full max-w-6xl mx-auto px-4 py-8">
-    <div class="flex items-center gap-4 mb-8">
-        <a href="{{ url('/dashboard') }}" class="group p-3 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 text-gray-400 hover:text-white transition-all shadow-xl">
-            <svg class="w-6 h-6 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-        </a>
-        <div>
-            <h1 class="text-4xl font-black text-white tracking-tight">Settings</h1>
-            <p class="text-gray-400 text-sm font-medium">Configure your account preferences and report system issues.</p>
-        </div>
-    </div>
+    <div class="w-full max-w-6xl mx-auto px-4 py-8 space-y-8">
 
-    <div class="space-y-6">
-        <div class="glass-card rounded-3xl p-8 border border-white/10 relative overflow-hidden">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="p-2 bg-blue-500/10 rounded-lg text-blue-500">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                </div>
-                <h3 class="text-lg font-bold text-white">Email Address</h3>
+        {{-- Header Section --}}
+        <div class="flex items-center gap-4 mb-8">
+            <a href="{{ url('/dashboard') }}"
+                class="group p-3 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 text-gray-400 hover:text-white transition-all shadow-xl">
+                <svg class="w-6 h-6 transform group-hover:-translate-x-1 transition-transform" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                    </path>
+                </svg>
+            </a>
+            <div>
+                <h1 class="text-4xl font-black text-white tracking-tight">System Settings</h1>
+                <p class="text-gray-400 text-sm font-medium">Manage your vault environment, security, and preferences.</p>
             </div>
-
-            <form action="" method="POST">
-                @csrf
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5 ml-1 uppercase tracking-wider">Current Email</label>
-                        <input type="text" disabled value="{{ Auth::user()->email }}" 
-                               class="input-field w-full rounded-xl px-4 py-3 text-sm text-gray-500 cursor-not-allowed bg-white/5">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1 uppercase tracking-wider">New Email Address</label>
-                        <input type="email" name="new_email" required placeholder="new-email@example.com"
-                               class="input-field w-full rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-blue-500/20">
-                    </div>
-                </div>
-                <div class="mt-6 flex justify-end">
-                    <button type="submit" class="load-btn bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-900/20">
-                        Update Email
-                    </button>
-                </div>
-            </form>
         </div>
 
-        {{-- <div class="glass-card rounded-3xl p-8 border border-white/10 relative overflow-hidden">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="p-2 bg-amber-500/10 rounded-lg text-amber-500">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.268 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                </div>
-                <h3 class="text-lg font-bold text-white">Report a Bug</h3>
-            </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <form action="{{ url('settings') }}" method="POST">
-               {{ csrf_field() }}
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1 uppercase tracking-wider">Issue Title</label>
-                        <input type="text" name="title" required placeholder="Brief description of the glitch"
-                               class="input-field w-full rounded-xl px-4 py-3 text-sm text-white">
+            {{-- Left Column --}}
+            <div class="lg:col-span-2 space-y-6">
+                {{-- 1. Profile Information --}}
+                <div
+                    class="glass-card rounded-3xl p-8 border border-white/10 bg-white/5 shadow-2xl relative overflow-hidden">
+                    <div class="flex items-center gap-3 mb-6">
+                        
+                        <h3 class="text-lg font-bold text-white">Profile Information</h3>
                     </div>
-                    <div>
-                        <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1 uppercase tracking-wider">Detailed Description</label>
-                        <textarea name="description" rows="4" required placeholder="How can we reproduce the error?"
-                                  class="input-field w-full rounded-xl px-4 py-3 text-sm text-white resize-none"></textarea>
+
+                    <form action="" method="POST" class="space-y-4">
+                        @csrf
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-gray-500 mb-2 uppercase tracking-widest">Display
+                                    Name</label>
+                                <input type="text" name="name" value="{{ Auth::user()->name }}"
+                                    class="bg-white/5 border border-white/10 w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-gray-500 mb-2 uppercase tracking-widest">Primary
+                                    Email</label>
+                                <input type="email" name="email" value="{{ Auth::user()->email }}"
+                                    class="bg-white/5 border border-white/10 w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
+                            </div>
+                        </div>
+                        <div class="flex justify-end pt-2">
+                            <button type="submit"
+                                class="btn-primary inline-flex items-center gap-2 text-gray-300 text-sm px-6 py-3 rounded-xl font-semibold shadow-xl hover:text-white group">
+
+                                {{-- Checkmark Icon --}}
+                                <svg class="w-5 h-5 text-gray-200 transition-all duration-300 group-hover:scale-110 group-hover:text-white"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7">
+                                    </path>
+                                </svg>
+
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                {{-- 2. Notifications --}}
+                <div class=" rounded-3xl p-8  hadow-2xl">
+                    <div class="flex items-center gap-3 mb-6">
+                        
+                        <h3 class="text-lg font-bold text-white">Notifications</h3>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <div class="flex-1">
-                            <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1 uppercase tracking-wider">Severity</label>
-                            <select name="severity" class="input-field w-full rounded-xl px-4 py-3 text-sm text-white bg-black">
-                                <option value="low">Low - Visual Glitch</option>
-                                <option value="medium">Medium - Functionality Issue</option>
-                                <option value="high">High - Critical Error</option>
-                            </select>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+                            <div>
+                                <p class="text-sm font-medium text-white">Email Notifications</p>
+                                <p class="text-xs text-gray-500">Get updates about your shared snippets</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked class="sr-only peer">
+                                <div
+                                    class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all">
+                                </div>
+                            </label>
                         </div>
                     </div>
                 </div>
-                <div class="mt-6 flex justify-end">
-                    <button type="submit" class="load-btn bg-white/10 hover:bg-white/20 text-white px-6 py-2.5 rounded-xl font-bold text-sm border border-white/10 transition-all">
-                        Submit Report
+            </div>
+
+            {{-- Right Column --}}
+            <div class="space-y-6">
+                <div class="glass-card rounded-3xl p-6 border border-white/10 bg-white/5 shadow-2xl">
+                    <h3 class="text-sm font-bold text-white mb-4 uppercase tracking-widest text-gray-400">Security</h3>
+                    <div class="space-y-3">
+                        <a href="#"
+                            class="flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl transition-all group">
+                            <span class="text-xs font-medium text-gray-300">Change Password</span>
+                            <svg class="w-4 h-4 text-gray-500 group-hover:text-blue-400" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                {{-- Danger Zone --}}
+                {{-- Danger Zone Section --}}
+                <div class="glass-card rounded-3xl p-6 border border-red-500/20 bg-red-500/5 shadow-2xl">
+                    <h3 class="text-sm font-bold text-red-500 mb-4 uppercase tracking-widest">Danger Zone</h3>
+                    <p class="text-[11px] text-gray-500 mb-4">Once you delete your account, there is no going back. Please
+                        be certain.</p>
+
+                    <button onclick="openDeleteModal()"
+                        class="w-full py-3 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/20 rounded-xl text-xs font-bold transition-all uppercase tracking-tighter shadow-lg shadow-red-500/10">
+                        Delete Vault Account
                     </button>
                 </div>
-            </form>
-        </div> --}}
+
+                {{-- Modal Section --}}
+                <div id="deleteModal"
+                    class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden z-[100] items-center justify-center p-6 transition-all duration-300 opacity-0">
+                    <div class="glass-card rounded-[2.5rem] p-10 max-w-sm w-full border border-white/10 shadow-2xl transform transition-all scale-90"
+                        id="modalContainer">
+
+                        <div
+                            class="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-red-500/20">
+                            <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                </path>
+                            </svg>
+                        </div>
+
+                        <h3 class="text-2xl font-black text-white text-center mb-3 tracking-tight">Erase Account?</h3>
+                        <p class="text-gray-400 text-center text-sm mb-10 leading-relaxed">
+                            This operation will permanently delete your entire vault and all associated data.
+                        </p>
+
+                        <div class="flex flex-col gap-3">
+                            <form action="{{ URL('profile.destroy') }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="w-full bg-red-600 hover:bg-red-500 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-red-900/40">
+                                    Yes, Delete Permanently
+                                </button>
+                            </form>
+
+                            <button onclick="closeDeleteModal()"
+                                class="w-full py-4 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-2xl font-bold transition-colors">
+                                Keep My Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+
+    {{-- Modal Section --}}
+    {{-- Your Custom Design Modal --}}
+    <div id="deleteModal"
+        class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden z-[100] items-center justify-center p-6 transition-all duration-300 opacity-0">
+
+        <div class="glass-card rounded-[2.5rem] p-10 max-w-sm w-full border border-white/10 shadow-2xl transform transition-all scale-90"
+            id="modalContainer">
+
+            <div
+                class="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-red-500/20">
+                <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                    </path>
+                </svg>
+            </div>
+
+            <h3 class="text-2xl font-black text-white text-center mb-3 tracking-tight">Erase Account?</h3>
+            <p class="text-gray-400 text-center text-sm mb-10 leading-relaxed" id="deleteMessage">
+                This operation will permanently delete your entire vault and all associated data.
+            </p>
+
+            <div class="flex flex-col gap-3">
+                {{-- Laravel Form for Delete --}}
+                <form action="{{ URL('profile.destroy') }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                        class="w-full bg-red-600 hover:bg-red-500 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-red-900/40">
+                        Yes, Delete Permanently
+                    </button>
+                </form>
+
+                <button onclick="closeDeleteModal()"
+                    class="w-full py-4 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-2xl font-bold transition-colors">
+                    Keep My Account
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- JavaScript to Handle Animations --}}
+    <script>
+        function openDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            const container = document.getElementById('modalContainer');
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            // පියවරෙන් පියවර ඇනිමේෂන් එක ලබා දීමට
+            setTimeout(() => {
+                modal.classList.add('opacity-100');
+                container.classList.remove('scale-90');
+                container.classList.add('scale-100');
+            }, 10);
+
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            const container = document.getElementById('modalContainer');
+
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            container.classList.remove('scale-100');
+            container.classList.add('scale-90');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+    </script>
 @endsection

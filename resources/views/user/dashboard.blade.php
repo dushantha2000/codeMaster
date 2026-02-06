@@ -79,15 +79,16 @@
                     </path>
                 </svg>
             </button>
-            <div class="bg-white/10 p-2 md:p-3 rounded-xl border border-white/10">
+            <div class="w-8 h-8 bg-black-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
                     </path>
                 </svg>
             </div>
-            <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile">CodeVault <span
-                    class="text-blue-500 text-xs font-normal">v1.0</span></h1>
+            <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile"><a
+                    href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal">v1.0</span>
+            </h1>
         </div>
 
         <div class="relative flex-1 max-w-md mx-4">
@@ -156,7 +157,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
-                        My Profile
+                        My Partnerships
                     </a>
 
                     <a href="{{ url('/my-snippets') }}"
@@ -198,7 +199,7 @@
         </div>
     </header>
 
-     
+
 
     <main class="flex-1 overflow-y-auto p-4 md:p-8">
         <div class="max-w-7xl mx-auto">
@@ -207,10 +208,10 @@
                 <p class="mt-2 text-gray-400">Loading snippets...</p>
             </div>
 
-            <div x-show="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div x-show="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <template x-for="snippet in snippets" :key="snippet.id">
                     <div @click="openSnippet(snippet.id)"
-                        class="relative group h-72 w-full transition-all duration-500 [perspective:1000px]">
+                        class="relative group h-65 w-full transition-all duration-500 [perspective:1000px]">
 
                         <div
                             class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -250,17 +251,30 @@
                             </div>
 
                             <div class="p-6 pt-2 flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="flex -space-x-2">
-                                        <template x-for="file in snippet.files.slice(0, 4)">
-                                            <div
-                                                class="w-6 h-6 rounded-full bg-[#0a0a0a] border border-white/20 flex items-center justify-center text-[8px] font-bold text-white group-hover:translate-y-[-4px] transition-transform duration-300">
-                                                <span x-text="file.extension.slice(0,2)"></span>
-                                            </div>
-                                        </template>
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex -space-x-2">
+                                            <template x-for="file in snippet.files.slice(0, 4)">
+                                                <div
+                                                    class="w-6 h-6 rounded-full bg-[#0a0a0a] border border-white/20 flex items-center justify-center text-[8px] font-bold text-white group-hover:translate-y-[-4px] transition-transform duration-300">
+                                                    <span
+                                                        x-text="file.extension ? file.extension.slice(0,2) : '??'"></span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                        <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest"
+                                            x-text="snippet.files.length + ' fragments'"></span>
                                     </div>
-                                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest"
-                                        x-text="snippet.files.length + ' fragments'"></span>
+
+                                    <div class="flex items-center gap-1.5 mt-1">
+                                        <div class="w-1.5 h-1.5 rounded-full"
+                                            :class="snippet.user_id == {{ Auth::id() }} ? 'bg-green-500' : 'bg-purple-500'">
+                                        </div>
+                                        <span class="text-[10px] font-medium text-gray-400">
+                                            <span
+                                                x-text="snippet.user_id == {{ Auth::id() }} ? 'You' : (snippet.user ? snippet.user.name : 'Partner')"></span>
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <div
@@ -279,8 +293,7 @@
 
             <div x-show="!loading && snippets.length === 0">
                 <div class=" rounded-xl p-12 text-center">
-                    <div
-                        class="w-16 h-16  rounded-full flex items-center justify-center mx-auto mb-6 border ">
+                    <div class="w-16 h-16  rounded-full flex items-center justify-center mx-auto mb-6 border ">
                         <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
@@ -291,7 +304,7 @@
                     <p class="text-gray-400 mb-6 max-w-md mx-auto">Your code vault is empty. Start building your
                         collection by creating your first snippet.</p>
                     <a href="{{ route('snippets-create') }}"
-                        class="inline-flex items-center gap-2 btn-primary  text-sm  px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg ">
+                        class=" load-btn inline-flex items-center gap-2 btn-primary  text-sm  px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg ">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
                             </path>
@@ -394,30 +407,31 @@
         </div>
     </div>
 
-    <footer class="w-full mt-20 border-t border-white/10 bg-white/[0.02] backdrop-blur-xl">
-    <div class="max-w-7xl mx-auto px-6 py-12">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-black-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
-                   <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                    </path>
-                </svg>
+    <footer class="w-full mt-5 border-t border-white/10 bg-white/[0.02] backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 py-5">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 bg-black-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                            </path>
+                        </svg>
+                    </div>
+                    <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile">CodeVault <span
+                            class="text-blue-500 text-xs font-normal">v1.0</span></h1>
                 </div>
-                <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile">CodeVault <span
-                    class="text-blue-500 text-xs font-normal">v1.0</span></h1>
-            </div>
-            <div class="flex items-center gap-6 text-gray-500 text-xs font-bold tracking-widest uppercase">
-                <span>&copy; 2026 CodeVault Inc.</span>
-                <div class="flex gap-2 items-center">
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    <span class="text-[10px]">Secure Online</span>
+                <div class="flex items-center gap-6 text-gray-500 text-xs font-bold tracking-widest uppercase">
+                    <span>&copy; 2026 CodeVault Inc.</span>
+                    <div class="flex gap-2 items-center">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-[10px]">Secure Online</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
 
     <script>
         function snippetBrowser() {
@@ -500,7 +514,16 @@
 
                     const icons = {
                         'php': '🐘',
-
+                        'laravel': '󰫐',
+                        'javascript': '🟨',
+                        'js': '🟨',
+                        'python': '🐍',
+                        'html': '🌐',
+                        'css': '🎨',
+                        'react': '⚛️',
+                        'vue': '🖖',
+                        'database': '🗄️',
+                        'sql': '💾'
                     };
 
                     return icons[lang.toLowerCase()] || '📄';
@@ -509,7 +532,7 @@
         }
     </script>
 
-    
+
 </body>
 
 </html>
