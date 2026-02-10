@@ -24,7 +24,7 @@
             {{-- Left Column --}}
             <div class="lg:col-span-2 space-y-6">
                 <div
-                    class="glass-card rounded-3xl p-8 border border-white/10 bg-white/5 shadow-2xl relative overflow-hidden">
+                    class=" rounded-3xl p-8  shadow-2xl relative overflow-hidden">
                     <h3 class="text-lg font-bold text-white mb-6">Profile Information</h3>
                     <form action="{{ url('/setting-profile') }}" method="POST" class="space-y-4">
                          {{ csrf_field() }}

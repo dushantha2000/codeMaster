@@ -50,7 +50,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('snippet-store', [SnippetController::class, 'store']);
     Route::get('/api/snippets/{id}', [SnippetController::class, 'show']);
-    Route::delete('/snippets/{id}', [SnippetController::class, 'destroy']);
     Route::get('/search-users', [SnippetController::class, 'UsersSearch'])->name('users.search');
     Route::post('/user/partnerships', [SnippetController::class, 'updatePartnerships']);
 
@@ -58,8 +57,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-password', [AuthController::class, 'changePassword']);
     Route::post('/setting-profile', [AuthController::class, 'UpdateProfile']);
 
+    //delete single snippet
+    Route::post('/snippet-delete',[SnippetController::class,'SnippetDelete']);
+
+
 
 });
+
+// Public help page – available for both guests and logged-in users
+Route::get('/how-to-use-codevault', function () {
+    return view('auth.howto');
+})->name('howto');
 
 
 

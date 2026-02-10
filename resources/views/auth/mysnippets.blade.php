@@ -142,7 +142,7 @@
                 <h3 class="text-3xl font-bold text-white mb-3 tracking-tight">The Vault is Silent</h3>
                 <p class="text-gray-500 mb-10 max-w-sm mx-auto leading-relaxed">No code fragments detected in your
                     collection. Start your legacy by adding your first snippet.</p>
-                 <a href="{{ url('snippets-create') }}"
+                <a href="{{ url('snippets-create') }}"
                     class="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-white  text-sm  px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg ">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
@@ -154,10 +154,13 @@
         @endif
     </div>
 
+
+    {{-- delete  --}}
     <div id="deleteModal"
         class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden z-[100] items-center justify-center p-6 transition-all duration-300 opacity-0">
         <div class="glass-card rounded-[2.5rem] p-10 max-w-sm w-full border border-white/10 shadow-2xl transform transition-all scale-90"
             id="modalContainer">
+
             <div
                 class="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-red-500/20">
                 <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,37 +169,48 @@
                     </path>
                 </svg>
             </div>
+
             <h3 class="text-2xl font-black text-white text-center mb-3 tracking-tight">Erase Snippet?</h3>
             <p class="text-gray-400 text-center text-sm mb-10 leading-relaxed" id="deleteMessage">
                 This operation will permanently delete the code from your vault.
             </p>
 
             <div class="flex flex-col gap-3">
-                <button id="confirmDelete"
-                    class="w-full bg-red-600 hover:bg-red-500 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-red-900/40">
-                    Yes, Delete Permanently
-                </button>
-                <button onclick="closeDeleteModal()"
-                    class="w-full py-4 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-2xl font-bold transition-colors">
-                    Keep Snippet
-                </button>
+                <form id="deleteForm" action="{{ url('snippet-delete') }}" method="POST">
+                    {{ csrf_field() }}
+                    <input type="hidden" name="snippet_id" id="modalSnippetId" value="">
+
+                    <button type="submit"
+                        class="w-full bg-red-600 hover:bg-red-500 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-red-900/40 mb-3">
+                        Yes, Delete Permanently
+                    </button>
+
+                    <button type="button" onclick="closeDeleteModal()"
+                        class="w-full py-4 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-2xl font-bold transition-colors">
+                        Keep Snippet
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 
-    
+
 
     <script>
-        let snippetToDelete = null;
-
         function deleteSnippet(id, title) {
-            snippetToDelete = id;
+            //Set the hidden input value
+            document.getElementById('modalSnippetId').value = id;
+
+            //Update the message
             document.getElementById('deleteMessage').innerHTML =
                 `Are you sure you want to delete "<strong>${title}</strong>"? This action cannot be undone.`;
-            document.getElementById('deleteModal').classList.remove('hidden');
-            document.getElementById('deleteModal').classList.add('flex');
+
+            //Show Modal
+            const modal = document.getElementById('deleteModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
             setTimeout(() => {
-                document.getElementById('deleteModal').classList.remove('opacity-0');
+                modal.classList.remove('opacity-0');
                 document.getElementById('modalContainer').classList.remove('scale-90');
             }, 10);
         }
@@ -209,36 +223,5 @@
                 document.getElementById('deleteModal').classList.remove('flex');
             }, 300);
         }
-
-        document.getElementById('confirmDelete').addEventListener('click', function() {
-            if (snippetToDelete) {
-                fetch(`/snippets/${snippetToDelete}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                'content'),
-                            'Content-Type': 'application/json',
-                        },
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.message) {
-                            // Show success message or reload page
-                            location.reload();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred while deleting the snippet.');
-                    });
-            }
-        });
-
-        // Close modal when clicking outside
-        document.getElementById('deleteModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeDeleteModal();
-            }
-        });
     </script>
 @endsection

@@ -17,8 +17,8 @@
                 </a>
                 <div>
                     <h1 class="text-4xl font-black text-white tracking-tight">Vault Partnerships</h1>
-                    <p class="text-gray-400 text-sm font-medium">Manage who can access your code snippets and collaborate with your partners. <span
-                            class="text-blue-400">Secure Vault</span></p>
+                    <p class="text-gray-400 text-sm font-medium">Manage who can access your code snippets and collaborate
+                        with your partners. <span class="text-blue-400">Secure Vault</span></p>
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
                             class="w-24 h-24 rounded-3xl bg-blue-600/20 border-2 border-blue-500/50 flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-blue-500/20">
                             <span class="text-4xl font-bold text-blue-500">{{ substr(Auth::user()->name, 0, 1) }}</span>
                         </div>
-                       
+
                     </div>
 
                     <h2 class="text-xl font-bold text-white">{{ Auth::user()->name }}</h2>
@@ -81,7 +81,7 @@
                             {{-- Selected Users Tags --}}
                             <div id="selected-users" class="flex flex-wrap gap-2 mt-2"></div>
 
-                           
+
 
                             {{-- Hidden Inputs --}}
                             <div id="hidden-inputs"></div>
@@ -104,69 +104,69 @@
                         </div>
                     </form>
 
-                     <div class="partners-section mt-8">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider ml-1">
-                                        People who can access my snippets
-                                    </h3>
-                                    <span
-                                        class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                                        {{ count($partners) }} Partners
-                                    </span>
-                                </div>
+                    <div class="partners-section mt-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider ml-1">
+                                People who can access my snippets
+                            </h3>
+                            <span
+                                class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                {{ count($partners) }} Partners
+                            </span>
+                        </div>
 
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    @forelse($partners as $partner)
-                                        <div
-                                            class="group relative flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-blue-500/30 hover:bg-white/10 transition-all duration-300 shadow-sm">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            @forelse($partners as $partner)
+                                <div
+                                    class="group relative flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-blue-500/30 hover:bg-white/10 transition-all duration-300 shadow-sm">
 
-                                            {{-- Avatar + Info --}}
-                                            <div class="flex items-center min-w-0">
-                                                <div class="relative flex-shrink-0">
-                                                    <div
-                                                        class="w-11 h-11 rounded-xl bg-gradient-to-br from-back-600 to-indigo-700 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                                        {{ strtoupper(substr($partner->name, 0, 1)) }}
-                                                    </div>
-                                                </div>
-
-                                                <div class="ml-4 overflow-hidden">
-                                                    <h4
-                                                        class="text-sm font-semibold text-gray-200 group-hover:text-white transition-colors truncate">
-                                                        {{ $partner->name }}
-                                                    </h4>
-                                                    <p
-                                                        class="text-[11px] text-blue-400/80 font-medium filter blur-[4px] hover: transition-all duration-500 select-none truncate">
-                                                        sample@gmail.com
-                                                    </p>
-                                                </div>
+                                    {{-- Avatar + Info --}}
+                                    <div class="flex items-center min-w-0">
+                                        <div class="relative flex-shrink-0">
+                                            <div
+                                                class="w-11 h-11 rounded-xl bg-gradient-to-br from-back-600 to-indigo-700 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                                {{ strtoupper(substr($partner->name, 0, 1)) }}
                                             </div>
+                                        </div>
 
-                                            {{-- Delete Button --}}
-                                            <form action="{{ url('/partners/destroy', $partner->id) }}" method="POST"
-                                                 class="flex-shrink-0">
-                                                 {{ csrf_field() }}
-                                                
-                                                <button type="submit"
-                                                    class="opacity-0 group-hover:opacity-100 p-2 text-gray-500 hover:text-red-500 transition-all duration-300">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                    </svg>
-                                                </button>
-                                            </form>
+                                        <div class="ml-4 overflow-hidden">
+                                            <h4
+                                                class="text-sm font-semibold text-gray-200 group-hover:text-white transition-colors truncate">
+                                                {{ $partner->name }}
+                                            </h4>
+                                            <p
+                                                class="text-[11px] text-blue-400/80 font-medium filter blur-[4px] hover: transition-all duration-500 select-none truncate">
+                                                sample@gmail.com
+                                            </p>
                                         </div>
-                                    @empty
-                                        {{-- Empty State --}}
-                                        <div class="col-span-full py-8 text-center text-gray-500 italic">No partners found.
-                                        </div>
-                                    @endforelse
+                                    </div>
+
+                                 
+
+                                    {{-- Delete Button --}}
+                                    <form action="{{ url('/partners/destroy', $partner->id) }}" method="POST"
+                                        class="flex-shrink-0">
+                                        {{ csrf_field() }}
+
+                                        <button type="submit"
+                                            class="opacity-0 group-hover:opacity-100 p-2 text-gray-500 hover:text-red-500 transition-all duration-300">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </form>
                                 </div>
-                            </div>
+                            @empty
+                                {{-- Empty State --}}
+                                <div class="col-span-full py-8 text-center text-gray-500 italic">No partners found.
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
                 </div>
 
-               
+
             </div>
         </div>
     </div>
