@@ -3,9 +3,6 @@
 @section('title', 'Edit')
 
 @section('content')
-
-    <body class="text-gray-100" x-data="snippetEditor()" x-cloak>
-
         <form action="{{ url('/snippets/update', $snippet->id) }}" method="POST" class="h-full flex flex-col">
             {{ csrf_field() }}
 
@@ -548,6 +545,4 @@
                 }
             }, 3000);
         </script>
-    </body>
-
-    </html>
+@endsection

@@ -507,6 +507,4 @@
             }
         }, 3000);
     </script>
-</body>
-
-</html>
+@endsection

@@ -68,6 +68,8 @@
 
     @yield('content')
 
+    @include('common.notification')
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
@@ -89,6 +91,10 @@
             $('#custom-loader').fadeOut(300);
         });
     </script>
+
+    
+
+
 
     @stack('scripts')
 
