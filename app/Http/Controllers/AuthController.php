@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ResetPasswordMail;
+use App\Mail\VerificationMail;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -98,7 +99,6 @@ class AuthController extends Controller
     {
 
         // return $request;
-
         $request->validate([
             'userName' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -106,18 +106,75 @@ class AuthController extends Controller
             'password_confirmation' => 'required',
         ]);
 
+        //data add to sesstion
+        $request->session()->put('userEmail', $request->email);
+        $request->session()->put('userName', $request->userName);
+        $request->session()->put('password', $request->password);
+        $request->session()->put('password_confirmation', $request->password_confirmation);
+
+        // return $request->session()->all();
+
+        //create verification code
+        $verificationCode = Str::random(6);
+        $request->session()->put('verificationCode', $verificationCode);
+
+        //Send verification code to email
+        Mail::to($request->email)->send(new VerificationMail($verificationCode));
+
+        return view('auth.registerverification');
+    }
+
+    public function verifyRegistration(Request $request)
+    {
+        $request->validate([
+            'verification_code' => 'required|string|size:6',
+        ], [
+            'verification_code.required' => 'Please enter the verification code.',
+            'verification_code.size' => 'Verification code must be 6 characters.',
+        ]);
+
+        // Check if session data exists
+        if (!$request->session()->has('verificationCode') || 
+            !$request->session()->has('userEmail') || 
+            !$request->session()->has('userName') || 
+            !$request->session()->has('password')) {
+            return redirect('/register')->with('error', 'Session expired. Please register again.');
+        }
+
+        // Get session data
+        $sessionCode = $request->session()->get('verificationCode');
+        $userEmail = $request->session()->get('userEmail');
+        $userName = $request->session()->get('userName');
+        $password = $request->session()->get('password');
+
+        // Verify the code
+        if ($request->verification_code !== $sessionCode) {
+            return back()->with('error', 'Invalid verification code. Please try again.');
+        }
+
         try {
+            // Check if email is still unique (in case user registered again)
+            $emailExists = User::where('email', $userEmail)->exists();
+            if ($emailExists) {
+                return redirect('/register')->with('error', 'This email is already registered. Please login instead.');
+            }
+
+            // Create the user
             $user = new User;
             $user->user_id = Str::uuid();
-            $user->name = $request->userName;
-            $user->email = $request->email;
-            $user->password = Hash::make($request->password);
+            $user->name = $userName;
+            $user->email = $userEmail;
+            $user->password = Hash::make($password);
+            $user->is_verified = 1;
+            $user->email_verified_at = now();
             $user->save();
 
-            return view('auth.login');
+            // Clear session data
+            $request->session()->forget(['verificationCode', 'userEmail', 'userName', 'password', 'password_confirmation']);
 
+            return redirect('/')->with('success', 'Registration successful! Please login with your credentials.');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Critical System Error. Registration failed.');
+            return back()->with('error', 'Critical System Error. Registration failed. Please try again.');
         }
     }
 
