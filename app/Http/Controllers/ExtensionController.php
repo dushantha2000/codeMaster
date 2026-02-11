@@ -23,13 +23,13 @@ class ExtensionController extends Controller
             'password' => 'required',
         ]);
 
-        // 2. User කෙනෙක් ඉන්නවාදැයි බැලීම (Email එකෙන්)
+        // User
         $user = User::where('email', $request->email)->first();
 
-        // 3. User ඉන්නවා නම් සහ Password එක හරි නම්
+        // User
         if ($user && Hash::check($request->password, $user->password)) {
 
-            // පරණ ටෝකන් මකා දැමීම (Clean-up)
+            // (Clean-up)
             $user->tokens()->delete();
 
             // අලුත් Sanctum Token එකක් සෑදීම
@@ -45,7 +45,7 @@ class ExtensionController extends Controller
             ]);
         }
 
-        // 4. වැරදි නම්
+        
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
@@ -54,7 +54,7 @@ class ExtensionController extends Controller
     {
         $userId = Auth::id();
 
-        // 1. Snippets සහ ඒවායේ Files එකම Query එකකින් Join කරලා ගන්නවා
+        // 1. Snippets 
         $rawSnippets = DB::table('snippets')
             ->leftJoin('snippet_files', 'snippets.id', '=', 'snippet_files.snippet_id')
             ->where('snippets.user_id', $userId)
@@ -70,7 +70,7 @@ class ExtensionController extends Controller
             )
             ->get();
 
-        // 2. ලැබෙන Row-by-row data ටික Snippet එක අනුව Group කරගන්නවා
+        // Row-by-row data  Snippet  Group 
         $snippets = $rawSnippets->groupBy('snippet_id')->map(function ($items) {
             $firstItem = $items->first();
             return [

@@ -11,6 +11,16 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <style>
+        /* Prism background styling */
+        pre[class*="language-"] {
+            background: rgba(0, 0, 0, 0.3) !important;
+            border-radius: 1rem !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        }
+    </style>
     <style>
         body {
             font-family: 'Space Grotesk', sans-serif;
@@ -49,15 +59,12 @@
             }
         }
 
-        /* Style the dropdown list itself */
+        /* Dropdown styling */
         select option {
             background-color: #1a1a1a;
-            /* Dark background */
             color: #ffffff;
-            /* White text */
         }
 
-        /* Remove the default highlight color on some browsers */
         select:focus {
             background-color: rgba(255, 255, 255, 0.1);
         }
@@ -76,7 +83,6 @@
 <body class="text-gray-100 h-full flex flex-col" x-data="snippetBrowser()" x-cloak x-init="fetchSnippets()">
 
     @include('common.notification')
-
 
     <div x-show="mobileMenuOpen" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 md:hidden"
         @click="mobileMenuOpen = false"></div>
@@ -98,8 +104,8 @@
                     </path>
                 </svg>
             </div>
-            <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile"><a
-                    href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal">v1.0</span>
+            <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile">
+                <a href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal">v1.0</span>
             </h1>
         </div>
 
@@ -121,7 +127,6 @@
 
                 <div x-show="open" @click.outside="open = false"
                     class="absolute top-full right-0 mt-2 w-48 max-h-60 overflow-y-auto glass-card rounded-xl border border-white/10 shadow-2xl z-50 py-2">
-
                     <template x-for="lang in languageList">
                         <button
                             @click="selectedLanguage = lang.id; selectedLanguageName = lang.icon + ' ' + lang.name; open = false; fetchSnippets();"
@@ -181,7 +186,7 @@
                     </a>
 
                     <a href="{{ url('/settings') }}"
-                        class=" load-btn flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors">
+                        class="load-btn flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
                                 d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z">
@@ -195,12 +200,10 @@
 
                     <form action="{{ url('/logout') }}" method="POST">
                         {{ csrf_field() }}
-
                         <button type="submit"
-                            class=" w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors text-left">
+                            class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors text-left">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
                                 </path>
                             </svg>
                             Sign Out
@@ -210,8 +213,6 @@
             </div>
         </div>
     </header>
-
-
 
     <main class="flex-1 overflow-y-auto p-4 md:p-8">
         <div class="max-w-7xl mx-auto">
@@ -224,18 +225,14 @@
                 <template x-for="snippet in snippets" :key="snippet.id">
                     <div @click="openSnippet(snippet.id)"
                         class="relative group h-65 w-full transition-all duration-500 [perspective:1000px]">
-
                         <div
                             class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                         </div>
-
                         <div
                             class="relative h-full w-full glass-card rounded-3xl border border-white/10 overflow-hidden transition-all duration-500 group-hover:[transform:rotateX(5deg)_rotateY(-5deg)_translateY(-10px)] group-hover:border-white/20 flex flex-col">
-
                             <div class="absolute inset-0 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity pointer-events-none"
                                 style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;">
                             </div>
-
                             <div class="p-6 pb-2 flex justify-between items-start">
                                 <div class="relative">
                                     <div
@@ -251,17 +248,14 @@
                                     <span class="text-xl" x-text="getLangIcon(snippet.language)"></span>
                                 </div>
                             </div>
-
                             <div class="px-6 flex-1 relative mt-2">
                                 <p class="text-gray-400 text-xs leading-relaxed line-clamp-4 font-light opacity-60 group-hover:opacity-100 transition-opacity"
                                     x-text="snippet.description || '// No documentation attached...'"></p>
-
                                 <div
                                     class="absolute bottom-0 right-6 text-[8px] font-mono text-white/5 select-none overflow-hidden whitespace-nowrap w-full text-right uppercase">
                                     vault_id: <span x-text="snippet.id"></span> // secure_access_granted //
                                 </div>
                             </div>
-
                             <div class="p-6 pt-2 flex items-center justify-between">
                                 <div class="flex flex-col gap-1">
                                     <div class="flex items-center gap-3">
@@ -269,15 +263,13 @@
                                             <template x-for="file in snippet.files.slice(0, 4)">
                                                 <div
                                                     class="w-6 h-6 rounded-full bg-[#0a0a0a] border border-white/20 flex items-center justify-center text-[8px] font-bold text-white group-hover:translate-y-[-4px] transition-transform duration-300">
-                                                    <span
-                                                        x-text="file.extension ? file.extension.slice(0,2) : '??'"></span>
+                                                    <span x-text="file.extension ? file.extension.slice(0,2) : '??'"></span>
                                                 </div>
                                             </template>
                                         </div>
                                         <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest"
                                             x-text="snippet.files.length + ' fragments'"></span>
                                     </div>
-
                                     <div class="flex items-center gap-1.5 mt-1">
                                         <div class="w-1.5 h-1.5 rounded-full"
                                             :class="snippet.user_id == {{ Auth::id() }} ? 'bg-green-500' : 'bg-purple-500'">
@@ -288,11 +280,9 @@
                                         </span>
                                     </div>
                                 </div>
-
                                 <div
                                     class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-blue-600 group-hover:border-blue-500 transition-all duration-500 shadow-inner">
-                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                             d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                                     </svg>
@@ -304,8 +294,8 @@
             </div>
 
             <div x-show="!loading && snippets.length === 0">
-                <div class=" rounded-xl p-12 text-center">
-                    <div class="w-16 h-16  rounded-full flex items-center justify-center mx-auto mb-6 border ">
+                <div class="rounded-xl p-12 text-center">
+                    <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 border ">
                         <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
@@ -313,13 +303,11 @@
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold text-white mb-2">No snippets yet</h3>
-                    <p class="text-gray-400 mb-6 max-w-md mx-auto">Your code vault is empty. Start building your
-                        collection by creating your first snippet.</p>
+                    <p class="text-gray-400 mb-6 max-w-md mx-auto">Your code vault is empty. Start building your collection by creating your first snippet.</p>
                     <a href="{{ route('snippets-create') }}"
-                        class=" load-btn inline-flex items-center gap-2 btn-primary  text-sm  px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg ">
+                        class="load-btn inline-flex items-center gap-2 btn-primary text-sm px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg ">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
-                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
                         Create Your First Snippet
                     </a>
@@ -357,22 +345,18 @@
                 <button @click="showPreview = false"
                     class="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 text-gray-400 hover:text-white hover:bg-red-500/20 transition-all border border-white/10">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
 
             <div class="flex-1 flex overflow-hidden">
                 <aside class="w-64 bg-black/40 border-r border-white/5 p-6 overflow-y-auto">
-                    <div class="mb-4 text-[10px] font-bold text-gray-600 uppercase tracking-tighter">Project Files
-                    </div>
+                    <div class="mb-4 text-[10px] font-bold text-gray-600 uppercase tracking-tighter">Project Files</div>
                     <nav class="space-y-1.5">
                         <template x-for="(file, index) in selectedSnippet?.files" :key="index">
-                            <button @click="activeFileTab = index"
-                                :class="activeFileTab === index ?
-                                    'bg-blue-600/10 text-blue-400 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.1)]' :
-                                    'text-gray-500 border-transparent hover:text-gray-300'"
+                            <button @click="activeFileTab = index; $nextTick(() => { Prism.highlightAll(); })"
+                                :class="activeFileTab === index ? 'bg-blue-600/10 text-blue-400 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.1)]' : 'text-gray-500 border-transparent hover:text-gray-300'"
                                 class="w-full text-left px-4 py-3 rounded-xl text-[11px] font-mono border transition-all flex items-center justify-between group">
                                 <span class="truncate" x-text="file.file_name"></span>
                                 <div class="w-1.5 h-1.5 rounded-full bg-blue-500 opacity-0 group-hover:opacity-100"
@@ -389,41 +373,33 @@
                             x-transition:enter-start="opacity-0 translate-y-4"
                             x-transition:enter-end="opacity-100 translate-y-0">
 
-                            <div
-                                class="flex items-center justify-between mb-6 bg-white/5 p-4 rounded-2xl border border-white/5">
+                            <div class="flex items-center justify-between mb-6 bg-white/5 p-4 rounded-2xl border border-white/5">
                                 <div class="relative group/files flex items-center gap-3">
                                     <div class="flex flex-col">
                                         <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest cursor-help border-b border-dashed border-gray-700 pb-0.5 group-hover/files:text-blue-400 transition-colors"
-                                              x-text="snippet.files.length + ' fragments'">
+                                            x-text="selectedSnippet?.files?.length + ' fragments'">
                                         </span>
-                                        
-                                        <div class="absolute bottom-full left-0 mb-2 w-48 glass-card border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover/files:opacity-100 group-hover/files:visible transition-all duration-300 z-50 p-3 pointer-events-none">
-                                            <p class="text-[8px] font-black uppercase tracking-widest text-gray-500 mb-2 border-b border-white/5 pb-1">Included Files</p>
-                                            <div class="max-h-32 overflow-y-auto custom-mini-scrollbar space-y-1.5">
-                                                <template x-for="file in snippet.files">
-                                                    <div class="flex items-center gap-2">
-                                                        <div class="w-1 h-1 rounded-full bg-blue-500"></div>
-                                                        <span class="text-[10px] font-mono text-gray-300 truncate" x-text="file.file_name"></span>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                            <div class="absolute -bottom-1 left-4 w-2 h-2 bg-[#141414] border-r border-b border-white/10 rotate-45"></div>
-                                        </div>
                                     </div>
                                 </div>
-                                <button @click="navigator.clipboard.writeText(file.content)"
-                                    class="text-[10px] font-bold uppercase tracking-widest bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-all shadow-lg shadow-blue-900/20">
-                                    Copy Code
-                                </button>
                             </div>
 
-                            <div
-                                class="flex-1 bg-black/40 rounded-3xl border border-white/5 p-6 overflow-auto custom-scrollbar relative group">
-                                <div
-                                    class="absolute left-0 top-6 bottom-6 w-10 border-r border-white/5 flex flex-col text-[10px] font-mono text-gray-700 items-center select-none">
-                                    <span>01</span><span>02</span><span>03</span><span>04</span><span>05</span>
-                                </div>
-                                <pre class="pl-8 font-mono text-sm text-blue-100/90 whitespace-pre leading-relaxed"><code x-text="file.content"></code></pre>
+                            <div class="flex-1 bg-black/40 rounded-3xl border border-white/5 p-6 overflow-auto custom-scrollbar relative group"
+                                x-data="{
+                                    copyDone: false,
+                                    copyCode(text) {
+                                        navigator.clipboard.writeText(text);
+                                        this.copyDone = true;
+                                        setTimeout(() => this.copyDone = false, 2000);
+                                    }
+                                }">
+
+                                <button @click="copyCode(file.content)"
+                                    class="absolute right-6 top-6 z-20 px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-all flex items-center gap-2">
+                                    <span x-show="!copyDone" class="text-[10px] text-gray-400">Copy</span>
+                                    <span x-show="copyDone" class="text-[10px] text-green-400 font-bold">Copied!</span>
+                                </button>
+
+                                <pre class="!m-0 !p-4 !bg-transparent"><code :class="'language-' + (selectedSnippet?.language?.toLowerCase() || 'javascript')" x-text="file.content"></code></pre>
                             </div>
                         </div>
                     </template>
@@ -436,8 +412,7 @@
         <div class="max-w-7xl mx-auto px-6 py-5">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8">
                 <div class="flex items-center gap-3">
-                    <div
-                        class="w-8 h-8 bg-black-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
+                    <div class="w-8 h-8 bg-black-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
@@ -461,44 +436,27 @@
     <script>
         function snippetBrowser() {
             return {
-                // Data Properties
                 snippets: [],
                 searchQuery: '',
-                selectedLanguage: '', // Stores the database ID (e.g., 'php')
-                selectedLanguageName: 'All Languages', // Stores the UI display name
-
-                // UI State
+                selectedLanguage: '',
+                selectedLanguageName: 'All Languages',
                 loading: false,
                 showPreview: false,
                 selectedSnippet: null,
                 activeFileTab: 0,
                 mobileMenuOpen: false,
                 searchTimeout: null,
-
-                // The list used by the dropdown loop
-                languageList: [{
-                        id: '',
-                        name: 'All Languages',
-                        icon: '🌐'
-                    },
-                    {
-                        id: 'Laravel',
-                        name: 'Laravel',
-                        icon: '🐘'
-                    }
+                languageList: [
+                    { id: '', name: 'All Languages', icon: '🌐' },
+                    { id: 'Laravel', name: 'Laravel', icon: '🟠' }
                 ],
 
-                // Main Fetch Function
                 fetchSnippets() {
                     this.loading = true;
-
-                    // Construct URL with both Search Query and Language Filter
                     const url = `/api/search?q=${encodeURIComponent(this.searchQuery)}&lang=${this.selectedLanguage}`;
-
                     fetch(url)
                         .then(res => res.json())
                         .then(data => {
-                            // Laravel Pagination usually wraps results in a .data array
                             this.snippets = data.data || data;
                             this.loading = false;
                         })
@@ -508,15 +466,6 @@
                         });
                 },
 
-                // Debounced search for the input field
-                searchSnippets() {
-                    clearTimeout(this.searchTimeout);
-                    this.searchTimeout = setTimeout(() => {
-                        this.fetchSnippets();
-                    }, 300);
-                },
-
-                // Opens the Slide-over Preview
                 openSnippet(id) {
                     this.loading = true;
                     fetch(`/api/snippets/${id}`)
@@ -526,6 +475,7 @@
                             this.activeFileTab = 0;
                             this.showPreview = true;
                             this.loading = false;
+                            this.$nextTick(() => { Prism.highlightAll(); });
                         })
                         .catch(err => {
                             console.error("Detail Error:", err);
@@ -533,13 +483,11 @@
                         });
                 },
 
-                // Helper to get icons for the cards
                 getLangIcon(lang) {
                     if (!lang) return '📄';
-
                     const icons = {
                         'php': '🐘',
-                        'laravel': '󰫐',
+                        'laravel': '🟠',
                         'javascript': '🟨',
                         'js': '🟨',
                         'python': '🐍',
@@ -550,17 +498,15 @@
                         'database': '🗄️',
                         'sql': '💾'
                     };
-
                     return icons[lang.toLowerCase()] || '📄';
                 }
             }
         }
     </script>
 
-
-
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-bash.min.js"></script>
 </body>
-
 </html>
