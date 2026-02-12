@@ -78,7 +78,7 @@ class AuthController extends Controller
             }
 
             // Return with error and keep the email input
-            return view('auth.login');
+            return view('auth.login')->with('error', 'Invalid email address or password. Please check your credentials and try again.');
 
         } catch (Exception $e) {
             return redirect('/')->with('error', 'Critical System Error. Login failed.');
@@ -106,7 +106,7 @@ class AuthController extends Controller
             'password_confirmation' => 'required',
         ]);
 
-        //data add to sesstion
+        // data add to sesstion
         $request->session()->put('userEmail', $request->email);
         $request->session()->put('userName', $request->userName);
         $request->session()->put('password', $request->password);
@@ -114,11 +114,11 @@ class AuthController extends Controller
 
         // return $request->session()->all();
 
-        //create verification code
+        // create verification code
         $verificationCode = Str::random(6);
         $request->session()->put('verificationCode', $verificationCode);
 
-        //Send verification code to email
+        // Send verification code to email
         Mail::to($request->email)->send(new VerificationMail($verificationCode));
 
         return view('auth.registerverification');
@@ -126,6 +126,7 @@ class AuthController extends Controller
 
     public function verifyRegistration(Request $request)
     {
+
         $request->validate([
             'verification_code' => 'required|string|size:6',
         ], [
@@ -133,13 +134,17 @@ class AuthController extends Controller
             'verification_code.size' => 'Verification code must be 6 characters.',
         ]);
 
+      //  return $request;
+
         // Check if session data exists
-        if (!$request->session()->has('verificationCode') || 
-            !$request->session()->has('userEmail') || 
-            !$request->session()->has('userName') || 
-            !$request->session()->has('password')) {
-            return redirect('/register')->with('error', 'Session expired. Please register again.');
+        if (! $request->session()->has('verificationCode') ||
+            ! $request->session()->has('userEmail') ||
+            ! $request->session()->has('userName') ||
+            ! $request->session()->has('password')) {
+
+            return view('auth.register')->with('error', 'Session expired. Please register again.');
         }
+     //   return $request;
 
         // Get session data
         $sessionCode = $request->session()->get('verificationCode');
@@ -147,16 +152,23 @@ class AuthController extends Controller
         $userName = $request->session()->get('userName');
         $password = $request->session()->get('password');
 
-        // Verify the code
+
+        //return $sessionCode;
+
+        // Verify the 
         if ($request->verification_code !== $sessionCode) {
-            return back()->with('error', 'Invalid verification code. Please try again.');
+           // return $sessionCode;
+            return view('auth.registerverification')->with('error', 'Invalid verification code. Please try again.');
+
         }
 
-        try {
+       // return $request;
+
+       // try {
             // Check if email is still unique (in case user registered again)
             $emailExists = User::where('email', $userEmail)->exists();
             if ($emailExists) {
-                return redirect('/register')->with('error', 'This email is already registered. Please login instead.');
+                return view('auth.register')->with('error', 'This email is already registered. Please login instead.');
             }
 
             // Create the user
@@ -172,10 +184,10 @@ class AuthController extends Controller
             // Clear session data
             $request->session()->forget(['verificationCode', 'userEmail', 'userName', 'password', 'password_confirmation']);
 
-            return redirect('/')->with('success', 'Registration successful! Please login with your credentials.');
-        } catch (Exception $e) {
+            return view('auth.login')->with('success', 'Registration successful! Please login with your credentials.');
+      //  } catch (Exception $e) {
             return back()->with('error', 'Critical System Error. Registration failed. Please try again.');
-        }
+      //  }
     }
 
     public function Logout(Request $request)
@@ -203,11 +215,10 @@ class AuthController extends Controller
         try {
             $currentUserId = auth()->id();
 
-            
             $partners = DB::table('users')
                 ->join('partnerships', 'users.id', '=', 'partnerships.partner_id')
                 ->where('partnerships.user_id', $currentUserId)
-                ->select('users.id', 'users.name', 'users.email') 
+                ->select('users.id', 'users.name', 'users.email')
                 ->get();
 
             // return $partners;
@@ -403,6 +414,7 @@ class AuthController extends Controller
                     }
                 } catch (Exception $e) {
                     // If Redis pattern matching fails, cache will expire naturally via TTL
+
                 }
             }
 

@@ -7,14 +7,13 @@
     <title>@yield('title') | CodeVault</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         body {
             font-family: 'Space Grotesk', sans-serif;
@@ -93,18 +92,32 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        /* =======================================
-           RESPONSIVE DESIGN - MOBILE FIRST
-           ======================================= */
+        /* Enhanced Dropdown Styles */
+        .glass-card::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .glass-card::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .glass-card::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        .glass-card::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
 
-        /* Tablet (1024px and below) */
+        /* Responsive Design */
         @media (max-width: 1024px) {
             .sidebar-container {
                 width: 16rem;
             }
         }
 
-        /* Mobile (768px and below) */
         @media (max-width: 768px) {
             .sidebar-container {
                 position: fixed;
@@ -143,28 +156,22 @@
             }
         }
 
-        /* Small Mobile (640px and below) */
         @media (max-width: 640px) {
             .sidebar-container {
                 width: 18rem;
             }
 
-            .header-title {
-                font-size: 0.875rem !important;
-                padding: 0.5rem !important;
+            .modal-mobile {
+                width: 90% !important;
+                max-height: 80vh;
+                overflow-y: auto;
             }
-
-            .btn-mobile-sm {
-                padding: 0.5rem !important;
-                font-size: 0.75rem;
-            }
-
-            .btn-text-hide-mobile {
-                display: none;
+            
+            .file-meta-mobile {
+                grid-template-columns: 1fr !important;
             }
         }
 
-        /* Extra Small Mobile (480px and below) */
         @media (max-width: 480px) {
             .sidebar-container {
                 width: 85vw;
@@ -175,51 +182,36 @@
                 margin: 0.5rem;
                 padding: 1.5rem !important;
             }
-
-            .file-meta-mobile {
-                grid-template-columns: 1fr !important;
-            }
         }
     </style>
 </head>
 
-<body class="text-gray-100" x-data="snippetEditor()" x-cloak>
+<body class="text-gray-100 bg-black min-h-screen" x-data="snippetEditor()" x-cloak>
 
     @include('auth.loading')
-
+    
     @yield('content')
-
-
+    
+    @include('common.notification')
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
     <script>
         $(document).ready(function() {
-            // 1. Handle Form Submits
             $(document).on('submit', 'form', function() {
                 $('#custom-loader').css('display', 'flex').fadeIn(200);
             });
 
-            // 2. Handle Link Clicks (Event Delegation)
-            // This catches clicks on the <a>, the <svg>, or the <path>
             $(document).on('click', '.load-btn', function() {
                 $('#custom-loader').css('display', 'flex').show();
             });
         });
 
-        // 3. Robust Hide logic
         window.addEventListener('pageshow', function() {
             $('#custom-loader').fadeOut(300);
         });
     </script>
 
-
-
-
     @stack('scripts')
-
-
 </body>
-
 </html>

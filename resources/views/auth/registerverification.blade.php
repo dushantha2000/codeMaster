@@ -41,10 +41,12 @@
                 </div>
                 <h1 class="text-2xl font-bold text-white">Email Verification
                 </h1>
-                <p class="text-gray-500 text-sm mt-1">Please enter the verification code sent to <span class="text-blue-400 font-medium">{{ session('userEmail') ?? 'your email' }}</span> to complete your registration.</p>
+                <p class="text-gray-500 text-sm mt-1">Please enter the verification code sent to <span
+                        class="text-blue-400 font-medium">{{ session('userEmail') ?? 'your email' }}</span> to complete your
+                    registration.</p>
             </div>
 
-            <form method="POST" action="{{ url('/verify-registration') }}" class="space-y-6" id="otp-form">
+            <form method="POST" action="{{ url('/verify-registration') }}"  class="space-y-6" id="otp-form">
                 {{ csrf_field() }}
 
                 @if (session('error'))
@@ -65,7 +67,7 @@
                         @for ($i = 0; $i < 6; $i++)
                             <input type="text" maxlength="1"
                                 class="otp-box w-12 h-14 text-center text-xl font-bold bg-white/5 border border-white/10 rounded-xl text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all"
-                                pattern="\d*" inputmode="numeric">
+                                inputmode="text"> 
                         @endfor
                     </div>
 
@@ -105,7 +107,6 @@
                 const code = Array.from(inputs).map(i => i.value || '').join('');
                 hiddenInput.value = code;
 
-                // Check if all 6 boxes are filled
                 if (code.length === 6) {
                     inputs.forEach(input => {
                         input.classList.add('border-green-500');
@@ -121,7 +122,9 @@
 
             inputs.forEach((input, index) => {
                 input.addEventListener('input', function(e) {
-                    this.value = this.value.replace(/\D/g, '');
+                    // REMOVED: this.value = this.value.replace(/\D/g, ''); 
+                    // This allows letters now.
+
                     if (this.value && index < inputs.length - 1) {
                         inputs[index + 1].focus();
                     }
@@ -136,10 +139,11 @@
 
                 input.addEventListener('paste', function(e) {
                     e.preventDefault();
-                    const pasteData = e.clipboardData.getData('text').replace(/\D/g, '').split('');
+                    // REMOVED: .replace(/\D/g, '')
+                    const pasteData = e.clipboardData.getData('text').trim().split('');
 
                     pasteData.forEach((char, i) => {
-                        if (inputs[i]) {
+                        if (inputs[i] && i < 6) {
                             inputs[i].value = char;
                         }
                     });

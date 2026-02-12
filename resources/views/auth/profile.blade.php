@@ -64,7 +64,7 @@
                     </h3>
 
                     <form action="{{ url('/user/partnerships') }}" method="POST" class="space-y-4">
-                        @csrf
+                        {{ csrf_field() }}
                         <div class="grid grid-cols-1 gap-4">
                             <div class="relative">
                                 <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1">Search User</label>

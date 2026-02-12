@@ -6,6 +6,8 @@
     <div class="flex flex-col md:flex-row w-full max-w-4xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10"
         x-data="loginForm()" x-cloak>
 
+       
+
         <div
             class="hidden md:flex md:w-1/2 relative bg-black/40 items-center justify-center p-12 overflow-hidden border-r border-white/5 image-glow-blue">
             <div class="relative z-10 text-center">

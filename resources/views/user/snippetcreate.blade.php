@@ -74,7 +74,7 @@
 </header>
 
         <!-- Success/Error Messages -->
-        @if(session('success'))
+        {{-- @if(session('success'))
             <div class="mx-4 md:mx-8 mt-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-sm md:text-base">
                 <div class="flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -94,7 +94,7 @@
                     {{ session('error') }}
                 </div>
             </div>
-        @endif
+        @endif --}}
 
         <!-- Mobile Overlay -->
         <div class="mobile-overlay" :class="{ 'show': mobileMenuOpen }" @click="toggleMobileSidebar"></div>
