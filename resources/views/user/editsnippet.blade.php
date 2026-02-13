@@ -3,6 +3,7 @@
 @section('title', 'Edit')
 
 @section('content')
+<body class="text-gray-100" x-data="snippetEditor()" x-cloak>
         <form action="{{ url('/snippets/update', $snippet->id) }}" method="POST" class="h-full flex flex-col">
             {{ csrf_field() }}
 
@@ -35,24 +36,32 @@
                     </div>
                 </div>
 
-                <div class="flex-1 flex items-center justify-center gap-4 max-w-4xl px-2">
+                <div class="flex-1 flex items-center justify-center gap-3 max-w-2xl px-2 min-w-0">
                     <div class="relative flex-1 min-w-0 max-w-[280px] md:max-w-none">
                         <input type="text" name="title" value="{{ $snippet->title }}" required
-                            placeholder="Snippet title..."
+                            placeholder="Project name..."
                             class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm md:text-base font-bold text-white placeholder-gray-600 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/40 transition-all">
                     </div>
 
-                    <div class="relative flex-1 hidden lg:block group">
+                    <div class="relative flex-1 hidden lg:block group min-w-0">
                         <input type="text" name="description" value="{{ $snippet->description }}" required
                             placeholder="Brief description..."
-                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-400 placeholder-gray-700 outline-none focus:border-white/20 transition-all">
+                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-400 placeholder-gray-700 outline-none focus:border-white/20 transition-all cursor-help">
+                        <!-- Tooltip for long descriptions -->
+                        <div x-show="'{{ $snippet->description }}'.length > 50" 
+                            class="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-64 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-xl border border-white/10 z-50 pointer-events-none">
+                            <div class="break-words">{{ $snippet->description }}</div>
+                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                                <div class="border-4 border-transparent border-t-gray-900"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-2 md:gap-3 shrink-0">
                     <div class="relative hidden sm:block">
                         <select name="language"
-                            class="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-xs font-bold text-gray-300 outline-none hover:bg-white/10 focus:border-blue-500/40 transition-all cursor-pointer">
+                            class="appearance-none bg-gray-900 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-xs font-bold text-white outline-none hover:bg-gray-800 focus:border-blue-500/40 transition-all cursor-pointer">
                             <option value="laravel" {{ $snippet->language == 'laravel' ? 'selected' : '' }}>🔸 Laravel
                             </option>
                             <option value="php" {{ $snippet->language == 'php' ? 'selected' : '' }}>🐘 PHP</option>
@@ -177,12 +186,12 @@
                     </div>
 
                     <!-- Files List -->
-                    <div class="flex-1 overflow-y-auto p-2 md:p-3 space-y-2">
+                    <div class="flex-1 overflow-y-auto p-2 md:p-3 space-y-2 custom-scrollbar">
                         <template x-for="(file, index) in files" :key="index">
                             <div @click="activeTab = index; mobileMenuOpen = false"
                                 :class="activeTab === index ? 'tab-active text-white scale-105' :
                                     'bg-white/5 text-gray-400 hover:bg-white/10'"
-                                class="file-item flex items-center justify-between p-3 md:p-4 rounded-xl cursor-pointer group">
+                                class="file-item flex items-center justify-between p-3 md:p-4 rounded-xl cursor-pointer group transition-all">
                                 <div class="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
                                     <div class="text-xl md:text-2xl shrink-0" x-text="getFileIcon(file.name)">📄</div>
                                     <div class="flex-1 min-w-0">
@@ -193,7 +202,7 @@
                                     </div>
                                 </div>
                                 <button type="button" @click.stop="confirmDelete(index)" x-show="files.length > 1"
-                                    class="ml-2 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-all">
+                                    class="ml-2 opacity-0 group-hover:opacity-100 md:opacity-100 text-gray-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-white/10 transition-all shrink-0">
                                     <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -224,7 +233,7 @@
                                             </svg>
                                             File Name
                                         </label>
-                                        <input type="text" x-model="file.name" name="file_names[]"
+                                        <input type="text" x-model="file.name" name="file_names[]" required
                                             placeholder="e.g. UserController.php"
                                             class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm focus:border-white/30 focus:bg-white/10 outline-none transition-all">
                                     </div>
@@ -239,7 +248,7 @@
                                             </svg>
                                             File Path
                                         </label>
-                                        <input type="text" x-model="file.path" name="file_paths[]"
+                                        <input type="text" x-model="file.path" name="file_paths[]" required
                                             placeholder="e.g. app/Http/Controllers"
                                             class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm focus:border-white/30 focus:bg-white/10 outline-none transition-all">
                                     </div>
@@ -253,7 +262,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M4 6h16M4 12h16m-7 6h7"></path>
                                         </svg>
-                                        <span x-text="(file.content || '').split('\\n').length + ' lines'"></span>
+                                        <span x-text="(file.content || '').split('\n').length + ' lines'"></span>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor"
@@ -267,17 +276,16 @@
                             </div>
 
                             <!-- Code Editor -->
-                            <div class="flex-1 relative code-editor">
-                                <textarea name="contents[]" x-model="file.content" @input="updateStats"
-                                    class="absolute inset-0 w-full h-full bg-transparent p-4 pl-10 md:p-8 md:pl-16 code-font text-xs md:text-sm text-green-400 outline-none resize-none"
+                            <div class="flex-1 relative code-editor overflow-hidden">
+                                <textarea name="contents[]" x-model="file.content" @input="updateStats" required
+                                    class="absolute inset-0 w-full h-full bg-transparent p-4 pl-10 md:p-8 md:pl-16 code-font text-xs md:text-sm text-green-400 outline-none resize-none leading-[1.5]"
                                     placeholder="// Start coding...&#10;// Enjoy! 🚀" spellcheck="false"></textarea>
 
                                 <!-- Line Numbers -->
                                 <div x-show="showLineNumbers"
-                                    class="absolute left-0 top-0 bottom-0 w-8 md:w-12 bg-black/30 border-r border-white/5 text-gray-600 text-[10px] md:text-xs code-font pt-4 md:pt-8 select-none pointer-events-none">
-                                    <template x-for="(line, i) in (file.content || '').split('\\n')"
-                                        :key="i">
-                                        <div class="px-1 md:px-2 leading-relaxed text-right" x-text="i + 1"></div>
+                                    class="absolute left-0 top-0 bottom-0 w-8 md:w-12 bg-black/30 border-r border-white/5 text-gray-600 text-[10px] md:text-xs code-font pt-4 md:pt-8 pr-2 select-none pointer-events-none overflow-hidden">
+                                    <template x-for="(line, i) in (file.content || '').split('\n')" :key="i">
+                                        <div class="text-right leading-[1.5] h-[1.5em]" x-text="i + 1"></div>
                                     </template>
                                 </div>
                             </div>
@@ -316,14 +324,14 @@
                 <div class="space-y-4 md:space-y-5">
                     <div>
                         <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">File Name</label>
-                        <input type="text" x-model="newFile.name" @keyup.enter="addFile" placeholder="e.g. index.php"
+                        <input type="text" x-model="newFile.name" @keyup.enter="addFile" required placeholder="e.g. index.php"
                             class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all">
                     </div>
 
                     <div>
                         <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">File Path
                             (Optional)</label>
-                        <input type="text" x-model="newFile.path" @keyup.enter="addFile"
+                        <input type="text" x-model="newFile.path" @keyup.enter="addFile" required
                             placeholder="e.g. src/components"
                             class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all">
                     </div>
@@ -416,8 +424,8 @@
 
                 <div class="text-center">
                     <div
-                        class="mx-auto w-12 h-12 md:w-16 md:h-16 bg-white/10 rounded-full flex items-center justify-center mb-3 md:mb-4 border border-white/10">
-                        <svg class="w-6 h-6 md:w-8 md:h-8 text-gray-300" fill="none" stroke="currentColor"
+                        class="mx-auto w-12 h-12 md:w-16 md:h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-3 md:mb-4 border border-red-500/20">
+                        <svg class="w-6 h-6 md:w-8 md:h-8 text-red-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
@@ -434,7 +442,7 @@
                             Cancel
                         </button>
                         <button @click="removeFile(deleteConfirm)"
-                            class="flex-1 bg-white/15 hover:bg-white/20 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-white/20">
+                            class="flex-1 bg-red-600/20 hover:bg-red-600/30 text-red-400 px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-red-500/30">
                             Delete
                         </button>
                     </div>
@@ -466,6 +474,30 @@
                                 ];
                             })->toArray(),
                     ) !!},
+
+                    init() {
+                        // Keyboard shortcuts
+                        document.addEventListener('keydown', (e) => {
+                            // Ctrl/Cmd + S to save
+                            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                                e.preventDefault();
+                                this.$el.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+                            }
+                            
+                            // Ctrl/Cmd + N for new file
+                            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                                e.preventDefault();
+                                this.showAddFileModal = true;
+                            }
+
+                            // Escape to close modals
+                            if (e.key === 'Escape') {
+                                this.showAddFileModal = false;
+                                this.showSettings = false;
+                                this.deleteConfirm = null;
+                            }
+                        });
+                    },
 
                     toggleMobileSidebar() {
                         this.mobileMenuOpen = !this.mobileMenuOpen;
@@ -522,7 +554,13 @@
                             'py': '🐍',
                             'sql': '🗄️',
                             'vue': '💚',
-                            'xml': '📰'
+                            'xml': '📰',
+                            'java': '☕',
+                            'cpp': '⚙️',
+                            'c': '⚙️',
+                            'rb': '💎',
+                            'go': '🔷',
+                            'rs': '🦀'
                         };
 
                         return icons[ext] || '📄';
@@ -545,4 +583,93 @@
                 }
             }, 3000);
         </script>
+</body>
+
 @endsection
+
+<style>
+    /* Custom Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Ensure proper responsive behavior */
+    @media (max-width: 768px) {
+        .hide-on-mobile {
+            display: none !important;
+        }
+        
+        .modal-mobile {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+    }
+
+    /* Line numbers and textarea sync */
+    .code-editor textarea {
+        line-height: 1.5;
+        font-family: 'Courier New', monospace;
+    }
+
+    /* Mobile sidebar */
+    .sidebar-container {
+        transition: transform 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+        .sidebar-container {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            z-index: 40;
+            transform: translateX(-100%);
+        }
+
+        .sidebar-container.mobile-open {
+            transform: translateX(0);
+        }
+
+        .mobile-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 30;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    }
+
+    /* Smooth transitions */
+    * {
+        transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+    }
+
+    /* Prevent layout shift on modal open */
+    body.modal-open {
+        overflow: hidden;
+    }
+</style>
