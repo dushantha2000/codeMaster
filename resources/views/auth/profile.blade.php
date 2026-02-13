@@ -141,7 +141,7 @@
                                         </div>
                                     </div>
 
-                                 
+
 
                                     {{-- Delete Button --}}
                                     <form action="{{ url('/partners/destroy', $partner->id) }}" method="POST"
@@ -149,13 +149,26 @@
                                         {{ csrf_field() }}
 
                                         <button type="submit"
-                                            class="opacity-0 group-hover:opacity-100 p-2 text-gray-500 hover:text-red-500 transition-all duration-300">
+                                            class=" p-2 text-gray-500 hover:text-red-500 transition-all duration-300">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
                                         </button>
                                     </form>
+
+                                    {{-- Delete Button --}}
+                                    <button type="button"
+                                        class="edit-partner-btn p-2 text-gray-500 hover:text-blue-500 transition-all duration-300"
+                                        data-partner-name="{{ $partner->name }}">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </button>
+
+
+
                                 </div>
                             @empty
                                 {{-- Empty State --}}
@@ -169,7 +182,95 @@
 
             </div>
         </div>
+
+        {{-- Edit modal --}}
+        <div id="modalOverlay"
+            class="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 hidden animate-in fade-in duration-300">
+
+            <div
+                class="modal-mobile bg-[#0f1115] rounded-2xl p-6 md:p-8 w-full max-w-lg shadow-2xl border border-white/10 relative">
+
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl md:text-2xl font-bold flex items-center gap-3 text-white">
+
+                        <span>Partner Permissions</span>
+                    </h3>
+                    <button id="closeModal"
+                        class="text-gray-500 hover:text-white transition-colors text-2xl">&times;</button>
+                </div>
+
+                <p class="text-sm text-gray-400 mb-8 -mt-2">Update permissions and access levels for this collaborator.</p>
+
+                <div class="mb-8 flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/5">
+                    <div
+                        class="w-12 h-12 rounded-lg bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-500 font-bold text-xl">
+                        <span id="modalPartnerInitials">?</span>
+                    </div>
+                    <h4 id="modalPartnerNameDisplay" class="text-white font-medium text-lg">Partner Name</h4>
+                </div>
+
+                <form action="{{ url('/partners/update') }}" method="POST" class="space-y-6">
+                    {{ csrf_field() }}
+                    <input type="hidden" id="modalPartnerId" name="partner_id">
+
+                    <div class="space-y-4">
+                        <label
+                            class="flex items-center justify-between cursor-pointer group p-3 rounded-xl hover:bg-white/5 transition-all border border-transparent hover:border-white/10">
+                            <div class="flex items-center gap-4">
+                                
+                                <div>
+                                    <span
+                                        class="block text-sm font-bold text-gray-200 group-hover:text-white transition-colors">Read
+                                        Only Access</span>
+                                    <span class="block text-[11px] text-gray-500 font-medium">Can view and copy code
+                                        snippets.</span>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <input type="checkbox" id="readOnlyAccess" name="read_only" class="sr-only peer"
+                                    checked>
+                                <div
+                                    class="w-11 h-6 bg-white/10 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-500 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600">
+                                </div>
+                            </div>
+                        </label>
+
+                        <label
+                            class="flex items-center justify-between cursor-pointer group p-3 rounded-xl hover:bg-white/5 transition-all border border-transparent hover:border-white/10">
+                            <div class="flex items-center gap-4">
+                                
+                                <div>
+                                    <span
+                                        class="block text-sm font-bold text-gray-200 group-hover:text-white transition-colors">Editor
+                                        Access</span>
+                                    <span class="block text-[11px] text-gray-500 font-medium">Can modify and create new
+                                        code.</span>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <input type="checkbox" id="editorAccess" name="editor_access" class="sr-only peer">
+                                <div
+                                    class="w-11 h-6 bg-white/10 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600">
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="submit"
+                            class="w-full bg-[#1c1f26] hover:bg-[#252a33] border border-white/10 text-white px-6 py-3.5 rounded-xl text-base font-bold transition-all shadow-xl active:scale-[0.98]">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -247,6 +348,28 @@
 
                 userSearch.value = '';
                 suggestions.classList.add('hidden');
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('modalOverlay');
+            const editBtn = e.target.closest('.edit-partner-btn');
+
+            if (editBtn) {
+                const id = editBtn.getAttribute('data-id');
+                const name = editBtn.getAttribute('data-partner-name');
+
+                document.getElementById('modalPartnerId').value = id;
+                document.getElementById('modalPartnerNameDisplay').textContent = name;
+                document.getElementById('modalPartnerInitials').textContent = name.charAt(0).toUpperCase();
+
+                modal.classList.remove('hidden');
+            }
+
+            if (e.target.id === 'closeModal' || e.target === modal) {
+                modal.classList.add('hidden');
             }
         });
     </script>
