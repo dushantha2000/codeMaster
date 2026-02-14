@@ -6,6 +6,8 @@
     <div class="flex flex-col md:flex-row w-full max-w-4xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10"
         x-data="loginForm()" x-cloak>
 
+       
+
         <div
             class="hidden md:flex md:w-1/2 relative bg-black/40 items-center justify-center p-12 overflow-hidden border-r border-white/5 image-glow-blue">
             <div class="relative z-10 text-center">
@@ -34,7 +36,7 @@
                 </svg>
             </div>
             <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile"><a
-                    href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal">v1.0</span>
+                    href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal">v1.1</span>
             </h1>
                 </div>
                 <h1 class="text-2xl font-bold text-white">Welcome Back</h1>

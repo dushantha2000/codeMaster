@@ -10,7 +10,7 @@
                 </svg>
                 </div>
                 <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile">CodeVault <span
-                    class="text-blue-500 text-xs font-normal">v1.0</span></h1>
+                    class="text-blue-500 text-xs font-normal">v1.1</span></h1>
             </div>
             <div class="flex items-center gap-6 text-gray-500 text-xs font-bold tracking-widest uppercase">
                 <span>&copy; 2026 CodeVault Inc.</span>

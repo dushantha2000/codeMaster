@@ -6,12 +6,17 @@
 
 <body class="text-gray-100" x-data="snippetEditor()" x-cloak>
 
-    <form action="{{ url('snippet-store') }}" method="POST" class="h-full flex flex-col">
+    <form action="{{ url('/snippet-store') }}" method="POST" class="h-full flex flex-col">
         {{ csrf_field() }}
+
+        <!-- Hidden inputs for project metadata -->
+        <input type="hidden" name="title" x-model="projectInfo.title">
+        <input type="hidden" name="description" x-model="projectInfo.description">
+        <input type="hidden" name="language" x-model="projectInfo.language">
 
         <!-- Modern Header -->
         <header class="h-20 flex items-center justify-between px-4 md:px-8 shrink-0 glass-card border-b border-white/5 gap-4">
-    
+
     <div class="flex items-center gap-3 md:gap-4 shrink-0">
         <button type="button" @click="toggleMobileSidebar"
             class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
@@ -29,35 +34,36 @@
                 </svg>
             </div>
             <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile"><a
-                    href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal">v1.0</span>
+                    href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal">v1.1</span>
             </h1>
         </div>
     </div>
 
-    <div class="flex-1 flex items-center justify-center gap-3 max-w-2xl px-2">
-        <div class="relative w-full">
-            <input type="text" name="title" required placeholder="Project name..."
-                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm md:text-base font-bold text-white placeholder-gray-600 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all">
+    <!-- Project Info Display (Center) -->
+    <div class="flex-1 flex items-center justify-center gap-2 md:gap-3 max-w-2xl px-2 min-w-0">
+        <div class="text-center min-w-0 flex-1">
+            <h2 class="text-sm md:text-lg font-bold text-white truncate px-2" x-text="projectInfo.title || 'Untitled Project'"></h2>
+            <div class="hidden md:block relative group">
+                <p class="text-xs text-gray-400 truncate px-2 cursor-help" x-text="projectInfo.description || 'No description'"></p>
+                <!-- Tooltip for long descriptions -->
+                <div x-show="projectInfo.description && projectInfo.description.length > 50"
+                    class="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-64 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-xl border border-white/10 z-50 pointer-events-none">
+                    <div class="break-words" x-text="projectInfo.description"></div>
+                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                        <div class="border-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="relative w-full hidden md:block">
-            <input type="text" name="description" required placeholder="Brief description..."
-                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm font-medium text-gray-300 placeholder-gray-600 outline-none focus:border-white/20 transition-all">
-        </div>
+        <button type="button" @click="showProjectModal = true"
+            class="p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all group shrink-0">
+            <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+            </svg>
+        </button>
     </div>
 
     <div class="flex items-center gap-2 md:gap-3 shrink-0">
-        <div class="relative hidden sm:block">
-            <select name="language"
-                class="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-2 pr-8 text-xs font-bold text-gray-300 outline-none hover:bg-white/10 transition-all cursor-pointer">
-                <option value="laravel">Laravel</option>
-                <option value="tailwind">Tailwind</option>
-            </select>
-            <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
-            </div>
-        </div>
-
         <div class="flex items-center gap-2 border-l border-white/10 pl-2 md:pl-3">
             <button type="submit"
                 class="bg-blue-600 hover:bg-blue-500 text-white p-2 md:px-5 md:py-2 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20">
@@ -72,29 +78,6 @@
         </div>
     </div>
 </header>
-
-        <!-- Success/Error Messages -->
-        @if(session('success'))
-            <div class="mx-4 md:mx-8 mt-4 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-sm md:text-base">
-                <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    {{ session('success') }}
-                </div>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="mx-4 md:mx-8 mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm md:text-base">
-                <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                    </svg>
-                    {{ session('error') }}
-                </div>
-            </div>
-        @endif
 
         <!-- Mobile Overlay -->
         <div class="mobile-overlay" :class="{ 'show': mobileMenuOpen }" @click="toggleMobileSidebar"></div>
@@ -142,12 +125,12 @@
                 </div>
 
                 <!-- Files List -->
-                <div class="flex-1 overflow-y-auto p-2 md:p-3 space-y-2">
+                <div class="flex-1 overflow-y-auto p-2 md:p-3 space-y-2 custom-scrollbar">
                     <template x-for="(file, index) in files" :key="index">
                         <div @click="activeTab = index; mobileMenuOpen = false"
                             :class="activeTab === index ? 'tab-active text-white scale-105' :
                                 'bg-white/5 text-gray-400 hover:bg-white/10'"
-                            class="file-item flex items-center justify-between p-3 md:p-4 rounded-xl cursor-pointer group">
+                            class="file-item flex items-center justify-between p-3 md:p-4 rounded-xl cursor-pointer group transition-all">
                             <div class="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
                                 <div class="text-xl md:text-2xl shrink-0" x-text="getFileIcon(file.name)">📄</div>
                                 <div class="flex-1 min-w-0">
@@ -158,7 +141,7 @@
                                 </div>
                             </div>
                             <button type="button" @click.stop="confirmDelete(index)" x-show="files.length > 1"
-                                class="ml-2 opacity-0 group-hover:opacity-100 text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-all">
+                                class="ml-2 opacity-0 group-hover:opacity-100 md:opacity-100 text-gray-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-white/10 transition-all shrink-0">
                                 <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -218,7 +201,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M4 6h16M4 12h16m-7 6h7"></path>
                                     </svg>
-                                    <span x-text="(file.content || '').split('\\n').length + ' lines'"></span>
+                                    <span x-text="(file.content || '').split('\n').length + ' lines'"></span>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor"
@@ -232,17 +215,16 @@
                         </div>
 
                         <!-- Code Editor -->
-                        <div class="flex-1 relative code-editor">
+                        <div class="flex-1 relative code-editor overflow-hidden">
                             <textarea name="contents[]" x-model="file.content" @input="updateStats" required
-                                class="absolute inset-0 w-full h-full bg-transparent p-4 pl-10 md:p-8 md:pl-16 code-font text-xs md:text-sm text-green-400 outline-none resize-none"
+                                class="absolute inset-0 w-full h-full bg-transparent p-4 pl-10 md:p-8 md:pl-16 code-font text-xs md:text-sm text-green-400 outline-none resize-none leading-[1.5]"
                                 placeholder="// Start coding...&#10;// Enjoy! 🚀" spellcheck="false"></textarea>
 
                             <!-- Line Numbers -->
                             <div x-show="showLineNumbers"
-                                class="absolute left-0 top-0 bottom-0 w-8 md:w-12 bg-black/30 border-r border-white/5 text-gray-600 text-[10px] md:text-xs code-font pt-4 md:pt-8 select-none pointer-events-none">
-                                <template x-for="(line, i) in (file.content || '').split('\\n')"
-                                    :key="i">
-                                    <div class="px-1 md:px-2 leading-relaxed text-right" x-text="i + 1"></div>
+                                class="absolute left-0 top-0 bottom-0 w-8 md:w-12 bg-black/30 border-r border-white/5 text-gray-600 text-[10px] md:text-xs code-font pt-4 md:pt-8 pr-2 select-none pointer-events-none overflow-hidden">
+                                <template x-for="(line, i) in (file.content || '').split('\n')" :key="i">
+                                    <div class="text-right leading-[1.5] h-[1.5em]" x-text="i + 1"></div>
                                 </template>
                             </div>
                         </div>
@@ -251,6 +233,142 @@
             </main>
         </div>
     </form>
+
+    <!-- Initial Project Setup Modal -->
+    <div x-show="showInitialModal" x-cloak
+        class="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100">
+        <div @click.away="false" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            class="modal-mobile glass-card rounded-2xl p-6 md:p-8 w-full max-w-lg shadow-2xl border border-white/10">
+
+            <div class="flex items-center justify-between mb-4 md:mb-6">
+                <h3 class="text-xl md:text-2xl font-bold flex items-center gap-2 md:gap-3">
+
+                    <span class="text-base md:text-2xl">New Code Snippet</span>
+                </h3>
+            </div>
+
+            <p class="text-sm text-gray-400 mb-6">Create and organize your code snippets with ease.</p>
+
+            <div class="space-y-4 md:space-y-5">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">
+                        Snippet Title
+                        <span class="text-red-400">*</span>
+                    </label>
+                    <input type="text" x-model="projectInfo.title" @keyup.enter="submitProjectInfo"
+                        placeholder="e.g. User Authentication System"
+                        class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all"
+                        :class="{'border-red-500/50': projectValidation.title}">
+                    <p x-show="projectValidation.title" class="text-xs text-red-400 mt-1" x-text="projectValidation.title"></p>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">
+                        Description
+                        <span class="text-red-400">*</span>
+                    </label>
+                    <textarea x-model="projectInfo.description" rows="3"
+                        placeholder="Brief description of what this snippet does..."
+                        class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all resize-none"
+                        :class="{'border-red-500/50': projectValidation.description}"></textarea>
+                    <p x-show="projectValidation.description" class="text-xs text-red-400 mt-1" x-text="projectValidation.description"></p>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Language</label>
+                    <select x-model="projectInfo.language"
+                        class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
+                        <option value="laravel">Laravel</option>
+                        <option value="tailwind">Tailwind CSS</option>
+                        <option value="react">React</option>
+                        <option value="vue">Vue.js</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="php">PHP</option>
+                        <option value="python">Python</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6 md:mt-8">
+                <button type="button" @click="submitProjectInfo"
+                    class="flex-1 btn-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all">
+                    Start Coding
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Info Edit Modal -->
+    <div x-show="showProjectModal" x-cloak @click.self="showProjectModal = false"
+        class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
+        <div @click.away="showProjectModal = false" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            class="modal-mobile glass-card rounded-2xl p-6 md:p-8 w-full max-w-lg shadow-2xl border border-white/10">
+
+            <div class="flex items-center justify-between mb-4 md:mb-6">
+                <h3 class="text-xl md:text-2xl font-bold flex items-center gap-2 md:gap-3">
+                    <div class="bg-white/10 backdrop-blur-sm p-2 rounded-lg border border-white/10">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-base md:text-2xl">Edit Project</span>
+                </h3>
+                <button @click="showProjectModal = false"
+                    class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-all">
+                    <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="space-y-4 md:space-y-5">
+                <div>
+                    <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">Project Name</label>
+                    <input type="text" x-model="projectInfo.title" required
+                        placeholder="e.g. My Awesome Project"
+                        class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all">
+                </div>
+
+                <div>
+                    <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">Description</label>
+                    <textarea x-model="projectInfo.description" required rows="3"
+                        placeholder="Brief description..."
+                        class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all resize-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">Language</label>
+                    <select x-model="projectInfo.language"
+                        class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
+                        <option value="laravel">Laravel</option>
+                        <option value="tailwind">Tailwind CSS</option>
+                        <option value="react">React</option>
+                        <option value="vue">Vue.js</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="php">PHP</option>
+                        <option value="python">Python</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-3 mt-6 md:mt-8">
+                <button type="button" @click="showProjectModal = false"
+                    class="flex-1 bg-white/5 hover:bg-white/10 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-white/10">
+                    Cancel
+                </button>
+                <button type="button" @click="showProjectModal = false"
+                    class="flex-1 btn-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Add File Modal -->
     <div x-show="showAddFileModal" x-cloak @click.self="showAddFileModal = false"
@@ -349,7 +467,7 @@
                 <div class="flex items-center justify-between p-3 md:p-4 bg-white/5 rounded-lg border border-white/5">
                     <span class="text-sm md:text-base font-semibold">Line Numbers</span>
                     <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" x-model="showLineNumbers" required class="sr-only peer">
+                        <input type="checkbox" x-model="showLineNumbers" class="sr-only peer">
                         <div
                             class="w-11 h-6 bg-white/10 peer-focus:ring-2 peer-focus:ring-white/20 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-white/30">
                         </div>
@@ -359,7 +477,7 @@
                 <div class="flex items-center justify-between p-3 md:p-4 bg-white/5 rounded-lg border border-white/5">
                     <span class="text-sm md:text-base font-semibold">Auto-save</span>
                     <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" x-model="autoSave" required class="sr-only peer">
+                        <input type="checkbox" x-model="autoSave" class="sr-only peer">
                         <div
                             class="w-11 h-6 bg-white/10 peer-focus:ring-2 peer-focus:ring-white/20 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-white/30">
                         </div>
@@ -382,8 +500,8 @@
 
             <div class="text-center">
                 <div
-                    class="mx-auto w-12 h-12 md:w-16 md:h-16 bg-white/10 rounded-full flex items-center justify-center mb-3 md:mb-4 border border-white/10">
-                    <svg class="w-6 h-6 md:w-8 md:h-8 text-gray-300" fill="none" stroke="currentColor"
+                    class="mx-auto w-12 h-12 md:w-16 md:h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-3 md:mb-4 border border-red-500/20">
+                    <svg class="w-6 h-6 md:w-8 md:h-8 text-red-400" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
@@ -400,7 +518,7 @@
                         Cancel
                     </button>
                     <button @click="removeFile(deleteConfirm)"
-                        class="flex-1 bg-white/15 hover:bg-white/20 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-white/20">
+                        class="flex-1 bg-red-600/20 hover:bg-red-600/30 text-red-400 px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-red-500/30">
                         Delete
                     </button>
                 </div>
@@ -413,11 +531,22 @@
             return {
                 activeTab: 0,
                 showAddFileModal: false,
+                showProjectModal: false,
+                showInitialModal: true,
                 showSettings: false,
                 showLineNumbers: true,
                 autoSave: false,
                 deleteConfirm: null,
                 mobileMenuOpen: false,
+                projectInfo: {
+                    title: '',
+                    description: '',
+                    language: 'laravel'
+                },
+                projectValidation: {
+                    title: '',
+                    description: ''
+                },
                 newFile: {
                     name: '',
                     path: '',
@@ -429,8 +558,65 @@
                     content: ''
                 }],
 
+                init() {
+                    // Keyboard shortcuts
+                    document.addEventListener('keydown', (e) => {
+                        // Ctrl/Cmd + S to save
+                        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                            e.preventDefault();
+                            this.$el.querySelector('form').dispatchEvent(new Event('submit'));
+                        }
+
+                        // Ctrl/Cmd + N for new file
+                        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                            e.preventDefault();
+                            this.showAddFileModal = true;
+                        }
+
+                        // Escape to close modals
+                        if (e.key === 'Escape') {
+                            this.showAddFileModal = false;
+                            this.showProjectModal = false;
+                            this.showSettings = false;
+                            this.deleteConfirm = null;
+                        }
+                    });
+                },
+
                 toggleMobileSidebar() {
                     this.mobileMenuOpen = !this.mobileMenuOpen;
+                },
+
+                submitProjectInfo() {
+                    // Reset validation
+                    this.projectValidation = {
+                        title: '',
+                        description: ''
+                    };
+
+                    let isValid = true;
+
+                    // Validate title
+                    if (!this.projectInfo.title.trim()) {
+                        this.projectValidation.title = 'Project name is required';
+                        isValid = false;
+                    } else if (this.projectInfo.title.trim().length < 3) {
+                        this.projectValidation.title = 'Project name must be at least 3 characters';
+                        isValid = false;
+                    }
+
+                    // Validate description
+                    if (!this.projectInfo.description.trim()) {
+                        this.projectValidation.description = 'Description is required';
+                        isValid = false;
+                    } else if (this.projectInfo.description.trim().length < 10) {
+                        this.projectValidation.description = 'Description must be at least 10 characters';
+                        isValid = false;
+                    }
+
+                    if (isValid) {
+                        this.showInitialModal = false;
+                    }
                 },
 
                 addFile() {
@@ -484,7 +670,13 @@
                         'py': '🐍',
                         'sql': '🗄️',
                         'vue': '💚',
-                        'xml': '📰'
+                        'xml': '📰',
+                        'java': '☕',
+                        'cpp': '⚙️',
+                        'c': '⚙️',
+                        'rb': '💎',
+                        'go': '🔷',
+                        'rs': '🦀'
                     };
 
                     return icons[ext] || '📄';
@@ -498,13 +690,93 @@
             }
         }
     </script>
-    <script>
-        setTimeout(function() {
-            const alert = document.getElementById('success-alert');
-            if (alert) {
-                alert.style.opacity = '0';
-                setTimeout(() => alert.remove(), 500);
-            }
-        }, 3000);
-    </script>
+</body>
+
 @endsection
+
+<style>
+    /* Custom Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Ensure proper responsive behavior */
+    @media (max-width: 768px) {
+        .hide-on-mobile {
+            display: none !important;
+        }
+
+        .modal-mobile {
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+    }
+
+    /* Line numbers and textarea sync */
+    .code-editor textarea {
+        line-height: 1.5;
+        font-family: 'Courier New', monospace;
+    }
+
+    /* Mobile sidebar */
+    .sidebar-container {
+        transition: transform 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+        .sidebar-container {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            z-index: 40;
+            transform: translateX(-100%);
+        }
+
+        .sidebar-container.mobile-open {
+            transform: translateX(0);
+        }
+
+        .mobile-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 30;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    }
+
+    /* Smooth transitions */
+    * {
+        transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+    }
+
+    /* Prevent layout shift on modal open */
+    body.modal-open {
+        overflow: hidden;
+    }
+</style>
