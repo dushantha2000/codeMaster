@@ -31,7 +31,7 @@
                         </div>
                         <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile"><a
                                 href="{{ url('/') }}">CodeVault</a> <span
-                                class="text-blue-500 text-xs font-normal">v1.0</span>
+                                class="text-blue-500 text-xs font-normal">v1.1</span>
                         </h1>
                     </div>
                 </div>
