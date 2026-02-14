@@ -165,9 +165,7 @@ class SnippetController extends Controller
                 // Invalidate cache for this user's snippets and languages
                 $this->invalidateUserSnippetCaches($userId);
 
-                return redirect()
-                    ->back()
-                    ->with('success', 'Snippet Added successfully.');
+                return view('user.dashboard')->with('success', 'Snippet Added successfully.');
             });
         } catch (Exception $e) {
             return back()->with([

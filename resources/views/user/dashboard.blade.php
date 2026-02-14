@@ -238,7 +238,7 @@
             </div>
 
             {{-- Left Sidebar - Filters --}}
-            <aside class="hidden lg:block w-64 shrink-0"
+            <aside class="hidden lg:block w-80 shrink-0"
                 :class="mobileFiltersOpen ? 'lg:hidden !block fixed left-0 top-0 bottom-0 z-50 overflow-y-auto' : ''">
                 <div class="glass-card rounded-2xl p-6 border border-white/10 sticky top-8"
                     :class="mobileFiltersOpen ? 'lg:rounded-2xl rounded-none h-full' : ''">

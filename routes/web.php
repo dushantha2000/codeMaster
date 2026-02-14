@@ -48,7 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return view('user.snippetcreate');
     })->name('snippets-create');
 
-    Route::post('snippet-store', [SnippetController::class, 'store']);
+    Route::post('/snippet-store', [SnippetController::class, 'store']);
     Route::get('/api/snippets/{id}', [SnippetController::class, 'show']);
     Route::get('/search-users', [SnippetController::class, 'UsersSearch'])->name('users.search');
     Route::post('/user/partnerships', [SnippetController::class, 'updatePartnerships']);

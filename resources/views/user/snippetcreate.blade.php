@@ -6,7 +6,7 @@
 
 <body class="text-gray-100" x-data="snippetEditor()" x-cloak>
 
-    <form action="{{ url('snippet-store') }}" method="POST" class="h-full flex flex-col">
+    <form action="{{ url('/snippet-store') }}" method="POST" class="h-full flex flex-col">
         {{ csrf_field() }}
 
         <!-- Hidden inputs for project metadata -->
