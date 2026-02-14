@@ -10,12 +10,20 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('partnerships', function (Blueprint $table) {
+        Schema::create("partnerships", function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('partner_id')->constrained('users')->onDelete('cascade');
+            $table
+                ->foreignId("user_id")
+                ->constrained("users")
+                ->onDelete("cascade");
+            $table
+                ->foreignId("partner_id")
+                ->constrained("users")
+                ->onDelete("cascade");
             $table->timestamps();
-            $table->unique(['user_id', 'partner_id']);
+            $table->tinyInteger("is_read")->default(1);
+            $table->tinyInteger("is_edit")->default(0);
+            $table->unique(["user_id", "partner_id"]);
         });
     }
 
@@ -24,6 +32,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('partnerships');
+        Schema::dropIfExists("partnerships");
     }
 };

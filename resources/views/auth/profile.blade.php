@@ -20,6 +20,7 @@
                     <p class="text-gray-400 text-sm font-medium">Manage who can access your code snippets and collaborate
                         with your partners. <span class="text-blue-400">Secure Vault</span></p>
                 </div>
+
             </div>
         </div>
 
@@ -158,9 +159,11 @@
                                     </form>
 
                                     {{-- Delete Button --}}
+                                    {{-- Edit Button --}}
                                     <button type="button"
                                         class="edit-partner-btn p-2 text-gray-500 hover:text-blue-500 transition-all duration-300"
-                                        data-partner-name="{{ $partner->name }}">
+                                        data-partner-name="{{ $partner->name }}" data-id="{{ $partner->id }}"
+                                        data-is_read="{{ $partner->is_read }}" data-is_edit="{{ $partner->is_edit }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -213,44 +216,41 @@
                     {{ csrf_field() }}
                     <input type="hidden" id="modalPartnerId" name="partner_id">
 
+                    {{-- Hidden inputs to store 1 or 0 --}}
+                    <input type="hidden" id="modalisRead" name="is_read">
+                    <input type="hidden" id="modalisEdit" name="is_edit">
+
                     <div class="space-y-4">
+                        {{-- Read Access Toggle --}}
                         <label
                             class="flex items-center justify-between cursor-pointer group p-3 rounded-xl hover:bg-white/5 transition-all border border-transparent hover:border-white/10">
-                            <div class="flex items-center gap-4">
-                                
-                                <div>
-                                    <span
-                                        class="block text-sm font-bold text-gray-200 group-hover:text-white transition-colors">Read
-                                        Only Access</span>
-                                    <span class="block text-[11px] text-gray-500 font-medium">Can view and copy code
-                                        snippets.</span>
-                                </div>
+                            <div>
+                                <span
+                                    class="block text-sm font-bold text-gray-200 group-hover:text-white transition-colors">Read
+                                    Only Access</span>
+                                <span class="block text-[11px] text-gray-500 font-medium">Can view and copy code
+                                    snippets.</span>
                             </div>
-
                             <div class="relative">
-                                <input type="checkbox" id="readOnlyAccess" name="read_only" class="sr-only peer"
-                                    checked>
+                                <input type="checkbox" id="readOnlyToggle" class="sr-only peer">
                                 <div
                                     class="w-11 h-6 bg-white/10 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-500 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600">
                                 </div>
                             </div>
                         </label>
 
+                        {{-- Editor Access Toggle --}}
                         <label
                             class="flex items-center justify-between cursor-pointer group p-3 rounded-xl hover:bg-white/5 transition-all border border-transparent hover:border-white/10">
-                            <div class="flex items-center gap-4">
-                                
-                                <div>
-                                    <span
-                                        class="block text-sm font-bold text-gray-200 group-hover:text-white transition-colors">Editor
-                                        Access</span>
-                                    <span class="block text-[11px] text-gray-500 font-medium">Can modify and create new
-                                        code.</span>
-                                </div>
+                            <div>
+                                <span
+                                    class="block text-sm font-bold text-gray-200 group-hover:text-white transition-colors">Editor
+                                    Access</span>
+                                <span class="block text-[11px] text-gray-500 font-medium">Can modify and create new
+                                    code.</span>
                             </div>
-
                             <div class="relative">
-                                <input type="checkbox" id="editorAccess" name="editor_access" class="sr-only peer">
+                                <input type="checkbox" id="editorToggle" class="sr-only peer">
                                 <div
                                     class="w-11 h-6 bg-white/10 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600">
                                 </div>
@@ -358,19 +358,44 @@
             const editBtn = e.target.closest('.edit-partner-btn');
 
             if (editBtn) {
+                // Get data from button
                 const id = editBtn.getAttribute('data-id');
                 const name = editBtn.getAttribute('data-partner-name');
+                const isRead = editBtn.getAttribute('data-is_read'); // 1 or 0
+                const isEdit = editBtn.getAttribute('data-is_edit'); // 1 or 0
 
+                // Set IDs and Name
                 document.getElementById('modalPartnerId').value = id;
                 document.getElementById('modalPartnerNameDisplay').textContent = name;
                 document.getElementById('modalPartnerInitials').textContent = name.charAt(0).toUpperCase();
 
+                // Set Hidden Inputs
+                document.getElementById('modalisRead').value = isRead;
+                document.getElementById('modalisEdit').value = isEdit;
+
+                // Sync Toggles (Checkboxes)
+                const readToggle = document.getElementById('readOnlyToggle');
+                const editToggle = document.getElementById('editorToggle');
+
+                readToggle.checked = (isRead == "1");
+                editToggle.checked = (isEdit == "1");
+
                 modal.classList.remove('hidden');
             }
 
+            // Modal Close Logic
             if (e.target.id === 'closeModal' || e.target === modal) {
                 modal.classList.add('hidden');
             }
+        });
+
+        // Update hidden inputs when toggles change
+        document.getElementById('readOnlyToggle').addEventListener('change', function() {
+            document.getElementById('modalisRead').value = this.checked ? "1" : "0";
+        });
+
+        document.getElementById('editorToggle').addEventListener('change', function() {
+            document.getElementById('modalisEdit').value = this.checked ? "1" : "0";
         });
     </script>
 

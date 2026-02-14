@@ -28,7 +28,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                         </svg>
                     </div>
-                    <h1 class="text-xl font-bold text-white tracking-tight">CodeVault <span class="text-blue-500 text-xs font-normal">v1.0</span></h1>
+                    <h1 class="text-xl font-bold text-white tracking-tight">CodeVault <span class="text-blue-500 text-xs font-normal">v1.1</span></h1>
                 </div>
                 <h1 class="text-2xl font-bold text-white">Forgot Password?</h1>
                 <p class="text-gray-500 text-sm mt-1">Enter your email and we'll send reset instructions.</p>

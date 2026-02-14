@@ -16,7 +16,7 @@
 
         <!-- Modern Header -->
         <header class="h-20 flex items-center justify-between px-4 md:px-8 shrink-0 glass-card border-b border-white/5 gap-4">
-    
+
     <div class="flex items-center gap-3 md:gap-4 shrink-0">
         <button type="button" @click="toggleMobileSidebar"
             class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
@@ -34,7 +34,7 @@
                 </svg>
             </div>
             <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile"><a
-                    href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal">v1.0</span>
+                    href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal">v1.1</span>
             </h1>
         </div>
     </div>
@@ -46,7 +46,7 @@
             <div class="hidden md:block relative group">
                 <p class="text-xs text-gray-400 truncate px-2 cursor-help" x-text="projectInfo.description || 'No description'"></p>
                 <!-- Tooltip for long descriptions -->
-                <div x-show="projectInfo.description && projectInfo.description.length > 50" 
+                <div x-show="projectInfo.description && projectInfo.description.length > 50"
                     class="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-64 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-xl border border-white/10 z-50 pointer-events-none">
                     <div class="break-words" x-text="projectInfo.description"></div>
                     <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
@@ -246,46 +246,40 @@
 
             <div class="flex items-center justify-between mb-4 md:mb-6">
                 <h3 class="text-xl md:text-2xl font-bold flex items-center gap-2 md:gap-3">
-                    <div class="bg-white/10 backdrop-blur-sm p-2 rounded-lg border border-white/10">
-                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                            </path>
-                        </svg>
-                    </div>
-                    <span class="text-base md:text-2xl">New Project</span>
+
+                    <span class="text-base md:text-2xl">New Code Snippet</span>
                 </h3>
             </div>
 
-            <p class="text-sm text-gray-400 mb-6">Set up your project details to get started.</p>
+            <p class="text-sm text-gray-400 mb-6">Create and organize your code snippets with ease.</p>
 
             <div class="space-y-4 md:space-y-5">
                 <div>
-                    <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">
-                        Project Name
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">
+                        Snippet Title
                         <span class="text-red-400">*</span>
                     </label>
-                    <input type="text" x-model="projectInfo.title" @keyup.enter="submitProjectInfo" 
-                        placeholder="e.g. E-commerce Dashboard"
+                    <input type="text" x-model="projectInfo.title" @keyup.enter="submitProjectInfo"
+                        placeholder="e.g. User Authentication System"
                         class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all"
                         :class="{'border-red-500/50': projectValidation.title}">
                     <p x-show="projectValidation.title" class="text-xs text-red-400 mt-1" x-text="projectValidation.title"></p>
                 </div>
 
                 <div>
-                    <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">
                         Description
                         <span class="text-red-400">*</span>
                     </label>
                     <textarea x-model="projectInfo.description" rows="3"
-                        placeholder="Brief description of your project..."
+                        placeholder="Brief description of what this snippet does..."
                         class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all resize-none"
                         :class="{'border-red-500/50': projectValidation.description}"></textarea>
                     <p x-show="projectValidation.description" class="text-xs text-red-400 mt-1" x-text="projectValidation.description"></p>
                 </div>
 
                 <div>
-                    <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">Language</label>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Language</label>
                     <select x-model="projectInfo.language"
                         class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
                         <option value="laravel">Laravel</option>
@@ -572,7 +566,7 @@
                             e.preventDefault();
                             this.$el.querySelector('form').dispatchEvent(new Event('submit'));
                         }
-                        
+
                         // Ctrl/Cmd + N for new file
                         if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
                             e.preventDefault();
@@ -725,7 +719,7 @@
         .hide-on-mobile {
             display: none !important;
         }
-        
+
         .modal-mobile {
             max-height: 90vh;
             overflow-y: auto;

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\partnershipController;
 use App\Http\Controllers\SnippetController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,10 +16,6 @@ Route::middleware('guest')->group(function () {
 
         return 'All Caches Cleared!';
     });
-
-    // Route::get('/register-verification', function () {
-    //     return view('auth.registerverification');
-    // });
 
     Route::post('user-login', [AuthController::class, 'UserLogin']);
     Route::get('register', [AuthController::class, 'register']);
@@ -43,7 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('snippets/{id}', [SnippetController::class, 'destroy']);
     Route::get('snippets/{id}/edit', [SnippetController::class, 'edit']);
     Route::post('/snippets/update/{id}', [SnippetController::class, 'Update']);
-    Route::post('/partners/destroy/{id}', [SnippetController::class, 'destroyPartner']);
+    Route::post('/partners/destroy/{id}', [partnershipController::class, 'destroyPartner']);
+
+    Route::post('/partners/update',[partnershipController::class,'PartnerPermission']);
 
     Route::get('/snippets-create', function () {
         return view('user.snippetcreate');
