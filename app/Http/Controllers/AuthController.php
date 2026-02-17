@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use PhpParser\Node\Stmt\TryCatch;
 
 class AuthController extends Controller
 {
@@ -59,6 +60,7 @@ class AuthController extends Controller
 
     public function userLogin(Request $request)
     {
+        // return $request;
         try {
             // Validation
             $credentials = $request->validate(
@@ -80,8 +82,9 @@ class AuthController extends Controller
                 $email = Auth::user()->email;
 
                 $request->session()->regenerate();
+                session()->put('isActive', $isActive = 1);
 
-                return redirect()->intended("/");
+                return redirect()->intended("/dashboard");
             }
 
             // Return with error and keep the email input
@@ -120,6 +123,7 @@ class AuthController extends Controller
 
         // data add to sesstion
         $request->session()->put("userEmail", $request->email);
+        // $request->session()->put("isActive", 1);
         $request->session()->put("userName", $request->userName);
         $request->session()->put("password", $request->password);
         $request
@@ -142,7 +146,8 @@ class AuthController extends Controller
 
     public function verifyRegistration(Request $request)
     {
-        $request->validate(
+       try {
+         $request->validate(
             [
                 "verification_code" => "required|string|size:6",
             ],
@@ -153,9 +158,7 @@ class AuthController extends Controller
                     "Verification code must be 6 characters.",
             ],
         );
-
         //  return $request;
-
         // Check if session data exists
         if (
             !$request->session()->has("verificationCode") ||
@@ -163,6 +166,8 @@ class AuthController extends Controller
             !$request->session()->has("userName") ||
             !$request->session()->has("password")
         ) {
+
+
             return view("auth.register")->with(
                 "error",
                 "Session expired. Please register again.",
@@ -188,7 +193,6 @@ class AuthController extends Controller
         }
 
         // return $request;
-
         // try {
         // Check if email is still unique (in case user registered again)
         $emailExists = User::where("email", $userEmail)->exists();
@@ -210,8 +214,7 @@ class AuthController extends Controller
         $user->save();
 
         // Clear session data
-        $request
-            ->session()
+        $request->session()
             ->forget([
                 "verificationCode",
                 "userEmail",
@@ -224,24 +227,21 @@ class AuthController extends Controller
             "success",
             "Registration successful! Please login with your credentials.",
         );
-        //  } catch (Exception $e) {
-        return back()->with(
-            "error",
-            "Critical System Error. Registration failed. Please try again.",
-        );
-        //  }
+       } catch (Exception $e) {
+        return redirect("/register")->with('error', 'Critical System Error. Login failed.');
+       }
+        
     }
 
-    public function Logout(Request $request)
+    public function Logout()
     {
-        // return $request;
-
+       // return 'greger';
         try {
             Auth::guard("web")->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            session()->invalidate();
+            session()->regenerateToken();
 
-            // 4. Always redirect to the login page (don't use view())
+            // Always redirect to the login page (don't use view())
             return view("auth.login")->with(
                 "message",
                 "You have been safely logged out.",
@@ -255,37 +255,37 @@ class AuthController extends Controller
 
     public function Profile()
     {
-      //  try {
-            $currentUserId = auth()->id();
+        //  try {
+        $currentUserId = auth()->id();
 
-            $partners = DB::table("users")
-                ->join(
-                    "partnerships",
-                    "users.id",
-                    "=",
-                    "partnerships.partner_id",
-                )
-                ->where("partnerships.user_id", $currentUserId)
-                ->select(
-                    "users.id",
-                    "users.name",
-                    "users.email",
-                    "partnerships.is_read",
-                    "partnerships.is_edit",
-                )
-                ->get();
+        $partners = DB::table("users") 
+            ->join(
+                "partnerships",
+                "users.id",
+                "=",
+                "partnerships.partner_id",
+            )
+            ->where("partnerships.user_id", $currentUserId)
+            ->select(
+                "users.id",
+                "users.name",
+                "users.email",
+                "partnerships.is_read",
+                "partnerships.is_edit",
+            )
+            ->get();
 
-            // return $partners;
+        // return $partners;
 
-            return view("auth.profile", [
-                "user" => auth()->user(),
-                "partners" => $partners,
-            ]);
-     //   } catch (Exception $e) {
-     //       return back()->with([
-       //         "error" => "Something went wrong while loading the page.",
-       //     ]);
-      //  }
+        return view("auth.profile", [
+            "user" => auth()->user(),
+            "partners" => $partners,
+        ]);
+        //   } catch (Exception $e) {
+        //       return back()->with([
+        //         "error" => "Something went wrong while loading the page.",
+        //     ]);
+        //  }
     }
 
     public function Settings()
