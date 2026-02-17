@@ -22,14 +22,14 @@ class partnershipController extends Controller
                 $prefix = Cache::getPrefix();
 
                 // Delete snippet caches
-                $pattern = $prefix."snippets:user:{$userId}:*";
+                $pattern = $prefix . "snippets:user:{$userId}:*";
                 $keys = $redis->keys($pattern);
                 if (! empty($keys)) {
                     $redis->del($keys);
                 }
 
                 // Delete search caches
-                $pattern = $prefix."search:user:{$userId}:*";
+                $pattern = $prefix . "search:user:{$userId}:*";
                 $keys = $redis->keys($pattern);
                 if (! empty($keys)) {
                     $redis->del($keys);
