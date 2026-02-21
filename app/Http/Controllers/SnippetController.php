@@ -29,6 +29,7 @@ class SnippetController extends Controller
 
     public function index(Request $request)
     {
+        
         $currentUserId = auth()->id();
 
         try {
@@ -170,7 +171,9 @@ class SnippetController extends Controller
             $cacheKey = "snippet:user:{$currentUserId}:{$id}";
 
             // Detailed view can be cached forever until updated/deleted
-            $snippet = Cache::rememberForever($cacheKey, function () use ($id) {
+            $snippet = Cache::rememberForever($cacheKey, 
+            
+            function () use ($id) {
                 return Snippet::with(['user:id,name', 'files'])->findOrFail($id);
             });
 

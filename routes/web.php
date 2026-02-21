@@ -17,9 +17,9 @@ Route::middleware('guest')->group(function () {
         return 'All Caches Cleared!';
     });
 
-    Route::post('/user-login', [AuthController::class, 'UserLogin']);
+    Route::post('/user-login', [AuthController::class, 'userLogin']);
     Route::get('register', [AuthController::class, 'register']);
-    Route::post('user-register', [AuthController::class, 'UserRegister']);
+    Route::post('user-register', [AuthController::class, 'userRegister']);
     Route::post('/verify-registration', [AuthController::class, 'verifyRegistration']);
     Route::get('reset', [AuthController::class, 'ResetPassword']);
     Route::post('send-Reset-Code', [AuthController::class, 'sendResetCode']);
@@ -79,6 +79,6 @@ Route::get('/how-to-use-codevault', function () {
 //     return view('register');
 // })->name('register');
 
-// Route::get('reset', function () {
-//     return view('resetpassword');
-// })->name('register');
+Route::get('welcome', function () {
+    return view('web.welcome');
+})->name('register');
