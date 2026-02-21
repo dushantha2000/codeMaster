@@ -13,7 +13,7 @@
 
 **CodeVault** is a production-grade snippet management platform engineered for developer teams. It goes beyond basic CRUD — featuring atomic cache invalidation, transactional file integrity, and a hybrid search engine that stays performant at scale.
 
-[**Live Demo**](https://dushantha.me/codevault) · [**Report Bug**](https://github.com/your-username/codevault/issues) · [**Request Feature**](https://github.com/your-username/codevault/issues)
+[**Live Demo**](https://codevault.dushantha.me/) · [**Report Bug**](https://github.com/dushantha2000/codeMaster/issues) · [**Request Feature**](https://github.com/dushantha2000/codeMaster/issues)
 
 </div>
 
