@@ -195,8 +195,31 @@
         .file-icon-json {
             color: #f7df1e;
         }
+
+        /* Mobile Filter Panel Animation */
+        .mobile-filter-panel {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.2) transparent;
+        }
+
+        .mobile-filter-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .mobile-filter-panel::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+        }
+
+        /* Ensure touch events work properly on mobile */
+        @media (max-width: 1023px) {
+            [x-cloak] {
+                display: none !important;
+            }
+        }
     </style>
 </head>
+
 
 <body class="text-gray-100 h-full flex flex-col" x-data="snippetBrowser()" x-cloak>
 
@@ -354,24 +377,94 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto p-4 md:p-8">
+    <main class="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
         <div class="max-w-7xl mx-auto flex gap-6">
-            <!-- Mobile Filter Button -->
-            <button @click="mobileFiltersOpen = !mobileFiltersOpen"
-                class="lg:hidden fixed bottom-6 right-6 z-40 w-14 h-14 bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg shadow-blue-900/50 flex items-center justify-center transition-all">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Mobile Filter Button (FAB) -->
+            <button x-cloak @click="mobileFiltersOpen = !mobileFiltersOpen"
+                class="lg:hidden fixed bottom-6 right-6 z-40 w-14 h-14 bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg shadow-blue-900/50 flex items-center justify-center transition-all active:scale-95"
+                :class="mobileFiltersOpen ? 'ring-4 ring-blue-500/30' : ''">
+                <svg x-show="!mobileFiltersOpen" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
                     </path>
                 </svg>
+                <svg x-show="mobileFiltersOpen" x-cloak class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
             </button>
 
-            <!-- Mobile Filter Overlay -->
-            <div x-show="mobileFiltersOpen" @click="mobileFiltersOpen = false"
-                class="lg:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
+            <!-- Mobile Filter Overlay & Panel -->
+            <div x-show="mobileFiltersOpen"
                 x-transition:enter="transition-opacity ease-out duration-300" x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-in duration-200"
-                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                class="lg:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
+                @click="mobileFiltersOpen = false">
+            </div>
+
+            <!-- Mobile Filter Panel (slides from bottom) -->
+            <div x-show="mobileFiltersOpen"
+                x-transition:enter="transition-transform ease-out duration-300"
+                x-transition:enter-start="translate-y-full"
+                x-transition:enter-end="translate-y-0"
+                x-transition:leave="transition-transform ease-in duration-200"
+                x-transition:leave-start="translate-y-0"
+                x-transition:leave-end="translate-y-full"
+                class="lg:hidden mobile-filter-panel fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] overflow-y-auto bg-[#0a0a0a] rounded-t-3xl border-t border-white/10 shadow-2xl"
+                @click.stop>
+                <div class="p-6">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-white">Filters</h3>
+                        <button @click="mobileFiltersOpen = false" class="p-2 rounded-full bg-white/5 border border-white/10">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Language Filter -->
+                    <div class="mb-6">
+                        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Language</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <template x-for="lang in languageList">
+                                <button
+                                    @click="selectedLanguage = lang.id; selectedLanguageName = lang.icon + ' ' + lang.name; fetchSnippets(); mobileFiltersOpen = false;"
+                                    :class="selectedLanguage === lang.id ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10'"
+                                    class="px-3 py-2 rounded-lg border transition-all text-sm flex items-center gap-2">
+                                    <span x-text="lang.icon"></span>
+                                    <span x-text="lang.name"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Sort By Filter -->
+                    <div class="mb-6 pt-6 border-t border-white/5">
+                        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Sort By</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <button @click="sortBy = 'recent'; fetchSnippets(); mobileFiltersOpen = false;"
+                                :class="sortBy === 'recent' ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5'"
+                                class="px-4 py-2 rounded-lg border border-white/10 transition-all text-sm">Recently Added</button>
+                            <button @click="sortBy = 'title'; fetchSnippets(); mobileFiltersOpen = false;"
+                                :class="sortBy === 'title' ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5'"
+                                class="px-4 py-2 rounded-lg border border-white/10 transition-all text-sm">Title A-Z</button>
+                            <button @click="sortBy = 'files'; fetchSnippets(); mobileFiltersOpen = false;"
+                                :class="sortBy === 'files' ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5'"
+                                class="px-4 py-2 rounded-lg border border-white/10 transition-all text-sm">Most Files</button>
+                        </div>
+                    </div>
+
+                    <!-- Clear Filters Button -->
+                    <button
+                        @click="selectedLanguage = ''; selectedLanguageName = 'All Languages'; sortBy = 'recent'; statusFilter = 'all'; fetchSnippets(); mobileFiltersOpen = false;"
+                        class="w-full mt-4 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm text-gray-400 hover:text-white transition-all flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Clear All Filters
+                    </button>
+                </div>
             </div>
 
             <!-- Left Sidebar - Filters (desktop) -->
