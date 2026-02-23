@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendVerificationMailJob;
 use App\Mail\ResetPasswordMail;
-use App\Mail\VerificationMail;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use PhpParser\Node\Stmt\TryCatch;
-use App\Jobs\SendVerificationMailJob;
 
 class AuthController extends Controller
 {
@@ -22,8 +20,8 @@ class AuthController extends Controller
     {
         // return $request;
         $request->validate([
-            "name" => "required|string|max:255",
-            "email" => "required|email|unique:users,email," . auth()->id(),
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.auth()->id(),
         ]);
 
         try {
@@ -36,13 +34,10 @@ class AuthController extends Controller
             // Invalidate profile cache
             Cache::forget("profile:user:{$userId}:partners");
 
-            return redirect()
-                ->back()
-                ->with("success", "Profile updated successfully!");
+            return redirect()->back()->with('success', 'Profile updated successfully!');
+
         } catch (Exception $e) {
-            return redirect()
-                ->back()
-                ->with("error", "Failed to update profile. Please try again.");
+            return redirect()->back()->with('error', 'Failed to update profile. Please try again.');
         }
     }
 
@@ -50,11 +45,11 @@ class AuthController extends Controller
     {
         try {
             // dd('wdqwdqw');
-            return view("auth.login");
+            return view('auth.login');
         } catch (Exception $e) {
-            return redirect("/")->with(
-                "error",
-                "Critical System Error. Login failed.",
+            return redirect('/')->with(
+                'error',
+                'Critical System Error. Login failed.',
             );
         }
     }
@@ -66,13 +61,13 @@ class AuthController extends Controller
             // Validation
             $credentials = $request->validate(
                 [
-                    "email" => "required|email",
-                    "password" => "required",
+                    'email' => 'required|email',
+                    'password' => 'required',
                 ],
                 [
-                    "email.required" => "Please enter your email address.",
-                    "email.email" => "Please enter a valid email address.",
-                    "password.required" => "Please enter your password.",
+                    'email.required' => 'Please enter your email address.',
+                    'email.email' => 'Please enter a valid email address.',
+                    'password.required' => 'Please enter your password.',
                 ],
             );
 
@@ -85,21 +80,20 @@ class AuthController extends Controller
                 $request->session()->regenerate();
                 session()->put('isActive', $isActive = 1);
 
-                //new user session
-              
+                // new user session
 
-                return redirect()->intended("/dashboard");
+                return redirect()->intended('/dashboard');
             }
 
             // Return with error and keep the email input
-            return view("auth.login")->with(
-                "error",
-                "Invalid email address or password. Please check your credentials and try again.",
+            return view('auth.login')->with(
+                'error',
+                'Invalid email address or password. Please check your credentials and try again.',
             );
         } catch (Exception $e) {
-            return redirect("/")->with(
-                "error",
-                "Critical System Error. Login failed.",
+            return redirect('/')->with(
+                'error',
+                'Critical System Error. Login failed.',
             );
         }
     }
@@ -107,10 +101,10 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         try {
-            return view("auth.register");
+            return view('auth.register');
         } catch (Exception $e) {
             return back()->with([
-                "error" => "Something went wrong while loading the page.",
+                'error' => 'Something went wrong while loading the page.',
             ]);
         }
     }
@@ -119,15 +113,15 @@ class AuthController extends Controller
     {
         // return $request;
         $request->validate([
-            "userName" => "required|string|max:255",
-            "email" => "required|email|unique:users,email",
-            "password" => "required|min:8|confirmed",
-            "password_confirmation" => "required",
+            'userName' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed',
+            'password_confirmation' => 'required',
         ]);
 
         try {
             DB::beginTransaction();
-            // User Create 
+            // User Create
             $user = User::create([
                 'user_id' => Str::uuid(),
                 'name' => $request->userName,
@@ -136,7 +130,7 @@ class AuthController extends Controller
                 'is_verified' => 0,
             ]);
 
-            // create verification Code 
+            // create verification Code
             $verificationCode = Str::upper(Str::random(6));
 
             // store verification code in cache
@@ -145,7 +139,7 @@ class AuthController extends Controller
             $details = [
                 'email' => $user->email,
                 'code' => $verificationCode,
-                'user' => $user
+                'user' => $user,
             ];
             SendVerificationMailJob::dispatch($details);
 
@@ -154,43 +148,41 @@ class AuthController extends Controller
 
             DB::commit();
 
-
-
             // user id add to session
             session(['pending_user_id' => $user->id]);
 
-
-            return view("auth.registerverification");
+            return  view('auth.registerverification');
 
         } catch (Exception $e) {
-            //all data reset
+            // all data reset
             DB::rollBack();
-            return back()->with("error", "Registration failed. Please try again.");
+
+            return back()->with('error', 'Registration failed. Please try again.');
         }
     }
 
     public function verifyRegistration(Request $request)
     {
         $request->validate([
-            "verification_code" => "required|string|size:6",
+            'verification_code' => 'required|string|size:6',
         ]);
 
         $userId = session('pending_user_id');
 
-        if (!$userId) {
-            return redirect()->route('register')->with("error", "Session expired. Please register again.");
+        if (! $userId) {
+            return redirect()->route('register')->with('error', 'Session expired. Please register again.');
         }
 
         $user = User::find($userId);
         $cachedCode = Cache::get("verification_code_{$userId}");
 
         // Code check
-        if (!$cachedCode || $request->verification_code !== $cachedCode) {
-            return back()->with("error", "Invalid or expired verification code.");
+        if (! $cachedCode || $request->verification_code !== $cachedCode) {
+            return back()->with('error', 'Invalid or expired verification code.');
         }
 
         try {
-            // User verify 
+            // User verify
             $user->is_verified = 1;
             $user->email_verified_at = now();
             $user->save();
@@ -199,13 +191,12 @@ class AuthController extends Controller
             Cache::forget("verification_code_{$userId}");
             session()->forget('pending_user_id');
 
-            //new user session
-           
+            // new user session
 
-            return redirect()->route('login')->with("success", "Registration successful! Please login.");
+            return redirect()->route('login')->with('success', 'Registration successful! Please login.');
 
         } catch (Exception $e) {
-            return back()->with("error", "Something went wrong. Please try again.");
+            return back()->with('error', 'Something went wrong. Please try again.');
         }
     }
 
@@ -213,19 +204,19 @@ class AuthController extends Controller
     {
         // return 'greger';
         try {
-            Auth::guard("web")->logout();
+            Auth::guard('web')->logout();
             session()->invalidate();
             session()->regenerateToken();
 
             // Always redirect to the login page (don't use view())
-            return view("auth.login")->with(
-                "message",
-                "You have been safely logged out.",
+            return view('auth.login')->with(
+                'message',
+                'You have been safely logged out.',
             );
         } catch (Exception $e) {
             return redirect()
                 ->back()
-                ->with("error", "Critical System Error. Logout failed.");
+                ->with('error', 'Critical System Error. Logout failed.');
         }
     }
 
@@ -234,28 +225,28 @@ class AuthController extends Controller
         //  try {
         $currentUserId = auth()->id();
 
-        $partners = DB::table("users")
+        $partners = DB::table('users')
             ->join(
-                "partnerships",
-                "users.id",
-                "=",
-                "partnerships.partner_id",
+                'partnerships',
+                'users.id',
+                '=',
+                'partnerships.partner_id',
             )
-            ->where("partnerships.user_id", $currentUserId)
+            ->where('partnerships.user_id', $currentUserId)
             ->select(
-                "users.id",
-                "users.name",
-                "users.email",
-                "partnerships.is_read",
-                "partnerships.is_edit",
+                'users.id',
+                'users.name',
+                'users.email',
+                'partnerships.is_read',
+                'partnerships.is_edit',
             )
             ->get();
 
         // return $partners;
 
-        return view("auth.profile", [
-            "user" => auth()->user(),
-            "partners" => $partners,
+        return view('auth.profile', [
+            'user' => auth()->user(),
+            'partners' => $partners,
         ]);
         //   } catch (Exception $e) {
         //       return back()->with([
@@ -267,10 +258,10 @@ class AuthController extends Controller
     public function Settings()
     {
         try {
-            return view("auth.settings");
+            return view('auth.settings');
         } catch (Exception $e) {
             return back()->with([
-                "error" => "Something went wrong while loading the page.",
+                'error' => 'Something went wrong while loading the page.',
             ]);
         }
     }
@@ -278,10 +269,10 @@ class AuthController extends Controller
     public function ResetPassword()
     {
         try {
-            return view("auth.resetpassword");
+            return view('auth.resetpassword');
         } catch (Exception $e) {
             return back()->with([
-                "error" => "Something went wrong while loading the page.",
+                'error' => 'Something went wrong while loading the page.',
             ]);
         }
     }
@@ -290,10 +281,9 @@ class AuthController extends Controller
     {
         // Validate the email exists in our users table
         $request->validate(
-            ["email" => "required|email|exists:users,email"],
+            ['email' => 'required|email|exists:users,email'],
             [
-                "email.exists" =>
-                    'We can\'t find a user with that email address.',
+                'email.exists' => 'We can\'t find a user with that email address.',
             ],
         );
 
@@ -302,11 +292,11 @@ class AuthController extends Controller
         try {
             DB::transaction(function () use ($request, $token) {
                 // Update the token
-                DB::table("password_reset_tokens")->updateOrInsert(
-                    ["email" => $request->email],
+                DB::table('password_reset_tokens')->updateOrInsert(
+                    ['email' => $request->email],
                     [
-                        "token" => $token,
-                        "created_at" => now(),
+                        'token' => $token,
+                        'created_at' => now(),
                     ],
                 );
 
@@ -314,11 +304,11 @@ class AuthController extends Controller
                 Mail::to($request->email)->send(new ResetPasswordMail($token));
             });
 
-            return view("auth.resetmassage");
+            return view('auth.resetmassage');
         } catch (Exception $e) {
             return back()->with(
-                "error",
-                "Mail server error. Please try again later.",
+                'error',
+                'Mail server error. Please try again later.',
             );
         }
     }
@@ -327,15 +317,15 @@ class AuthController extends Controller
     {
         try {
             // token actually exists in database
-            $tokenExists = DB::table("password_reset_tokens")
-                ->where("token", $token)
+            $tokenExists = DB::table('password_reset_tokens')
+                ->where('token', $token)
                 ->first();
 
             // fake or already used
-            if (!$tokenExists) {
-                return redirect("/")->with(
-                    "error",
-                    "This password reset link is invalid or has already been used. Please request a new one.",
+            if (! $tokenExists) {
+                return redirect('/')->with(
+                    'error',
+                    'This password reset link is invalid or has already been used. Please request a new one.',
                 );
             }
 
@@ -344,18 +334,18 @@ class AuthController extends Controller
                 ->addMinutes(60)
                 ->isPast();
             if ($tokenExpired) {
-                return redirect("/")->with(
-                    "error",
-                    "This reset link has expired for security reasons. Please try again.",
+                return redirect('/')->with(
+                    'error',
+                    'This reset link has expired for security reasons. Please try again.',
                 );
             }
 
             // show the form
-            return view("auth.changepassword", ["token" => $token]);
+            return view('auth.changepassword', ['token' => $token]);
         } catch (Exception $e) {
-            return redirect("/")->with(
-                "error",
-                "We are experiencing connection issues. Please try again in a few minutes.",
+            return redirect('/')->with(
+                'error',
+                'We are experiencing connection issues. Please try again in a few minutes.',
             );
         }
     }
@@ -363,21 +353,21 @@ class AuthController extends Controller
     public function updatePassword(Request $request)
     {
         $request->validate([
-            "token" => "required",
-            "email" => "required|email|exists:users,email",
-            "password" => "required|min:8|confirmed",
+            'token' => 'required',
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|min:8|confirmed',
         ]);
 
         // token exists for this email
-        $resetRecord = DB::table("password_reset_tokens")
-            ->where("email", $request->email)
-            ->where("token", $request->token)
+        $resetRecord = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('token', $request->token)
             ->first();
 
-        if (!$resetRecord) {
+        if (! $resetRecord) {
             return back()->with(
-                "error",
-                "Invalid token or email. Please try again.",
+                'error',
+                'Invalid token or email. Please try again.',
             );
         }
 
@@ -385,23 +375,23 @@ class AuthController extends Controller
         // if (Carbon::parse($resetRecord->created_at)->addMinutes(60)->isPast()) { ... }
         try {
             // Update the user's password
-            DB::table("users")
-                ->where("email", $request->email)
-                ->update(["password" => Hash::make($request->password)]);
+            DB::table('users')
+                ->where('email', $request->email)
+                ->update(['password' => Hash::make($request->password)]);
 
             // Delete the token
-            DB::table("password_reset_tokens")
-                ->where("email", $request->email)
+            DB::table('password_reset_tokens')
+                ->where('email', $request->email)
                 ->delete();
 
-            return redirect("/")->with(
-                "success",
-                "Your password has been successfully updated! Please login.",
+            return redirect('/')->with(
+                'success',
+                'Your password has been successfully updated! Please login.',
             );
         } catch (Exception $e) {
             return back()->with(
-                "error",
-                "Your password has been unsuccessfully updated! Please try again .",
+                'error',
+                'Your password has been unsuccessfully updated! Please try again .',
             );
         }
     }
@@ -410,25 +400,25 @@ class AuthController extends Controller
     {
         // return $request;
         $request->validate([
-            "current_password" => "required",
-            "password" => "required|min:8|confirmed",
+            'current_password' => 'required',
+            'password' => 'required|min:8|confirmed',
         ]);
 
         $user = auth()->user();
 
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->with("error", "Current password is incorrect.");
+        if (! Hash::check($request->current_password, $user->password)) {
+            return back()->with('error', 'Current password is incorrect.');
         }
 
         try {
             $user->password = Hash::make($request->password);
             $user->save();
 
-            return back()->with("success", "Password changed successfully!");
+            return back()->with('success', 'Password changed successfully!');
         } catch (Exception $e) {
             return back()->with(
-                "error",
-                "Failed to change password. Please try again.",
+                'error',
+                'Failed to change password. Please try again.',
             );
         }
     }
@@ -442,11 +432,11 @@ class AuthController extends Controller
             $userId = $user->id;
 
             // Delete related partnerships
-            DB::table("partnerships")->where("user_id", $userId)->delete();
-            DB::table("partnerships")->where("partner_id", $userId)->delete();
+            DB::table('partnerships')->where('user_id', $userId)->delete();
+            DB::table('partnerships')->where('partner_id', $userId)->delete();
 
             // Delete related snippets
-            DB::table("snippets")->where("user_id", $userId)->delete();
+            DB::table('snippets')->where('user_id', $userId)->delete();
 
             // Invalidate all caches for this user
             Cache::forget("profile:user:{$userId}:partners");
@@ -455,22 +445,22 @@ class AuthController extends Controller
 
             // Try to delete snippet and search caches by pattern if Redis is available
             $store = Cache::getStore();
-            if (method_exists($store, "getRedis")) {
+            if (method_exists($store, 'getRedis')) {
                 try {
                     $redis = $store->getRedis();
                     $prefix = Cache::getPrefix();
 
                     // Delete snippet caches
-                    $pattern = $prefix . "snippets:user:{$userId}:*";
+                    $pattern = $prefix."snippets:user:{$userId}:*";
                     $keys = $redis->keys($pattern);
-                    if (!empty($keys)) {
+                    if (! empty($keys)) {
                         $redis->del($keys);
                     }
 
                     // Delete search caches
-                    $pattern = $prefix . "search:user:{$userId}:*";
+                    $pattern = $prefix."search:user:{$userId}:*";
                     $keys = $redis->keys($pattern);
-                    if (!empty($keys)) {
+                    if (! empty($keys)) {
                         $redis->del($keys);
                     }
                 } catch (Exception $e) {
@@ -484,14 +474,14 @@ class AuthController extends Controller
             // Logout the user
             Auth::logout();
 
-            return redirect("/")->with(
-                "success",
-                "Your account has been deleted successfully.",
+            return redirect('/')->with(
+                'success',
+                'Your account has been deleted successfully.',
             );
         } catch (Exception $e) {
             return back()->with(
-                "error",
-                "Failed to delete account. Please try again.",
+                'error',
+                'Failed to delete account. Please try again.',
             );
         }
     }

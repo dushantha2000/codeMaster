@@ -82,3 +82,7 @@ Route::get('/how-to-use-codevault', function () {
 Route::get('welcome', function () {
     return view('web.welcome');
 })->name('register');
+
+Route::get('maintenenace',function(){
+    return view('errors.maintenance');
+});
