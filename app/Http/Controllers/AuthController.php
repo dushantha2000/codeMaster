@@ -54,6 +54,38 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Show login form
+     */
+    public function showLogin()
+    {
+        return view('auth.login');
+    }
+
+    /**
+     * Show registration form
+     */
+    public function showRegister()
+    {
+        return view('auth.register');
+    }
+
+    /**
+     * Show forgot password form
+     */
+    public function showForgot()
+    {
+        return view('auth.forgot-password');
+    }
+
+    /**
+     * Show reset password form
+     */
+    public function showReset($token)
+    {
+        return view('auth.reset-password', ['token' => $token]);
+    }
+
     public function userLogin(Request $request)
     {
         // return $request;

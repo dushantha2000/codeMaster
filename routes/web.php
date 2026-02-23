@@ -1,88 +1,58 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\partnershipController;
-use App\Http\Controllers\SnippetController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SnippetController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AdminController;
 
-// Not login request Management
-Route::middleware('guest')->group(function () {
-    Route::get('/', [AuthController::class, 'Login'])->name('login');
+// Public Routes
+Route::get('/', function () {
+    return redirect()->route('snippets.index');
+})->name('home');
 
-    Route::get('/fix-cache-now', function () {
-        Artisan::call('route:clear');
-        Artisan::call('config:clear');
-        Artisan::call('cache:clear');
-
-        return 'All Caches Cleared!';
-    });
-
-    Route::post('/user-login', [AuthController::class, 'userLogin']);
-    Route::get('register', [AuthController::class, 'register']);
-    Route::post('user-register', [AuthController::class, 'userRegister']);
-    Route::post('/verify-registration', [AuthController::class, 'verifyRegistration']);
-    Route::get('reset', [AuthController::class, 'ResetPassword']);
-    Route::post('send-Reset-Code', [AuthController::class, 'sendResetCode']);
-
-    // This matches the link: /reset-password/64_character_token
-    Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/reset-password', [AuthController::class, 'UpdatePassword']);
-
-
-});
-
-Route::get('/api/search', [SnippetController::class, 'search']);
-Route::get('/api/snippets/{id}', [SnippetController::class, 'show']);
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/dashboard', [SnippetController::class, 'index'])->name('dashboard');
-    Route::post('/logout', [AuthController::class, 'Logout']);
-    Route::get('profile', [AuthController::class, 'Profile']);
-    Route::get('/settings', [AuthController::class, 'Settings']);
-    // Route::get('/api/search', [SnippetController::class,'search']);
-    Route::get('/my-snippets', [SnippetController::class, 'mySnippets'])->name('snippets.index');
-    Route::delete('snippets/{id}', [SnippetController::class, 'destroy']);
-    Route::get('snippets/{id}/edit', [SnippetController::class, 'edit']);
-    Route::post('/snippets/update/{id}', [SnippetController::class, 'Update']);
-    Route::post('/partners/destroy/{id}', [partnershipController::class, 'destroyPartner']);
-
-    Route::post('/partners/update', [partnershipController::class, 'PartnerPermission']);
-
-    Route::get('/snippets-create', function () {
-        return view('user.snippetcreate');
-    })->name('snippets-create');
-
-    Route::post('/snippet-store', [SnippetController::class, 'store']);
-
-    Route::get('/search-users', [SnippetController::class, 'UsersSearch'])->name('users.search');
-    Route::post('/user/partnerships', [SnippetController::class, 'updatePartnerships']);
-
-    Route::post('/profile-destroy', [AuthController::class, 'destroyProfile']);
-    Route::post('/update-password', [AuthController::class, 'changePassword']);
-    Route::post('/setting-profile', [AuthController::class, 'UpdateProfile']);
-
-    // delete single snippet
-    Route::post('/snippet-delete', [SnippetController::class, 'SnippetDelete']);
-
-});
-
-// Public help page – available for both guests and logged-in users
-Route::get('/how-to-use-codevault', function () {
+Route::get('/howto', function () {
     return view('auth.howto');
 })->name('howto');
 
-// Route::get('login', function () {
-//     return view('login');
-// })->name('login');
+// Category Routes (public)
+Route::resource('categories', CategoryController::class)->only(['index', 'show']);
 
-// Route::get('register', function () {
-//     return view('register');
-// })->name('register');
-
-Route::get('welcome', function () {
-    return view('web.welcome');
-})->name('register');
-
-Route::get('maintenenace',function(){
-    return view('errors.maintenance');
+// Auth Routes
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'userLogin']);
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'userRegister']);
+    Route::get('/forgot-password', [AuthController::class, 'showForgot'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetCode'])->name('password.email');
+    Route::get('/reset-password/{token}', [AuthController::class, 'showReset'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'updatePassword'])->name('password.update');
 });
+
+// Dashboard Routes (authenticated)
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
+    Route::get('/dashboard/settings', [DashboardController::class, 'settings'])->name('dashboard.settings');
+    
+    // Snippet Routes
+    Route::resource('snippets', SnippetController::class);
+    Route::get('/snippets/{id}/copy', [SnippetController::class, 'copy'])->name('snippets.copy');
+    
+    // Category Routes (auth)
+    Route::resource('categories', CategoryController::class)->except(['index', 'show']);
+    
+    // Admin Routes
+    Route::middleware('admin')->prefix('admin')->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+        Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+        Route::get('/snippets', [AdminController::class, 'snippets'])->name('admin.snippets');
+        Route::get('/analytics', [AdminController::class, 'analytics'])->name('admin.analytics');
+    });
+});
+
+// Public Snippet Routes (read-only for browsing)
+// Note: Full CRUD for snippets requires authentication (defined above)
+// These routes allow viewing public snippets if you implement public visibility

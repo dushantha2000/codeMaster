@@ -78,11 +78,20 @@ class SnippetController extends Controller
                     ->appends($request->all());
             });
 
-            return view('user.dashboard', compact('snippets'));
+            return view('snippets.index', compact('snippets'));
 
         } catch (Exception $e) {
             // return redirect('maintanance')->with('error', 'Something went wrong with the dashboard. Please try again later.');
         }
+    }
+
+    /**
+     * Show the form for creating a new snippet.
+     */
+    public function create(Request $request)
+    {
+        $categories = \App\Models\Category::where('user_id', auth()->id())->get();
+        return view('snippets.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -177,21 +186,16 @@ class SnippetController extends Controller
                 return Snippet::with(['user:id,name', 'files'])->findOrFail($id);
             });
 
-            return response()->json($snippet);
+            // Get related snippets (same language)
+            $relatedSnippets = Snippet::where('language', $snippet->language)
+                ->where('id', '!=', $id)
+                ->limit(5)
+                ->get();
+
+            return view('snippets.show', compact('snippet', 'relatedSnippets'));
         } catch (Exception $e) {
-            //return response()->json([], 500);
+            return back()->with('error', 'Snippet not found or you do not have permission to view it.');
         }
-
-
-
-        // try {
-
-        //     $snippet = Snippet::with('files')->findOrFail($id);
-        //     return response()->json($snippet);
-
-        // } catch (Exception $e) {
-        //     return back()->with('error', 'Something went wrong. Please try again later.');
-        // }
     }
 
 

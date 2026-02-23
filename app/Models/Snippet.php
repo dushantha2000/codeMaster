@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Snippet extends Model
 {
     use HasFactory; 
-    protected $fillable = ['title', 'description', 'language', 'user_id'];
+    protected $fillable = ['title', 'description', 'language', 'user_id', 'category_id', 'is_public', 'tags'];
 
     public function files()
     {
@@ -17,5 +17,10 @@ class Snippet extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }
