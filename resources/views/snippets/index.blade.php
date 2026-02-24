@@ -30,7 +30,7 @@
         </div>
         @auth
             <a 
-                href="{{ route('snippets.create') }}" 
+                href="{{ url('snippets.create') }}" 
                 class="mt-4 md:mt-0 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
             >
                 <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -43,7 +43,7 @@
     
     <!-- Search and Filters -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-        <form action="{{ route('snippets.index') }}" method="GET" class="flex flex-col lg:flex-row gap-4">
+        <form action="{{ url('snippets.index') }}" method="GET" class="flex flex-col lg:flex-row gap-4">
             <!-- Search Input -->
             <div class="flex-1">
                 <div class="relative">

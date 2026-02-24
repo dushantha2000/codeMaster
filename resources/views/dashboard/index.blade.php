@@ -32,7 +32,6 @@
         @apply h-10 w-10 rounded-lg flex items-center justify-center;
     }
 </style>
-@endpush
 
 @section('header')
 <div class="flex items-center justify-between">
