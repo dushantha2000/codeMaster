@@ -16,8 +16,7 @@ Route::get('/howto', function () {
     return view('auth.howto');
 })->name('howto');
 
-// Category Routes (public)
-Route::resource('categories', CategoryController::class)->only(['index', 'show']);
+
 
 // Auth Routes
 Route::middleware('guest')->group(function () {
@@ -37,12 +36,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
     Route::get('/dashboard/settings', [DashboardController::class, 'settings'])->name('dashboard.settings');
     
+    // Logout
+    Route::post('/logout', [AuthController::class, 'Logout'])->name('logout');
+    
     // Snippet Routes
     Route::resource('snippets', SnippetController::class);
     Route::get('/snippets/{id}/copy', [SnippetController::class, 'copy'])->name('snippets.copy');
     
     // Category Routes (auth)
-    Route::resource('categories', CategoryController::class)->except(['index', 'show']);
+     Route::resource('categories', CategoryController::class);
+
+     
+
+
     
     // Admin Routes
     Route::middleware('admin')->prefix('admin')->group(function () {
@@ -54,5 +60,5 @@ Route::middleware('auth')->group(function () {
 });
 
 // Public Snippet Routes (read-only for browsing)
-// Note: Full CRUD for snippets requires authentication (defined above)
-// These routes allow viewing public snippets if you implement public visibility
+Route::get('/snippets', [SnippetController::class, 'index'])->name('snippets.index');
+Route::get('/snippets/{snippet}', [SnippetController::class, 'show'])->name('snippets.show');

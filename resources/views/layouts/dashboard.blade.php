@@ -27,79 +27,51 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <title>@yield('title', 'Dashboard - codeMaster')</title>
-     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     
     <!-- Scripts -->
+    @stack('scripts')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <!-- Additional Styles -->
     @yield('styles')
 </head>
-<body class="font-sans antialiased bg-gray-50 text-gray-900">
-    <div class="min-h-screen flex">
-        <!-- Sidebar Navigation -->
-        @include('components.sidebar')
+<body class="font-sans antialiased bg-gray-50 text-gray-900" style="font-family: 'Space Grotesk', sans-serif;">
+    <div class="min-h-screen flex flex-col">
+        <!-- Top Navbar -->
+        @include('components.navbar')
         
-        <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col min-h-screen ml-0 md:ml-64">
-            <!-- Top Navbar -->
-            @include('components.navbar')
-            
-            <!-- Flash Messages -->
-            @include('partials.success-message')
-            @include('partials.error-message')
-            
-            <!-- Page Header -->
-            @hasSection('header')
-                <div class="bg-white shadow-sm border-b border-gray-200">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                        @yield('header')
-                    </div>
+        <!-- Flash Messages -->
+        @include('partials.success-message')
+        @include('partials.error-message')
+        
+        <!-- Page Header -->
+        @hasSection('header')
+            <div class="bg-white shadow-sm border-b border-gray-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    @yield('header')
                 </div>
-            @endif
-            
-            <!-- Main Content -->
-            <main class="flex-1">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    @yield('content')
-                </div>
-            </main>
-            
-            <!-- Footer -->
-            @include('components.footer')
-        </div>
+            </div>
+        @endif
+        
+        <!-- Main Content -->
+        <main class="flex-1">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                @yield('content')
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        @include('components.footer')
     </div>
-    
-    <!-- Mobile Sidebar Overlay -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-40 hidden md:hidden" aria-hidden="true"></div>
     
     <!-- Additional Scripts -->
     @yield('scripts')
-    
-    <!-- Sidebar Toggle Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarToggle = document.getElementById('sidebar-toggle');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            
-            if (sidebarToggle && sidebar) {
-                sidebarToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('-translate-x-full');
-                    overlay.classList.toggle('hidden');
-                });
-                
-                if (overlay) {
-                    overlay.addEventListener('click', function() {
-                        sidebar.classList.add('-translate-x-full');
-                        overlay.classList.add('hidden');
-                    });
-                }
-            }
-        });
-    </script>
 </body>
 </html>

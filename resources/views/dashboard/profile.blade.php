@@ -35,7 +35,7 @@
                 <p class="text-sm text-gray-600 mt-1">Update your account's profile information</p>
             </div>
             
-            <form method="POST" action="{{ route('profile.update') }}" class="p-6 space-y-6">
+            <form method="POST" action="{{ url('profile.update') }}" class="p-6 space-y-6">
                 @csrf
                 @method('PATCH')
                 
@@ -211,7 +211,7 @@
             >
                 Delete Account
             </button>
-            <form id="delete-account-form" method="POST" action="{{ route('profile.destroy') }}" class="hidden">
+            <form id="delete-account-form" method="POST" action="{{ url('profile.destroy') }}" class="hidden">
                 @csrf
                 @method('DELETE')
             </form>

@@ -14,6 +14,8 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
+
+    //return $request;
         $categories = Category::withCount('snippets')
             ->when(Auth::check(), function($query) {
                 $query->where('user_id', Auth::id());
@@ -36,8 +38,12 @@ class CategoryController extends Controller
     /**
      * Show the form for creating a new category.
      */
-    public function create(Request $request)
+    public function create()
     {
+        // Require authentication
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
         return view('categories.create');
     }
 
