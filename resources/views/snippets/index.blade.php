@@ -2,9 +2,6 @@
     =================================================================
     Snippets Index Page
     =================================================================
-    Purpose: List all code snippets with search, filter, and 
-    pagination functionality.
-    
     Route: /snippets
     View: snippets.index
     =================================================================
@@ -43,7 +40,7 @@
     
     <!-- Search and Filters -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-        <form action="{{ url('snippets.index') }}" method="GET" class="flex flex-col lg:flex-row gap-4">
+        <form action="{{ route('snippets.index') }}" method="GET" class="flex flex-col lg:flex-row gap-4">
             <!-- Search Input -->
             <div class="flex-1">
                 <div class="relative">

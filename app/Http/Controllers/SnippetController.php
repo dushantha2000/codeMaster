@@ -29,60 +29,77 @@ class SnippetController extends Controller
 
     public function index(Request $request)
     {
-        
         $currentUserId = auth()->id();
 
-        try {
-            //Handle Partnerships logic 
-            $partnershipCacheKey = "partnerships:user:{$currentUserId}:shared_with_me";
+        //Partnerships (Shared with me)
+        $partnershipCacheKey = "partnerships:user:{$currentUserId}";
+        $ownersWhoSharedWithMe = Cache::remember($partnershipCacheKey, 3600, function () use ($currentUserId) {
+            return DB::table('partnerships')
+                ->where('partner_id', $currentUserId)
+                ->pluck('user_id')
+                ->toArray();
+        });
 
-            $ownersWhoSharedWithMe = Cache::rememberForever($partnershipCacheKey, function () use ($currentUserId) {
-                return DB::table('partnerships')
-                    ->where('partner_id', $currentUserId)
-                    ->pluck('user_id')
-                    ->toArray();
-            });
+        //Categories for the dropdown
+        $categoriesCacheKey = "categories:user:{$currentUserId}";
+        $categories = Cache::remember($categoriesCacheKey, 3600, function () use ($currentUserId) {
+            return DB::table('categories')
+                ->where('user_id', $currentUserId)
+                ->get();
+        });
 
-            //Prepare Cache Key for Snippets Dashboard
-            $queryString = $request->getQueryString() ?? '';
-            $dashboardCacheKey = "snippets:user:{$currentUserId}:dashboard:" . md5($queryString);
+        // Unique Languages for the dropdown
+        $languages = DB::table('snippets')
+            ->where('user_id', $currentUserId)
+            ->distinct()
+            ->pluck('language')
+            ->filter(); // removes nulls
 
-            //Handle Snippets Retrieval 
-            $snippets = Cache::rememberForever($dashboardCacheKey, function () use ($currentUserId, $ownersWhoSharedWithMe, $request) {
+        // return $language;
 
-                $query = Snippet::query();
+        // 4. Handle Snippets (Search & Filters)
+        // We hash the full URL so that ?page=2 or ?search=test creates unique cache keys
+        $queryString = $request->fullUrl();
+        $dashboardCacheKey = "snippets:user:{$currentUserId}:" . md5($queryString);
 
-                //Own snippets OR shared by partners
-                $query->where(function ($q) use ($currentUserId, $ownersWhoSharedWithMe) {
-                    $q->where('user_id', $currentUserId);
-                    if (!empty($ownersWhoSharedWithMe)) {
-                        $q->orWhereIn('user_id', $ownersWhoSharedWithMe);
-                    }
-                });
+        $snippets = Cache::remember($dashboardCacheKey, 600, function () use ($currentUserId, $ownersWhoSharedWithMe, $request) {
+            $query = Snippet::query();
 
-                // Search Logic
-                if ($request->search) {
-                    $search = $request->search;
-                    if (strlen($search) >= 3) {
-                        $query->whereFullText(['title', 'description'], $search);
-                    } else {
-                        $query->where('title', 'LIKE', "{$search}%");
-                    }
+            // Access Control: Own snippets OR shared
+            $query->where(function ($q) use ($currentUserId, $ownersWhoSharedWithMe) {
+                $q->where('user_id', $currentUserId);
+                if (!empty($ownersWhoSharedWithMe)) {
+                    $q->orWhereIn('user_id', $ownersWhoSharedWithMe);
                 }
-
-                // Finalize query
-                return $query->select(['id', 'user_id', 'title', 'description', 'created_at'])
-                    ->with(['user:id,name', 'files:id,snippet_id,file_name'])
-                    ->latest()
-                    ->cursorPaginate(20)
-                    ->appends($request->all());
             });
 
-            return view('snippets.index', compact('snippets'));
+            // Filter by Search
+            if ($request->filled('search')) {
+                $search = $request->search;
 
-        } catch (Exception $e) {
-            // return redirect('maintanance')->with('error', 'Something went wrong with the dashboard. Please try again later.');
-        }
+                $query->where('title', 'LIKE', "%{$search}%")
+                    ->orWhere('description', 'LIKE', "%{$search}%");
+
+            }
+
+            // Filter by Language 
+            if ($request->filled('language')) {
+                $query->where('language', $request->language);
+            }
+
+            // Filter by Category 
+            if ($request->filled('category')) {
+                $query->where('category_id', $request->category);
+            }
+
+            return $query->select(['id', 'user_id', 'title', 'description', 'language', 'created_at'])
+                ->with(['user:id,name', 'files:id,snippet_id,file_name'])
+                ->latest()
+                ->cursorPaginate(20)
+                ->appends($request->all());
+        });
+
+        return view('snippets.index', compact('snippets', 'categories', 'languages'));
     }
 
     /**
@@ -180,11 +197,13 @@ class SnippetController extends Controller
             $cacheKey = "snippet:user:{$currentUserId}:{$id}";
 
             // Detailed view can be cached forever until updated/deleted
-            $snippet = Cache::rememberForever($cacheKey, 
-            
-            function () use ($id) {
-                return Snippet::with(['user:id,name', 'files'])->findOrFail($id);
-            });
+            $snippet = Cache::rememberForever(
+                $cacheKey,
+
+                function () use ($id) {
+                    return Snippet::with(['user:id,name', 'files'])->findOrFail($id);
+                }
+            );
 
             // Get related snippets (same language)
             $relatedSnippets = Snippet::where('language', $snippet->language)
@@ -239,7 +258,7 @@ class SnippetController extends Controller
 
                 if ($request->filled('q')) {
                     $keyword = $request->q;
-                    
+
                     $query->where(function ($q) use ($keyword) {
                         $q->where('title', 'LIKE', "{$keyword}%")
                             ->orWhere('description', 'LIKE', "%{$keyword}%");
