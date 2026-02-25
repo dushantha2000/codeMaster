@@ -1,13 +1,8 @@
 {{-- 
     =================================================================
     Navbar Component
-    =================================================================
-    Purpose: Top navigation bar with branding, search functionality,
-    and user menu. Used in both public and dashboard layouts.
+    ================================================================
     
-    Props:
-    - transparent: Make navbar transparent (for landing pages)
-    =================================================================
 --}}
 
 @props([
@@ -42,6 +37,10 @@
                         class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                         Categories
                     </a>
+                    <a href="#"
+                            class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                            Community
+                        </a>
                     @auth
                         <a href="{{ route('dashboard.index') }}"
                             class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
@@ -81,7 +80,7 @@
                     </a>
                 @else
                     <!-- Create New Snippet Button -->
-                    <a href="{{ url('snippets.create') }}"
+                    <a href="{{ route('snippets.create') }}"
                         class="hidden sm:flex items-center text-gray-600 hover:text-gray-900">
                         <svg class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -122,7 +121,7 @@
                                 <p class="text-xs text-gray-500">{{ Auth::user()->email }}</p>
                             </div>
 
-                            <a href="{{ url('dashboard.index') }}"
+                            <a href="{{ route('dashboard.index') }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                 <svg class="inline h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -131,7 +130,7 @@
                                 Dashboard
                             </a>
 
-                            <a href="{{ url('dashboard.profile') }}"
+                            <a href="{{ route('dashboard.profile') }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                 <svg class="inline h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
@@ -141,7 +140,7 @@
                                 Profile
                             </a>
 
-                            <a href="{{ url('dashboard.settings') }}"
+                            <a href="{{ route('dashboard.settings') }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                 <svg class="inline h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">

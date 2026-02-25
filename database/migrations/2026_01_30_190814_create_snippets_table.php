@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('language')->default('php');
             $table->tinyInteger('isActive')->default(1);
             $table->timestamps();
+
         });
     }
 
