@@ -28,6 +28,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/forgot-password', [AuthController::class, 'sendResetCode'])->name('password.email');
     Route::get('/reset-password/{token}', [AuthController::class, 'showReset'])->name('password.reset');
     Route::post('/reset-password', [AuthController::class, 'updatePassword'])->name('password.update');
+    Route::post('/verify-registration', [AuthController::class, 'verifyRegistration'])->name('verify.registration');        
 });
 
 // Dashboard Routes (authenticated)
@@ -35,6 +36,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
     Route::get('/dashboard/settings', [DashboardController::class, 'settings'])->name('dashboard.settings');
+    Route::post('/dashboard/settings', [DashboardController::class, 'updateSettings'])->name('dashboard.settings.update');
+    
+    // API Keys
+    Route::post('/dashboard/api-keys', [DashboardController::class, 'createApiKey'])->name('dashboard.api-keys.create');
+    Route::delete('/dashboard/api-keys/{id}', [DashboardController::class, 'deleteApiKey'])->name('dashboard.api-keys.delete');
+    Route::patch('/dashboard/api-keys/{id}/toggle', [DashboardController::class, 'toggleApiKey'])->name('dashboard.api-keys.toggle');
     
     // Logout
     Route::post('/logout', [AuthController::class, 'Logout'])->name('logout');
@@ -42,6 +49,7 @@ Route::middleware('auth')->group(function () {
     // Snippet Routes
     Route::resource('snippets', SnippetController::class);
     Route::get('/snippets/{id}/copy', [SnippetController::class, 'copy'])->name('snippets.copy');
+    Route::get('/snippets/tags/suggestions', [SnippetController::class, 'getTagSuggestions'])->name('snippets.tags.suggestions');
     
     // Category Routes (auth)
      Route::resource('categories', CategoryController::class);

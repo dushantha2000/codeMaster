@@ -2,97 +2,103 @@
     =================================================================
     Authentication Pages Layout
     =================================================================
-    Purpose: This layout provides a clean, centered design for all 
-    authentication-related pages (login, register, forgot password, 
-    reset password). It features a minimal design focused on the form.
-    
-    Usage: Extend this layout for auth pages:
-    @extends('layouts.auth')
-    
-    Sections:
-    - title: Page title (yielded)
-    - content: Main page content (yielded)
-    - styles: Additional CSS styles (yielded)
-    - scripts: Additional JavaScript scripts (yielded)
     =================================================================
 --}}
 
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="en" class="h-full">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="codeMaster - Secure code snippet manager">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    
-    <title>@yield('title', 'codeMaster - Authentication')</title>
-    
-    <!-- Fonts -->
-   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Scripts -->
-    {{-- @vite(['resources/css/auth.css', 'resources/js/app.js']) --}}
-    
-    <!-- Additional Styles -->
-    @yield('styles')
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title') | CodeVault</title>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #0a0a0a;
+            overflow-y: auto;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .glass-card {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-field {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s ease;
+        }
+
+        .input-field:focus {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(255, 255, 255, 0.07);
+            outline: none;
+        }
+
+        .image-glow-blue {
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+        }
+
+        .image-glow-red {
+            background: radial-gradient(circle at center, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+    </style>
+    @stack('styles')
 </head>
-<body class="font-sans antialiased bg-gray-100 text-gray-900">
-    <div class="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <!-- Logo / Brand -->
-        <div class="mb-8 text-center">
-            <a href="{{ url('home') }}" class="inline-flex items-center justify-center">
-                <svg class="h-12 w-12 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                </svg>
-                <span class="ml-3 text-3xl font-bold text-gray-900">codeMaster</span>
-            </a>
-            <p class="mt-2 text-sm text-gray-600">
-                Secure multi-file code snippet manager
-            </p>
-        </div>
-        
-        <!-- Auth Card -->
-        <div class="w-full max-w-md">
-            <!-- Flash Messages -->
-            @include('partials.success-message')
-            @include('partials.error-message')
-            
-            <!-- Main Auth Form Container -->
-            <div class="bg-white py-8 px-6 shadow-xl rounded-lg border border-gray-200">
-                <!-- Page Title -->
-                @hasSection('heading')
-                    <div class="mb-6 text-center">
-                        <h2 class="text-2xl font-bold text-gray-900">
-                            @yield('heading')
-                        </h2>
-                        @hasSection('subheading')
-                            <p class="mt-2 text-sm text-gray-600">
-                                @yield('subheading')
-                            </p>
-                        @endif
-                    </div>
-                @endif
-                
-                <!-- Page Content -->
-                @yield('content')
-            </div>
-            
-            <!-- Additional Links -->
-            @hasSection('auth-links')
-                <div class="mt-6 text-center">
-                    @yield('auth-links')
-                </div>
-            @endif
-        </div>
-        
-        <!-- Footer -->
-        <div class="mt-8 text-center text-sm text-gray-500">
-            <p>&copy; {{ date('Y') }} codeMaster. All rights reserved.</p>
-        </div>
-    </div>
-    
-    <!-- Additional Scripts -->
-    @yield('scripts')
+
+<body class="text-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    @include('common.loading')
+
+    @yield('content')
+
+    @include('common.notification')
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // 1. Handle Form Submits
+            $(document).on('submit', 'form', function() {
+                $('#custom-loader').css('display', 'flex').fadeIn(200);
+            });
+
+            // 2. Handle Link Clicks (Event Delegation)
+            $(document).on('click', '.load-btn', function() {
+                $('#custom-loader').css('display', 'flex').show();
+            });
+        });
+
+        // 3. Robust Hide logic
+        window.addEventListener('pageshow', function() {
+            $('#custom-loader').fadeOut(300);
+        });
+    </script>
+
+    @stack('scripts')
+
 </body>
+
 </html>

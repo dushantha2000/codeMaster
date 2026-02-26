@@ -8,18 +8,11 @@
     
     Usage: Extend this layout for dashboard pages:
     @extends('layouts.dashboard')
-    
-    Sections:
-    - title: Page title (yielded)
-    - content: Main page content (yielded)
-    - header: Page header content (yielded)
-    - styles: Additional CSS styles (yielded)
-    - scripts: Additional JavaScript scripts (yielded)
     =================================================================
 --}}
 
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,6 +21,7 @@
     
     <title>@yield('title', 'Dashboard - codeMaster')</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
@@ -53,7 +47,7 @@
         
         <!-- Page Header -->
         @hasSection('header')
-            <div class="bg-white shadow-sm border-b border-gray-200">
+            <div class="bg-white  shadow-sm border-b border-gray-200 ">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     @yield('header')
                 </div>

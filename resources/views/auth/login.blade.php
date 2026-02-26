@@ -1,4 +1,4 @@
-@extends('auth.master')
+@extends('layouts.auth')
 
 @section('title', 'Login')
 
@@ -41,7 +41,7 @@
                 <p class="text-gray-500 text-sm mt-1">Please enter your details to sign in.</p>
             </div>
 
-            <form action="{{ url('/login') }}" method="POST" class="space-y-4">
+            <form action="{{ url('/login') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
                 {{ csrf_field() }}
 
                 @if(session('error'))

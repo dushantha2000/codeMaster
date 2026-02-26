@@ -21,7 +21,7 @@ class AuthController extends Controller
         // return $request;
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.auth()->id(),
+            'email' => 'required|email|unique:users,email,' . auth()->id(),
         ]);
 
         try {
@@ -183,7 +183,7 @@ class AuthController extends Controller
             // user id add to session
             session(['pending_user_id' => $user->id]);
 
-            return  view('auth.registerverification');
+            return view('auth.register-verification', ['user' => $user]);
 
         } catch (Exception $e) {
             // all data reset
@@ -195,13 +195,15 @@ class AuthController extends Controller
 
     public function verifyRegistration(Request $request)
     {
+
+    //return $request;
         $request->validate([
             'verification_code' => 'required|string|size:6',
         ]);
 
         $userId = session('pending_user_id');
 
-        if (! $userId) {
+        if (!$userId) {
             return redirect()->route('register')->with('error', 'Session expired. Please register again.');
         }
 
@@ -209,7 +211,7 @@ class AuthController extends Controller
         $cachedCode = Cache::get("verification_code_{$userId}");
 
         // Code check
-        if (! $cachedCode || $request->verification_code !== $cachedCode) {
+        if (!$cachedCode || $request->verification_code !== $cachedCode) {
             return back()->with('error', 'Invalid or expired verification code.');
         }
 
@@ -354,7 +356,7 @@ class AuthController extends Controller
                 ->first();
 
             // fake or already used
-            if (! $tokenExists) {
+            if (!$tokenExists) {
                 return redirect('/')->with(
                     'error',
                     'This password reset link is invalid or has already been used. Please request a new one.',
@@ -396,7 +398,7 @@ class AuthController extends Controller
             ->where('token', $request->token)
             ->first();
 
-        if (! $resetRecord) {
+        if (!$resetRecord) {
             return back()->with(
                 'error',
                 'Invalid token or email. Please try again.',
@@ -438,7 +440,7 @@ class AuthController extends Controller
 
         $user = auth()->user();
 
-        if (! Hash::check($request->current_password, $user->password)) {
+        if (!Hash::check($request->current_password, $user->password)) {
             return back()->with('error', 'Current password is incorrect.');
         }
 
@@ -483,16 +485,16 @@ class AuthController extends Controller
                     $prefix = Cache::getPrefix();
 
                     // Delete snippet caches
-                    $pattern = $prefix."snippets:user:{$userId}:*";
+                    $pattern = $prefix . "snippets:user:{$userId}:*";
                     $keys = $redis->keys($pattern);
-                    if (! empty($keys)) {
+                    if (!empty($keys)) {
                         $redis->del($keys);
                     }
 
                     // Delete search caches
-                    $pattern = $prefix."search:user:{$userId}:*";
+                    $pattern = $prefix . "search:user:{$userId}:*";
                     $keys = $redis->keys($pattern);
-                    if (! empty($keys)) {
+                    if (!empty($keys)) {
                         $redis->del($keys);
                     }
                 } catch (Exception $e) {

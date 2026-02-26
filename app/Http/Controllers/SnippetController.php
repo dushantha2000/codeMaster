@@ -113,16 +113,24 @@ class SnippetController extends Controller
 
     public function store(Request $request)
     {
+
+    
         // Validation
         $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
+            'description' => 'required|string',
             'language' => 'required|string|max:255',
-            'file_names' => 'required|array|min:1',
+            // 'file_names' => 'required|array|min:1',
             'file_names.*' => 'required|string|max:255',
-            'contents' => 'required|array|min:1',
+            // 'contents' => 'required|array|min:1',
             'contents.*' => 'required|string',
+            'category' => 'nullable|exists:categories,id',
+            'isPublic' => 'required|boolean',   
+            'tags' => 'nullable',
+            'categoryId' => 'nullable|exists:categories,id',
         ]);
+
+        return $request;
 
         try {
             // Transaction
