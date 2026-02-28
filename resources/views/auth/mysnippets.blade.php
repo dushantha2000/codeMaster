@@ -5,19 +5,36 @@
 @section('content')
     <div class="w-full max-w-6xl mx-auto px-4  animate-in fade-in slide-in-from-bottom-4 duration-500">
 
+        <!-- Breadcrumb -->
+        <nav class="flex mb-6" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2">
+                <li>
+                    <a href="{{ url('/') }}" class="text-gray-500 hover:text-gray-700">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                    </a>
+                </li>
+                <li>
+                    <span class="text-gray-400">|</span>
+                </li>
+                <li>
+                    <a href="{{ url('/') }}" class="text-gray-500 hover:text-gray-700">Profile</a>
+                </li>
+                <li>
+                    <span class="text-gray-400">|</span>
+                </li>
+                <li>
+                    <span class="text-blue-400 font-medium">My Vault</span>
+                </li>
+            </ol>
+        </nav>
+
         {{-- Global Page Header --}}
         <div class="flex flex-col lg:flex-row lg:items-center justify-between  mb-10">
-            <div class="flex items-center gap-5">
-                {{-- Back Button --}}
-               <a href="javascript:void(0)" onclick="history.back()"
-                    class="group p-3 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 text-gray-400 hover:text-white transition-all shadow-xl">
-                    <svg class="w-6 h-6 transform group-hover:-translate-x-1 transition-transform" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                </a>
-
+            <div class=" items-center gap-5">
+               
                 {{-- Title & Count --}}
                 <div>
                     <h1 class="text-4xl font-black text-white tracking-tight">My Vault</h1>
@@ -240,8 +257,7 @@
                         </div>
                     @else
                         {{-- Empty State --}}
-                        <div
-                            class=" rounded-[3rem] p-5 text-center border-dashed border-white/10 shadow-inner ">
+                        <div class=" rounded-[3rem] p-5 text-center border-dashed border-white/10 shadow-inner ">
                             <div
                                 class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10 animate-pulse">
                                 <svg class="w-12 h-12 text-gray-600" fill="none" stroke="currentColor"
@@ -531,7 +547,7 @@
                         filterState.languages.push(value);
                     } else {
                         filterState.languages = filterState.languages.filter(lang => lang !==
-                        value);
+                            value);
                     }
                     applyFilters();
                 });
