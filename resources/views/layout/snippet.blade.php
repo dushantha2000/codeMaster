@@ -189,7 +189,7 @@
 
 <body class="text-gray-100 bg-black min-h-screen" x-data="snippetEditor()" x-cloak>
 
-    @include('auth.loading')
+    @include('common.loading')
     
     @yield('content')
     

@@ -1,15 +1,15 @@
-@extends('auth.master')
+@extends('layout.app')
 
 @section('title', 'My Snippets')
 
 @section('content')
-    <div class="w-full max-w-6xl mx-auto px-4 py-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div class="w-full max-w-6xl mx-auto px-4  animate-in fade-in slide-in-from-bottom-4 duration-500">
 
         {{-- Global Page Header --}}
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between  mb-10">
             <div class="flex items-center gap-5">
                 {{-- Back Button --}}
-                <a href="{{ url('/dashboard') }}"
+               <a href="javascript:void(0)" onclick="history.back()"
                     class="group p-3 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 text-gray-400 hover:text-white transition-all shadow-xl">
                     <svg class="w-6 h-6 transform group-hover:-translate-x-1 transition-transform" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">

@@ -1,4 +1,4 @@
-@extends('user.master')
+@extends('layout.snippet')
 
 @section('title', 'Edit')
 
