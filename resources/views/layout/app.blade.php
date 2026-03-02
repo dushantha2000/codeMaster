@@ -198,7 +198,7 @@
         /* Mobile Filter Panel Animation */
         .mobile-filter-panel {
             scrollbar-width: thin;
-            scrollbar-color: rgba(255,255,255,0.2) transparent;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
         }
 
         .mobile-filter-panel::-webkit-scrollbar {
@@ -206,7 +206,7 @@
         }
 
         .mobile-filter-panel::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
         }
 
@@ -216,12 +216,19 @@
                 display: none !important;
             }
         }
+
+        /* Custom CSS එකකට දාන්න */
+        .bg-mesh {
+            background-image:
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 70%),
+                radial-gradient(at 100% 100%, rgba(147, 51, 234, 0.05) 0px, transparent 90%);
+        }
     </style>
 
     @stack('styles')
 </head>
 
-<body class="text-gray-100 h-full flex flex-col" x-data="snippetBrowser()" x-cloak>
+<body class="text-gray-100 h-full flex flex-col bg-mesh" x-data="snippetBrowser()" x-cloak>
 
     @include('common.loading')
 
