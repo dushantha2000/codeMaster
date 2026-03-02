@@ -77,7 +77,7 @@
                     Vault Partnerships
                 </h3>
 
-                <form action="{{ url('/user/partnerships') }}" method="POST" class="space-y-4">
+                <form action="{{ url('/user/partnerships') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="grid grid-cols-1 gap-4">
                         <div class="relative">
