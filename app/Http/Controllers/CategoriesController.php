@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Cache;
 use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -11,20 +12,46 @@ use App\Http\Requests\StoreCategoryRequest;
 
 class CategoriesController extends Controller
 {
+
+public function NewCreate(){
+    return view('categories.create');
+}
     public function index()
     {
-        return view('categories.index');
+        try {
+            $userId = auth()->id();
+
+            // Get categories from cache
+            $versionKey = "user:{$userId}:categories_version";
+            $version = Cache::rememberForever($versionKey, fn() => time());
+
+            $cacheKey = "categories:user:{$userId}:v:{$version}";
+
+            $categories = Cache::rememberForever($cacheKey, function () use ($userId) {
+                return DB::table('categories')
+                    ->where('user_id', $userId)
+                    ->select('category_id', 'category_name', 'category_description', 'color_name', 'isActive')
+                    ->get();
+            });
+
+            //return $categories;
+
+            return view('categories.index', compact('categories'));
+
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return back()->withErrors(['error' => 'Unable to load categories.']);
+        }
     }
     public function create(StoreCategoryRequest $request)
     {
-        //validation StoreCategoryRequest
-        // $currentUserId = auth()->id();
         try {
-            // Transaction  create category
-            $category = DB::transaction(function () use ($request) {
+            $userId = auth()->id();
+
+            $category = DB::transaction(function () use ($request, $userId) {
                 return Category::create([
                     'category_id' => (string) Str::uuid(),
-                    'user_id' => auth()->id(),
+                    'user_id' => $userId,
                     'category_name' => $request->name,
                     'category_description' => $request->description,
                     'color_name' => $request->color,
@@ -32,13 +59,21 @@ class CategoriesController extends Controller
                 ]);
             });
 
-            return redirect()->route('categories.index')->with('success', 'Category created successfully.');
-            
-        } catch (Exception $e) {
+            //  Forget categories_version
+            Cache::forget("user:{$userId}:categories_version");
 
-            return back()->withInput()->withErrors(['error' => 'Something went wrong. Please try again.']);
+            return redirect()
+                ->route('categories.index')
+                ->with('success', 'Category created successfully.');
+
+        } catch (Exception $e) {
+            // Log::error("Store Error: " . $e->getMessage());
+            return back()->withInput()->withErrors(['error' => 'Something went wrong while saving.']);
         }
     }
-
 }
+
+
+
+
 

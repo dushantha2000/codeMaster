@@ -67,6 +67,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //category routes
     Route::post('/category-create', [CategoriesController::class, 'Create']);
+    Route::get('/create-new', [CategoriesController::class, 'NewCreate']);
     Route::get('/categories.index', [CategoriesController::class, 'index'])->name('categories.index');
     Route::post('/category-store', [SnippetController::class, 'CategoryStore']);
 
