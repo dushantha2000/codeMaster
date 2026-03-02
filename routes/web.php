@@ -64,6 +64,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // delete single snippet
     Route::post('/snippet-delete', [SnippetController::class, 'SnippetDelete']);
 
+    //category routes
+    Route::get('/category-create', [SnippetController::class, 'CategoryCreate']);
+    Route::post('/category-store', [SnippetController::class, 'CategoryStore']);
+
 });
 
 // Public help page – available for both guests and logged-in users
@@ -75,9 +79,19 @@ Route::get('/how-to-use-codevault', function () {
 //     return view('login');
 // })->name('login');
 
-// Route::get('register', function () {
-//     return view('register');
-// })->name('register');
+Route::get('create', function () {
+    return view('categories.create');
+});
+Route::get('index', function () {
+    return view('categories.index');
+});
+Route::get('show', function () {
+    return view('categories.show');
+});
+
+Route::get('partner', function () {
+    return view('partners.index');
+});
 
 Route::get('welcome', function () {
     return view('web.welcome');
