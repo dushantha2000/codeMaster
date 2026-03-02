@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\partnershipController;
 use App\Http\Controllers\SnippetController;
 use Illuminate\Support\Facades\Route;
@@ -65,7 +66,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/snippet-delete', [SnippetController::class, 'SnippetDelete']);
 
     //category routes
-    Route::get('/category-create', [SnippetController::class, 'CategoryCreate']);
+    Route::post('/category-create', [CategoriesController::class, 'Create']);
+    Route::get('/categories.index', [CategoriesController::class, 'index'])->name('categories.index');
     Route::post('/category-store', [SnippetController::class, 'CategoryStore']);
 
 });

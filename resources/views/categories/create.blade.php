@@ -84,7 +84,7 @@
                         <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5">
                             Category Name <span class="text-red-400">*</span>
                         </label>
-                        <input type="text" name="name" id="categoryName" placeholder="e.g., JavaScript, Python, Laravel" required
+                        <input type="text" name="name" id="categoryName" value="{{ old('name') }}" placeholder="e.g., JavaScript, Python, Laravel" required
                             class="bg-white/5 border border-white/10 w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
                         <p class="text-[10px] text-gray-500 mt-1.5">Choose a descriptive name for your category</p>
                     </div>
@@ -96,7 +96,7 @@
                         </label>
                         <textarea name="description" id="categoryDescription" rows="3" 
                             class="bg-white/5 border border-white/10 w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
-                            placeholder="Describe what this category is for..."></textarea>
+                            placeholder="Describe what this category is for...">{{ old('description') }}</textarea>
                         <p class="text-[10px] text-gray-500 mt-1.5">Brief explanation of what kind of snippets belong here</p>
                     </div>
 
