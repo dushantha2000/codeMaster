@@ -82,12 +82,8 @@ Route::get('/how-to-use-codevault', function () {
 //     return view('login');
 // })->name('login');
 
-Route::get('create', function () {
-    return view('categories.create');
-});
-Route::get('index', function () {
-    return view('categories.index');
-});
+
+
 Route::get('show', function () {
     return view('categories.show');
 });
