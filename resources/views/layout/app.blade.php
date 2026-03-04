@@ -12,6 +12,7 @@
         href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         /* Base Styles */
@@ -447,6 +448,8 @@
                 }
             }
         }
+
+        
     </script>
 
     <!-- Prism.js -->

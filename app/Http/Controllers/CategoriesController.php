@@ -12,10 +12,32 @@ use App\Http\Requests\StoreCategoryRequest;
 
 class CategoriesController extends Controller
 {
+    public function Show($category_id)
+    {
 
-public function NewCreate(){
-    return view('categories.create');
-}
+        //return $category_id;
+
+        // $category = Category::find($category_id);
+        return view('categories.show');
+
+    }
+
+public function EditView($categoryId)
+    {
+
+       // return $categoryId;
+
+        return view('categories.edit');
+
+
+
+    }
+
+    public function NewCreate()
+    {
+
+        return view('categories.create');
+    }
     public function index()
     {
         try {
@@ -39,7 +61,7 @@ public function NewCreate(){
             return view('categories.index', compact('categories'));
 
         } catch (Exception $e) {
-            dd($e->getMessage());
+            // dd($e->getMessage());
             return back()->withErrors(['error' => 'Unable to load categories.']);
         }
     }
