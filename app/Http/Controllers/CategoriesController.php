@@ -22,21 +22,49 @@ class CategoriesController extends Controller
 
     }
 
-public function EditView($categoryId)
+    public function EditView($categoryId)
     {
+        try {
+            $userId = auth()->id();
 
-       // return $categoryId;
+            // Version 
+            $versionKey = "user:{$userId}:categories_version";
+            $version = Cache::rememberForever($versionKey, fn() => time());
 
-        return view('categories.edit');
+            // Cache Key create
+            $cacheKey = "category:{$categoryId}:user:{$userId}:v:{$version}";
 
+            $category = Cache::rememberForever($cacheKey, function () use ($userId, $categoryId) {
+                return DB::table('categories')
+                    ->where('user_id', $userId)
+                    ->where('category_id', $categoryId)
+                    ->where('isActive', 1)
+                    ->select('category_id', 'category_name', 'category_description', 'color_name', 'isActive')
+                    ->first();
+            });
 
+            // return $category;
 
+            if (!$category) {
+                return back()->with('error', 'Category not found.');
+            }
+
+            return view('categories.edit', compact('category'));
+
+        } catch (Exception $e) {
+            return back()->with('error', 'Something went wrong. Please try again later.');
+        }
     }
 
     public function NewCreate()
     {
-
-        return view('categories.create');
+        try {
+            $userId = auth()->id();
+           
+            return view('categories.create');
+        } catch (Exception $e) {
+            return back()->with('error', 'Something went wrong. Please try again later.');
+        }
     }
     public function index()
     {
@@ -52,6 +80,7 @@ public function EditView($categoryId)
             $categories = Cache::rememberForever($cacheKey, function () use ($userId) {
                 return DB::table('categories')
                     ->where('user_id', $userId)
+                    ->where('isActive', 1)
                     ->select('category_id', 'category_name', 'category_description', 'color_name', 'isActive')
                     ->get();
             });
@@ -93,6 +122,24 @@ public function EditView($categoryId)
             return back()->withInput()->withErrors(['error' => 'Something went wrong while saving.']);
         }
     }
+
+    public function destroy($categoryId)
+    {
+        $userId = auth()->id();
+
+        $updated = DB::table('categories')
+            ->where('user_id', $userId)
+            ->where('category_id', $categoryId)
+            ->update(['isActive' => 0]);
+
+        if ($updated) {
+            Cache::forget("user:{$userId}:categories_version");
+            return redirect()->route('categories.index')->with('success', 'Deleted successfully.');
+        }
+
+        return redirect()->route('categories.index')->with('error', 'Category not found or already deleted.');
+    }
+
 }
 
 
