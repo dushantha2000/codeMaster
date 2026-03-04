@@ -70,6 +70,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/create-new', [CategoriesController::class, 'NewCreate']);
     Route::get('/categories.index', [CategoriesController::class, 'index'])->name('categories.index');
     Route::post('/category-store', [SnippetController::class, 'CategoryStore']);
+    Route::get('/categories/{categoryId}', [CategoriesController::class, 'Show'])->name('categories.show');
+
+    Route::get('/categories/{categoryId}/edit', [CategoriesController::class, 'EditView'])->name('categories.edit');
+
 
 });
 

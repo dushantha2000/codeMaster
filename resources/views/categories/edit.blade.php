@@ -25,14 +25,14 @@
                 <span class="text-gray-400">|</span>
             </li>
             <li>
-                <span class="text-blue-400 font-medium">Create new</span>
+                <span class="text-blue-400 font-medium">Update category</span>
             </li>
         </ol>
     </nav>
 
     {{-- Header --}}
     <div>
-        <h1 class="text-3xl font-black text-white tracking-tight">Create New Category</h1>
+        <h1 class="text-3xl font-black text-white tracking-tight">Update  category</h1>
         <p class="text-gray-400 text-xs font-medium mt-1">Organize your snippets by creating a new category</p>
     </div>
 
@@ -50,7 +50,7 @@
                 </h3>
                 
                 {{-- Preview Card --}}
-                <div id="livePreview" class="glass-card rounded-xl p-6 border-2 transition-all" >
+                <div id="livePreview" class="glass-card rounded-xl p-6 border-2 transition-all" style="border-color: rgba(59, 130, 246, 0.3);">
                     <div class="flex items-start gap-4">
                         <div id="previewIcon" class="w-16 h-16 rounded-xl bg-blue-500/20 border-2 border-blue-500/30 flex items-center justify-center">
                             <span id="previewEmoji" class="text-3xl">🟦</span>
