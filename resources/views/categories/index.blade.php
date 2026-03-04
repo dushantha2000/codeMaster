@@ -158,24 +158,19 @@
                 </a>
 
                 {{-- Delete (Dark Red Style) --}}
-                <form id="delete-form" method="POST" class="block"
-                    onsubmit="return confirm('Are you sure you want to delete this category?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                        class="group w-full py-4 px-8 rounded-2xl font-bold text-center transition-all duration-300 
+                <button type="button" onclick="showDeleteConfirmation()"
+                    class="group w-full py-4 px-8 rounded-2xl font-bold text-center transition-all duration-300 
                             text-xs flex items-center justify-center gap-3
                             text-red-300 
                             hover:text-red-500 
                            animate-[slideInLeft_0.3s_ease-out_0.3s_both]">
 
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                        Delete Category
-                    </button>
-                </form>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete Category
+                </button>
             </div>
 
             {{-- CLOSE BUTTON --}}
@@ -184,6 +179,68 @@
                    animate-[fadeIn_0.3s_ease-out_0.4s_both]">
                 Dismiss
             </button>
+        </div>
+    </div>
+
+    {{-- DELETE CONFIRMATION MODAL --}}
+    <div id="delete-confirmation-modal" onclick="closeDeleteConfirmation(event)"
+        class="hidden fixed inset-0 z-[99999] backdrop-blur-md bg-black/70 flex items-center justify-center p-4">
+
+        <div onclick="event.stopPropagation()"
+            class="bg-[#0a0a0a] rounded-3xl p-8 flex flex-col gap-5 min-w-[340px] max-w-md shadow-[0_20px_50px_rgba(0,0,0,0.6)] 
+               border border-red-500/30 scale-90 animate-[menuPopIn_0.3s_cubic-bezier(0.34,1.56,0.64,1)_forwards]">
+
+            {{-- Warning Icon --}}
+            <div class="flex justify-center">
+                <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+            </div>
+
+            {{-- Title --}}
+            <div class="text-center">
+                <h3 class="text-white text-xl font-extrabold mb-2">Delete Category</h3>
+                <p id="delete-confirmation-message" class="text-gray-400 text-sm">
+                    Are you sure you want to delete this category?
+                </p>
+                <p class="text-gray-500 text-xs mt-2">This action cannot be undone.</p>
+            </div>
+
+            {{-- Action Buttons --}}
+            <div class="flex flex-col gap-3 mt-2">
+                <form id="delete-form" action="{{ url('/categories') }}" method="POST" class="block" enctype="multipart/form-data">
+                    {{ csrf_field() }}
+                    @method('DELETE')
+
+                    {{-- Hidden input for category_id --}}
+                    <input type="hidden" name="category_id" id="CategoryId">
+                   
+                    <button type="submit"
+                        class="group w-full py-3 px-8 rounded-2xl font-bold text-center transition-all duration-300 
+                            text-sm flex items-center justify-center gap-3
+                            bg-red-600 text-white 
+                            hover:bg-red-700 
+                            animate-[slideInLeft_0.3s_ease-out_0.1s_both]">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Delete
+                    </button>
+                </form>
+
+                <button onclick="closeDeleteConfirmation()"
+                    class="w-full py-3 px-8 rounded-2xl font-bold text-center transition-all duration-300 
+                        text-sm flex items-center justify-center gap-3
+                        bg-[#1e1e1e] text-gray-300 border border-white/10
+                        hover:bg-[#2a2a2a] hover:text-white hover:border-white/20
+                        animate-[slideInLeft_0.3s_ease-out_0.2s_both]">
+                    Cancel
+                </button>
+            </div>
         </div>
     </div>
 
@@ -289,5 +346,42 @@
         }, {
             passive: false
         });
+
+        // Delete Confirmation Modal Functions
+        function showDeleteConfirmation() {
+            const modal = document.getElementById('delete-confirmation-modal');
+            const actionMenu = document.getElementById('action-menu');
+            const categoryName = document.getElementById('selected-category-name').textContent;
+            const messageEl = document.getElementById('delete-confirmation-message');
+
+            // Update the message with the category name
+            messageEl.textContent = `Are you sure you want to delete "${categoryName}"?`;
+
+            // Hide action menu and show confirmation modal
+            actionMenu.style.display = 'none';
+            modal.style.display = 'flex';
+        }
+
+        function closeDeleteConfirmation(event) {
+            const modal = document.getElementById('delete-confirmation-modal');
+            const actionMenu = document.getElementById('action-menu');
+
+            // Only close if clicking outside the modal content or on cancel button
+            if (!event || event.target === modal || event.target.tagName === 'DIV') {
+                modal.style.display = 'none';
+                actionMenu.style.display = 'flex';
+            }
+        }
+
+        // Close delete modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") {
+                const modal = document.getElementById('delete-confirmation-modal');
+                if (modal.style.display === 'flex') {
+                    closeDeleteConfirmation();
+                }
+            }
+        });
     </script>
 @endsection
+

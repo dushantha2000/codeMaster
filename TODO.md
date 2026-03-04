@@ -1,10 +1,9 @@
-# Categories Page Update - TODO
+# TODO - Delete Confirmation Modal for Categories
 
-## Task
-Update categories page to have 3 action buttons (View, Update, Delete) at bottom-right instead of center floating modal.
+## Plan
+- [ ] 1. Add DELETE route for categories in routes/web.php
+- [ ] 2. Add destroy method in CategoriesController
+- [ ] 3. Add delete confirmation modal in index.blade.php
 
-## Steps:
-- [x] 1. Remove old modal CSS styles (blur-transition, is-blurred, action-menu, action-container, etc.)
-- [x] 2. Remove the #action-menu floating modal div
-- [x] 3. Add new bottom-right action buttons with blue color scheme
-- [x] 4. Update JavaScript functions to handle the new button layout
+## Status
+- [ ] NOT STARTED

@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Create Category')
+@section('title', 'Edit Category')
 
 @section('content')
 <div class="w-full max-w-full mx-auto px-4 space-y-6">
@@ -16,24 +16,24 @@
                 </a>
             </li>
             <li>
-                <span class="text-gray-400">|</span>
+                <span class="text-gray-400">/</span>
             </li>
             <li>
-                <a href="{{ url('/') }}" class="text-gray-500 hover:text-gray-700">Category</a>
+                <a href="{{ route('categories.index') }}" class="text-gray-500 hover:text-gray-700">Categories</a>
             </li>
             <li>
-                <span class="text-gray-400">|</span>
+                <span class="text-gray-400">/</span>
             </li>
             <li>
-                <span class="text-blue-400 font-medium">Update category</span>
+                <span class="text-blue-400 font-medium">Edit category</span>
             </li>
         </ol>
     </nav>
 
     {{-- Header --}}
     <div>
-        <h1 class="text-3xl font-black text-white tracking-tight">Update  category</h1>
-        <p class="text-gray-400 text-xs font-medium mt-1">Organize your snippets by creating a new category</p>
+        <h1 class="text-3xl font-black text-white tracking-tight">Edit Category</h1>
+        <p class="text-gray-400 text-xs font-medium mt-1">Update your category details</p>
     </div>
 
     {{-- Main Content with Preview Left and Form Right --}}
@@ -50,17 +50,17 @@
                 </h3>
                 
                 {{-- Preview Card --}}
-                <div id="livePreview" class="glass-card rounded-xl p-6 border-2 transition-all" style="border-color: rgba(59, 130, 246, 0.3);">
+                <div id="livePreview" class="glass-card rounded-xl p-6 border-2 transition-all" style="border-color: {{ $category->color_name  }}">
                     <div class="flex items-start gap-4">
-                        <div id="previewIcon" class="w-16 h-16 rounded-xl bg-blue-500/20 border-2 border-blue-500/30 flex items-center justify-center">
-                            <span id="previewEmoji" class="text-3xl">🟦</span>
+                        <div id="previewIcon" class="w-16 h-16 rounded-xl {{ $category->color_name}} border-2 {{ $category->color_name  }} flex items-center justify-center">
+                           
                         </div>
                         <div class="flex-1">
                             <div class="flex items-center gap-3 mb-2">
-                                <h2 id="previewTitle" class="text-2xl font-bold text-white">Category Name</h2>
+                                <h2 id="previewTitle" class="text-2xl font-bold text-white">{{ $category->category_name }}</h2>
                                 <span id="previewCount" class="text-xs px-2 py-1 bg-blue-500/10 text-blue-400 rounded-md border border-blue-500/20">0 snippets</span>
                             </div>
-                            <p id="previewDescription" class="text-gray-400 text-sm">Category description will appear here</p>
+                            <p id="previewDescription" class="text-gray-400 text-sm">{{ $category->category_description ?? 'Category description will appear here' }}</p>
                             
                           
                         </div>
@@ -76,15 +76,18 @@
         {{-- Right Column - Form --}}
         <div class="space-y-4">
             <div class="glass-card rounded-2xl p-6 border border-white/10">
-                <form action="{{ url('/category-create') }}" method="POST"  enctype="multipart/form-data" class="space-y-5" id="categoryForm">
+                <form action="{{ url('/category-update') }}" method="POST"  enctype="multipart/form-data" class="space-y-5" id="categoryForm">
                     {{ csrf_field() }}
+                    
+                    {{-- Hidden input for category_id --}}
+                    <input type="hidden" name="category_id" value="{{ $category->category_id }}">
                     
                     {{-- Category Name --}}
                     <div>
                         <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5">
                             Category Name <span class="text-red-400">*</span>
                         </label>
-                        <input type="text" name="name" id="categoryName" value="{{ old('name') }}" placeholder="e.g., JavaScript, Python, Laravel" required
+                        <input type="text" name="name" id="categoryName" value="{{ old('name', $category->category_name) }}" placeholder="e.g., JavaScript, Python, Laravel" required
                             class="bg-white/5 border border-white/10 w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
                         <p class="text-[10px] text-gray-500 mt-1.5">Choose a descriptive name for your category</p>
                     </div>
@@ -96,7 +99,7 @@
                         </label>
                         <textarea name="description" id="categoryDescription" rows="3" 
                             class="bg-white/5 border border-white/10 w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
-                            placeholder="Describe what this category is for...">{{ old('description') }}</textarea>
+                            placeholder="Describe what this category is for...">{{ old('description', $category->category_description) }}</textarea>
                         <p class="text-[10px] text-gray-500 mt-1.5">Brief explanation of what kind of snippets belong here</p>
                     </div>
 
@@ -122,12 +125,12 @@
                         </div>
                         
                         {{-- Hidden input for color value --}}
-                        <input type="hidden" name="color" value="blue" id="selectedColor">
+                        <input type="hidden" name="color" value="{{ old('color', $category->color_name) }}" id="selectedColor">
                     </div>
 
                     {{-- Form Actions --}}
                     <div class="flex items-center justify-end gap-3 pt-4 border-t border-white/5">
-                        <a href="{{ url('/categories') }}" 
+                        <a href="{{ route('categories.index') }}" 
                             class="px-5 py-2.5 text-xs text-gray-400 hover:text-white transition-colors font-medium">
                             Cancel
                         </a>
@@ -136,7 +139,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            Create Category
+                            Update Category
                         </button>
                     </div>
                 </form>
@@ -176,6 +179,41 @@
         const previewEmoji = document.getElementById('previewEmoji');
         const previewCard = document.getElementById('livePreview');
         
+        // Get stored color value
+        const storedColor = document.getElementById('selectedColor').value || 'blue';
+        
+        // Initialize color selection based on stored value
+        const colorMap = {
+            'blue': { emoji: '🟦', border: 'rgba(59, 130, 246, 0.3)', bgClass: 'bg-blue-500/20', borderClass: 'border-blue-500/30' },
+            'purple': { emoji: '🟣', border: 'rgba(168, 85, 247, 0.3)', bgClass: 'bg-purple-500/20', borderClass: 'border-purple-500/30' },
+            'green': { emoji: '🟢', border: 'rgba(34, 197, 94, 0.3)', bgClass: 'bg-green-500/20', borderClass: 'border-green-500/30' },
+            'yellow': { emoji: '🟡', border: 'rgba(234, 179, 8, 0.3)', bgClass: 'bg-yellow-500/20', borderClass: 'border-yellow-500/30' },
+            'red': { emoji: '🔴', border: 'rgba(239, 68, 68, 0.3)', bgClass: 'bg-red-500/20', borderClass: 'border-red-500/30' },
+            'pink': { emoji: '💗', border: 'rgba(236, 72, 153, 0.3)', bgClass: 'bg-pink-500/20', borderClass: 'border-pink-500/30' },
+            'indigo': { emoji: '🟣', border: 'rgba(99, 102, 241, 0.3)', bgClass: 'bg-indigo-500/20', borderClass: 'border-indigo-500/30' },
+            'teal': { emoji: '🔷', border: 'rgba(20, 184, 166, 0.3)', bgClass: 'bg-teal-500/20', borderClass: 'border-teal-500/30' },
+            'orange': { emoji: '🟠', border: 'rgba(249, 115, 22, 0.3)', bgClass: 'bg-orange-500/20', borderClass: 'border-orange-500/30' },
+            'cyan': { emoji: '🔹', border: 'rgba(6, 182, 212, 0.3)', bgClass: 'bg-cyan-500/20', borderClass: 'border-cyan-500/30' },
+            'emerald': { emoji: '💚', border: 'rgba(16, 185, 129, 0.3)', bgClass: 'bg-emerald-500/20', borderClass: 'border-emerald-500/30' },
+            'rose': { emoji: '🌹', border: 'rgba(244, 114, 182, 0.3)', bgClass: 'bg-rose-500/20', borderClass: 'border-rose-500/30' }
+        };
+        
+        // Set initial color selection
+        const colorData = colorMap[storedColor] || colorMap['blue'];
+        document.querySelectorAll('.color-btn').forEach(btn => {
+            if (btn.dataset.color === storedColor) {
+                btn.classList.add('ring-2', 'ring-blue-500/50', 'border-2', 'border-blue-400');
+                btn.classList.remove('border-white/10');
+            } else {
+                btn.classList.remove('ring-2', 'ring-blue-500/50', 'border-2', 'border-blue-400');
+                btn.classList.add('border', 'border-white/10');
+            }
+        });
+        
+        // Set initial preview based on stored category
+        previewCard.style.borderColor = colorData.border;
+        previewIcon.className = `w-16 h-16 rounded-xl ${colorData.bgClass} border-2 ${colorData.borderClass} flex items-center justify-center`;
+        
         // Update name in real-time
         nameInput.addEventListener('input', function() {
             previewTitle.textContent = this.value || 'Category Name';
@@ -208,25 +246,12 @@
                 previewEmoji.textContent = emoji;
                 
                 // Update preview card border color
-                const colorMap = {
-                    'blue': 'rgba(59, 130, 246, 0.3)',
-                    'purple': 'rgba(168, 85, 247, 0.3)',
-                    'green': 'rgba(34, 197, 94, 0.3)',
-                    'yellow': 'rgba(234, 179, 8, 0.3)',
-                    'red': 'rgba(239, 68, 68, 0.3)',
-                    'pink': 'rgba(236, 72, 153, 0.3)',
-                    'indigo': 'rgba(99, 102, 241, 0.3)',
-                    'teal': 'rgba(20, 184, 166, 0.3)',
-                    'orange': 'rgba(249, 115, 22, 0.3)',
-                    'cyan': 'rgba(6, 182, 212, 0.3)',
-                    'emerald': 'rgba(16, 185, 129, 0.3)',
-                    'rose': 'rgba(244, 114, 182, 0.3)'
-                };
+                const selectedColorData = colorMap[color] || colorMap['blue'];
                 
-                previewCard.style.borderColor = colorMap[color] || 'rgba(59, 130, 246, 0.3)';
+                previewCard.style.borderColor = selectedColorData.border;
                 
                 // Update icon background
-                previewIcon.className = `w-16 h-16 rounded-xl bg-${color}-500/20 border-2 border-${color}-500/30 flex items-center justify-center`;
+                previewIcon.className = `w-16 h-16 rounded-xl ${selectedColorData.bgClass} border-2 ${selectedColorData.borderClass} flex items-center justify-center`;
             });
         });
     });
