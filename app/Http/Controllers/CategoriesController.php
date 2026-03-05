@@ -12,13 +12,55 @@ use App\Http\Requests\StoreCategoryRequest;
 
 class CategoriesController extends Controller
 {
+
+    public function Update(StoreCategoryRequest $request)
+    {
+        // return $request;
+
+        try {
+            $userId = auth()->id();
+
+
+            $category = DB::transaction(function () use ($request, $userId) {
+                return DB::table('categories')
+                    ->where('category_id', $request->category_id)
+                    ->update([
+                            'user_id' => $userId,
+                            'category_id' => $request->category_id,
+                            'category_name' => $request->name,
+                            'category_description' => $request->description,
+                            'color_name' => $request->color,
+                            'isActive' => 1,
+                        ]);
+            });
+
+            //  Forget categories_version
+            Cache::forget("user:{$userId}:categories_version");
+
+            return redirect()
+                ->route('categories.index')
+                ->with('success', 'Category updated successfully.');
+
+        } catch (Exception $e) {
+            // Log::error("Store Error: " . $e->getMessage());
+            return back()->withInput()->withErrors(['error' => 'Something went wrong while saving.']);
+        }
+
+
+
+    }
     public function Show($category_id)
     {
 
         //return $category_id;
 
         // $category = Category::find($category_id);
-        return view('categories.show');
+        try {
+            return view('categories.show');
+        } catch (Exception $e) {
+            return back()->with('error', 'Something went wrong. Please try again later.');
+            //throw $th;
+        }
 
     }
 
@@ -60,7 +102,7 @@ class CategoriesController extends Controller
     {
         try {
             $userId = auth()->id();
-           
+
             return view('categories.create');
         } catch (Exception $e) {
             return back()->with('error', 'Something went wrong. Please try again later.');
@@ -100,14 +142,15 @@ class CategoriesController extends Controller
             $userId = auth()->id();
 
             $category = DB::transaction(function () use ($request, $userId) {
-                return Category::create([
-                    'category_id' => (string) Str::uuid(),
-                    'user_id' => $userId,
-                    'category_name' => $request->name,
-                    'category_description' => $request->description,
-                    'color_name' => $request->color,
-                    'isActive' => 1,
-                ]);
+                return DB::table('categories')
+                    ->insert([
+                        'category_id' => (string) Str::uuid(),
+                        'user_id' => $userId,
+                        'category_name' => $request->name,
+                        'category_description' => $request->description,
+                        'color_name' => $request->color,
+                        'isActive' => 1,
+                    ]);
             });
 
             //  Forget categories_version

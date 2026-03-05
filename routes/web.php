@@ -74,7 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/categories/{categoryId}/edit', [CategoriesController::class, 'EditView'])->name('categories.edit');
 
-    Route::post('/category-update/{categoryId}', [CategoriesController::class, 'Update']);
+    Route::post('/category-update', [CategoriesController::class, 'Update']);
 
     
     Route::delete('/categories/{categoryId}', [CategoriesController::class, 'destroy']);

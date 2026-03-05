@@ -312,10 +312,21 @@
                     </div>
                 </div>
 
-                <div class="flex gap-3 mt-6 md:mt-8">
+                {{-- <div class="flex gap-3 mt-6 md:mt-8">
                     <button type="button" @click="submitProjectInfo"
                         class="flex-1 btn-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all">
                         Start Coding
+                    </button>
+                </div> --}}
+
+                <div class="flex gap-3 mt-6 md:mt-8">
+                    <a href="{{ url('/') }}" type="button"
+                        class="flex-1 bg-white/5 hover:bg-white/10 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-white/10 text-center ">
+                        Cancel
+                    </a>
+                    <button type="button" @click="submitProjectInfo"
+                        class="flex-1 btn-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all">
+                        Save Changes
                     </button>
                 </div>
 
