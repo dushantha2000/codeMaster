@@ -38,8 +38,8 @@ Route::get('/api/snippets/{id}', [SnippetController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [SnippetController::class, 'index'])->name('dashboard');
     Route::post('/logout', [AuthController::class, 'Logout']);
-    Route::get('profile', [AuthController::class, 'Profile']);
-    Route::get('/settings', [AuthController::class, 'Settings']);
+    Route::get('/profile', [AuthController::class, 'profile']);
+    Route::get('/settings', [AuthController::class, 'Settings'])->name('settings');
     // Route::get('/api/search', [SnippetController::class,'search']);
     Route::get('/my-snippets', [SnippetController::class, 'mySnippets'])->name('snippets.index');
     Route::delete('snippets/{id}', [SnippetController::class, 'destroy']);
@@ -61,6 +61,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile-destroy', [AuthController::class, 'destroyProfile']);
     Route::post('/update-password', [AuthController::class, 'changePassword']);
     Route::post('/setting-profile', [AuthController::class, 'UpdateProfile']);
+
+    Route::post('/update-profile-image', [AuthController::class, 'UpdateProfileImage']);
 
     // delete single snippet
     Route::post('/snippet-delete', [SnippetController::class, 'SnippetDelete']);

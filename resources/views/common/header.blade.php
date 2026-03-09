@@ -144,8 +144,14 @@
             <button @click="userMenuOpen = !userMenuOpen"
                 class="flex items-center gap-2 p-1 pr-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
                 <div
-                    class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-blue-900/20">
-                    {{ substr(Auth::user()->name, 0, 1) }}
+                    class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-900/20 overflow-hidden">
+                    @if (Auth::user()->profile_image)
+                        <img src="{{ asset('profileImages/' . Auth::user()->profile_image) }}"
+                            alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
+                    @else
+                        {{-- කොටුව කුඩා නිසා font size එක text-xs හෝ text-sm ලෙස තබා ගන්න --}}
+                        <span class="text-xs">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                    @endif
                 </div>
                 <span class="text-sm text-gray-300 font-medium hide-on-mobile">{{ Auth::user()->name }}</span>
                 <svg class="w-4 h-4 text-gray-500 transition-transform" :class="userMenuOpen ? 'rotate-180' : ''"
@@ -165,7 +171,7 @@
                     <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Signed in as</p>
                     <p class="text-sm text-white truncate">{{ Auth::user()->name }}</p>
                 </div>
-                 <a href="{{ url('/my-snippets') }}"
+                <a href="{{ url('/my-snippets') }}"
                     class="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-white/10">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -174,7 +180,7 @@
                     Snippets
                 </a>
 
-                 <a href="{{ url('/categories.index') }}"
+                <a href="{{ url('/categories.index') }}"
                     class="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-white/10">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -182,7 +188,7 @@
                     </svg>
                     Category
                 </a>
-                
+
                 <a href="{{ url('/profile') }}"
                     class="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-white/10">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -192,8 +198,8 @@
                     Partnerships
                 </a>
 
-               
-               
+
+
                 <a href="{{ url('/settings') }}"
                     class="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-white/10">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

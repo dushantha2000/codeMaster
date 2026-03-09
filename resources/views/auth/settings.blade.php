@@ -16,13 +16,13 @@
                     </a>
                 </li>
                 <li>
-                    <span class="text-gray-400">|</span>
+                    <span class="text-gray-400">/</span>
                 </li>
                 <li>
                     <a href="{{ url('/') }}" class="text-gray-500 hover:text-gray-700">Profile</a>
                 </li>
                 <li>
-                    <span class="text-gray-400">|</span>
+                    <span class="text-gray-400">/</span>
                 </li>
                 <li>
                     <span class="text-blue-400 font-medium">System Settings</span>
@@ -48,7 +48,7 @@
                         <div class="relative group">
                             <div class="w-24 h-24 rounded-3xl bg-blue-600/20 border-2 border-blue-500/50 flex items-center justify-center shadow-2xl shadow-blue-500/20 overflow-hidden">
                                 @if(Auth::user()->profile_image)
-                                    <img src="{{ asset('storage/' . Auth::user()->profile_image) }}" 
+                                    <img src="/profileImages/{{ Auth::user()->profile_image }}" 
                                          alt="{{ Auth::user()->name }}"
                                          class="w-full h-full object-cover">
                                 @else
@@ -170,7 +170,7 @@
                 </div>
 
                 {{-- Appearance Settings --}}
-                <div class="rounded-3xl p-8 shadow-2xl glass-card">
+                {{-- <div class="rounded-3xl p-8 shadow-2xl glass-card">
                     <h3 class="text-lg font-bold text-white mb-6">Appearance</h3>
                     <div class="space-y-4">
                         <div>
@@ -201,7 +201,7 @@
                             </select>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             {{-- Right Column --}}
@@ -282,7 +282,7 @@
                 <div class="flex flex-col items-center justify-center">
                     <div class="w-32 h-32 rounded-3xl bg-blue-600/20 border-2 border-blue-500/50 flex items-center justify-center mb-4 overflow-hidden" id="imagePreview">
                         @if(Auth::user()->profile_image)
-                            <img src="{{ asset('storage/' . Auth::user()->profile_image) }}" 
+                            <img src="/profileImages/{{ Auth::user()->profile_image }}" 
                                  alt="Preview" class="w-full h-full object-cover">
                         @else
                             <span class="text-5xl font-bold text-blue-500">{{ substr(Auth::user()->name, 0, 1) }}</span>
