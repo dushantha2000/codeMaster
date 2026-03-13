@@ -29,7 +29,7 @@ class SnippetController extends Controller
 
     public function index(Request $request)
     {
-        
+
         $currentUserId = auth()->id();
 
         try {
@@ -171,11 +171,13 @@ class SnippetController extends Controller
             $cacheKey = "snippet:user:{$currentUserId}:{$id}";
 
             // Detailed view can be cached forever until updated/deleted
-            $snippet = Cache::rememberForever($cacheKey, 
-            
-            function () use ($id) {
-                return Snippet::with(['user:id,name', 'files'])->findOrFail($id);
-            });
+            $snippet = Cache::rememberForever(
+                $cacheKey,
+
+                function () use ($id) {
+                    return Snippet::with(['user:id,name', 'files'])->findOrFail($id);
+                }
+            );
 
             return response()->json($snippet);
         } catch (Exception $e) {
@@ -235,7 +237,7 @@ class SnippetController extends Controller
 
                 if ($request->filled('q')) {
                     $keyword = $request->q;
-                    
+
                     $query->where(function ($q) use ($keyword) {
                         $q->where('title', 'LIKE', "{$keyword}%")
                             ->orWhere('description', 'LIKE', "%{$keyword}%");
@@ -249,7 +251,7 @@ class SnippetController extends Controller
                 return $query->latest()->paginate(20);
             });
 
-            //return $results;
+            return $results;
 
             return response()->json($results);
 

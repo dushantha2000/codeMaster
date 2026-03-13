@@ -17,13 +17,13 @@
                     </a>
                 </li>
                 <li>
-                    <span class="text-gray-400">|</span>
+                    <span class="text-gray-400">/</span>
                 </li>
                 <li>
                     <a href="{{ url('/') }}" class="text-gray-500 hover:text-gray-700">Profile</a>
                 </li>
                 <li>
-                    <span class="text-gray-400">|</span>
+                    <span class="text-gray-400">/</span>
                 </li>
                 <li>
                     <span class="text-blue-400 font-medium">Partnerships</span>

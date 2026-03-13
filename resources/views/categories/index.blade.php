@@ -4,10 +4,7 @@
 
 @section('content')
     {{-- 1. WRAPPER FOR BLURRABLE CONTENT --}}
-    <div id="main-page-content"
-        class="transition-all duration-400 ease-[cubic-bezier(0.4,0,0.2,1)] w-full max-w-7xl mx-auto px-4 space-y-8
-    {{-- is-blurred class will be added via JS --}}
-    [&.is-blurred]:filter [&.is-blurred]:blur-[8px] [&.is-blurred]:pointer-events-none [&.is-blurred]:select-none">
+    <div id="main-page-content" class="w-full max-w-6xl mx-auto px-4  animate-in fade-in slide-in-from-bottom-4 duration-500">
 
         {{-- Breadcrumb --}}
         <nav class="flex mb-6" aria-label="Breadcrumb">
@@ -35,8 +32,9 @@
             </ol>
         </nav>
 
+
         {{-- Header Section --}}
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-12">
             <div>
                 <div class="flex items-center gap-3">
                     <h1 class="text-4xl font-black text-white tracking-tight">Categories</h1>
@@ -211,13 +209,14 @@
 
             {{-- Action Buttons --}}
             <div class="flex flex-col gap-3 mt-2">
-                <form id="delete-form" action="{{ url('/categories') }}" method="POST" class="block" enctype="multipart/form-data">
+                <form id="delete-form" action="{{ url('/categories') }}" method="POST" class="block"
+                    enctype="multipart/form-data">
                     {{ csrf_field() }}
                     @method('DELETE')
 
                     {{-- Hidden input for category_id --}}
                     <input type="hidden" name="category_id" id="CategoryId">
-                   
+
                     <button type="submit"
                         class="group w-full py-3 px-8 rounded-2xl font-bold text-center transition-all duration-300 
                             text-sm flex items-center justify-center gap-3
@@ -384,4 +383,3 @@
         });
     </script>
 @endsection
-

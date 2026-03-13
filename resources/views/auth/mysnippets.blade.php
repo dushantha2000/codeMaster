@@ -17,16 +17,16 @@
                     </a>
                 </li>
                 <li>
-                    <span class="text-gray-400">|</span>
+                    <span class="text-gray-400">/</span>
                 </li>
                 <li>
                     <a href="{{ url('/') }}" class="text-gray-500 hover:text-gray-700">Profile</a>
                 </li>
                 <li>
-                    <span class="text-gray-400">|</span>
+                    <span class="text-gray-400">/</span>
                 </li>
                 <li>
-                    <span class="text-blue-400 font-medium">My Vault</span>
+                    <span class="text-blue-400 font-medium"> Vault & Code Library</span>
                 </li>
             </ol>
         </nav>
@@ -34,144 +34,177 @@
         {{-- Global Page Header --}}
         <div class="flex flex-col lg:flex-row lg:items-center justify-between  mb-10">
             <div class=" items-center gap-5">
-               
+
                 {{-- Title & Count --}}
                 <div>
-                    <h1 class="text-4xl font-black text-white tracking-tight">My Vault</h1>
+                    <h1 class="text-4xl font-black text-white tracking-tight"> Vault & Code Library</h1>
                     <p class="text-gray-400 text-sm font-medium">
                         Managing <span id="totalCount" class="text-blue-400 font-bold">{{ $snippets->total() }}</span> saved
                         snippets
                     </p>
                 </div>
             </div>
+        </div>
 
-            {{-- Top Right Actions --}}
-            <div class="flex flex-wrap items-center gap-3">
-                <div class="relative group">
-                    <input type="text" id="searchInput" placeholder="Search snippets..."
-                        class="bg-white/5 border border-white/10 text-white text-sm rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all w-full sm:w-64">
-                    <svg class="w-4 h-4 text-gray-500 absolute left-3.5 top-1/2 -translate-y-1/2 group-focus-within:text-blue-400 transition-colors"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
 
-                <a href="{{ route('snippets-create') }}"
-                    class="inline-flex items-center gap-2 btn-primary text-white text-sm px-6 py-3 rounded-xl font-bold transition-all duration-200 shadow-lg shadow-blue-900/20">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    Create
-                </a>
+        {{-- Hidden Languages Dropdown (shown when clicking "More") --}}
+        <div id="moreLanguagesDropdown"
+            class="hidden absolute z-50 mt-2 p-4 bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl backdrop-blur-xl"
+            style="min-width: 200px;">
+            <div class="text-xs text-gray-500 font-medium mb-3 px-2">All Languages</div>
+            <div class="flex flex-col gap-2 max-h-60 overflow-y-auto custom-scrollbar">
+                @php
+                    $allLanguages = $snippets->pluck('language')->filter()->unique()->sort()->values();
+                @endphp
+                @foreach ($allLanguages as $language)
+                    <button onclick="setLanguageFilter('{{ strtolower($language) }}', this)"
+                        class="dropdown-lang-btn text-left px-4 py-2.5 bg-white/5 hover:bg-blue-600/20 text-gray-400 hover:text-blue-400 rounded-xl text-xs font-medium border border-white/10 hover:border-blue-500/30 transition-all w-full">
+                        {{ $language }}
+                    </button>
+                @endforeach
             </div>
         </div>
+
 
         {{-- Main Layout Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
 
-            {{-- Left Sidebar: Filtering Card --}}
+            {{-- profile  --}}
             <div class="md:col-span-1">
                 <div class="sticky top-8 space-y-6">
                     <div
-                        class="glass-card bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 relative overflow-hidden shadow-2xl">
-                        {{-- Top Accent Line --}}
+                        class="glass-card  backdrop-blur-xl rounded-3xl p-8 border  text-center relative overflow-hidden shadow-2xl">
 
+                        {{-- Decorative Background Glow --}}
+                        <div class="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/10 blur-3xl rounded-full"></div>
 
-                        {{-- <h3 class="text-white font-black text-lg mb-6 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L4.293 7.293A1 1 0 014 6.586V4z" />
-                            </svg>
-                            Filter Vault
-                        </h3> --}}
-
-
-                        {{-- Filter Group: Language --}}
-                        <div class="space-y-4 mb-8">
-                            <div class="flex items-center justify-between">
-                                <label
-                                    class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black">Language</label>
-                                <span class="text-[10px] text-blue-500 font-bold bg-blue-500/10 px-2 py-0.5 rounded-full"
-                                    id="activeCount">All</span>
+                        {{-- Profile Image Section --}}
+                        <div class="relative inline-block mb-4">
+                            <div
+                                class="w-24 h-24 rounded-3xl bg-blue-600/20 border-2 border-blue-500/50 flex items-center justify-center mx-auto shadow-2xl shadow-blue-500/20 overflow-hidden">
+                                @if (Auth::user()->profile_image)
+                                    <img class="w-full h-full object-cover"
+                                        src="{{ asset('profileImages/' . Auth::user()->profile_image) }}"
+                                        alt="{{ Auth::user()->name }}">
+                                @else
+                                    <span
+                                        class="text-4xl font-bold text-blue-500">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                                @endif
                             </div>
-
-                            <div class="flex flex-wrap gap-2" id="languageFilters">
-                                @forelse($languages as $lang)
-                                    <label class="relative cursor-pointer group">
-                                        <input type="checkbox" name="languages[]" value="{{ strtolower($lang) }}"
-                                            class="language-checkbox sr-only peer">
-
-                                        <div
-                                            class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-400 text-xs font-bold transition-all
-                            peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-500 peer-checked:shadow-[0_0_15px_rgba(37,99,235,0.4)]
-                            group-hover:bg-white/10 group-hover:border-white/20">
-                                            <span class="capitalize">{{ $lang }}</span>
-                                        </div>
-                                    </label>
-                                @empty
-                                    <p class="text-xs text-gray-500 italic">No languages detected</p>
-                                @endforelse
+                            {{-- Level Badge --}}
+                            <div
+                                class="absolute -bottom-2 -right-2 bg-blue-600 text-white text-[10px] font-black px-2 py-1 rounded-lg border-2 border-[#0f172a] shadow-xl">
+                                lVl 1
                             </div>
                         </div>
 
-                        {{-- Filter Group: Sorting --}}
-                        <div class="space-y-4 mb-8">
-                            <label class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black">Sort By</label>
-                            <select id="sortSelect"
-                                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 focus:outline-none focus:border-blue-500/50 transition-all appearance-none cursor-pointer">
-                                <option value="latest">Recently Added</option>
-                                <option value="oldest">Oldest First</option>
-                                <option value="az">Alphabetical (A-Z)</option>
-                                <option value="za">Alphabetical (Z-A)</option>
-                            </select>
+                        {{-- Name & Email --}}
+                        <h2 class="text-xl font-bold text-white tracking-tight">{{ Auth::user()->name }}</h2>
+                        <p class="text-gray-500 text-sm mb-3">{{ Auth::user()->email }}</p>
+
+
+
+                        {{-- Profile Bio --}}
+                        <div class="mb-6">
+                            @if (Auth::user()->bio)
+                                <p class="text-gray-400 text-xs leading-relaxed px-2 italic">
+                                    "{{ Auth::user()->bio }}"
+                                </p>
+                            @else
+                                <p class="text-gray-600 text-xs italic">No bio added yet.</p>
+                            @endif
                         </div>
 
-                        {{-- Filter Group: Status --}}
-                        <div class="space-y-4">
-                            <label class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-black">Status</label>
-                            <div class="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-white/5">
-                                <button type="button" data-status="all"
-                                    class="status-btn flex-1 py-2 text-xs font-bold rounded-lg btn-primary text-white shadow-lg transition-all">All</button>
-                                <button type="button" data-status="1"
-                                    class="status-btn flex-1 py-2 text-xs font-bold rounded-lg text-gray-500 hover:text-gray-300 transition-colors">Active</button>
-                                <button type="button" data-status="0"
-                                    class="status-btn flex-1 py-2 text-xs font-bold rounded-lg text-gray-500 hover:text-gray-300 transition-colors">Inactive</button>
+                        
+                        {{-- Stats Section --}}
+                        <div class="pt-6 border-t border-white/5 space-y-4">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-gray-500 uppercase tracking-widest font-bold text-[10px]">Total
+                                    Snippets</span>
+                                <span class="text-blue-400 font-bold" id="sidebarCount">{{ $snippets->total() }}</span>
                             </div>
+
+
+                           
                         </div>
 
-                        {{-- Clear Filters --}}
-                        <div class="pt-6 mt-6 border-t border-white/5">
-                            <button type="button" id="clearFilters"
-                                class="w-full py-3 text-xs font-bold text-gray-500 hover:text-red-400 transition-colors flex items-center justify-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1 1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                                Clear All Filters
-                            </button>
-                        </div>
-
-                        {{-- Active Filters Badge --}}
-                        <div id="activeFiltersBadge"
-                            class="hidden mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs text-blue-400 font-bold flex items-center gap-2">
-                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    <span id="filterCount">0</span> filters active
-                                </span>
-                            </div>
+                        {{-- Action Button --}}
+                        <div class="mt-8">
+                            <a href="#"
+                                class="inline-flex items-center gap-2 btn-primary text-white text-sm px-6 py-2 rounded-xl font-bold transition-all duration-200 shadow-lg shadow-blue-900/20">
+                                Edit Profile
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
 
+
             {{-- Right Content: Snippets Vault --}}
-            <div class="md:col-span-2 space-y-4">
+            <div class="md:col-span-3 space-y-4">
+
+                {{-- Filters Bar --}}
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+
+                    {{-- Search Input & Filters Group --}}
+                    <div class="flex flex-col md:flex-row flex-1 items-center gap-2">
+
+                        {{-- Search Input --}}
+                        <div class="relative group w-full md:w-80">
+                            <input type="text" id="searchInput" placeholder="Find a snippet..."
+                                class="bg-[#0d1117] border border-[#30363d] text-gray-300 text-sm rounded-lg pl-10 pr-4 py-1.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all w-full">
+                            <svg class="w-4 h-4 text-gray-500 absolute left-3.5 top-1/2 -translate-y-1/2 group-focus-within:text-blue-400 transition-colors"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+
+                        {{-- Filters--}}
+                        <div class="flex items-center gap-2 w-full md:w-auto">
+                            {{-- Language Filter --}}
+                            <select id="languageFilter" onchange="setLanguageFilter(this.value)"
+                                class="bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-300 hover:bg-[#30363d] hover:border-[#8b949e] focus:outline-none cursor-pointer transition-all">
+                                <option value="all">Language</option>
+                                @foreach ($languages as $language)
+                                    <option value="{{ $language }}">{{ $language }}</option>
+                                @endforeach
+                            </select>
+
+                            {{-- Status/Type Filter --}}
+                            <select id="statusFilter" onchange="setStatusFilter(this.value)"
+                                class="bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-300 hover:bg-[#30363d] hover:border-[#8b949e] focus:outline-none cursor-pointer transition-all">
+                                <option value="all">Status</option>
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+
+                            {{-- Sort Filter --}}
+                            <select id="sortFilter" onchange="setSortFilter(this.value)"
+                                class="bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-300 hover:bg-[#30363d] hover:border-[#8b949e] focus:outline-none cursor-pointer transition-all">
+                                <option value="latest">Sort</option>
+                                <option value="oldest">Oldest</option>
+                                <option value="az">A-Z</option>
+                                <option value="za">Z-A</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {{-- New Snippet Button --}}
+                    <div class="w-full lg:w-auto">
+                        <a href="#"
+                            class="flex items-center justify-center gap-2 btn-primary text-white text-sm px-3 py-2 rounded-xl font-bold transition-all duration-200 shadow-lg shadow-blue-900/20">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4" />
+                            </svg>
+                            New
+                        </a>
+                    </div>
+                </div>
+
+
+
                 {{-- Loading Spinner --}}
                 <div id="loadingSpinner" class="hidden flex items-center justify-center py-12">
                     <div class="flex flex-col items-center gap-4">
@@ -180,102 +213,94 @@
                     </div>
                 </div>
 
+
+
                 {{-- Snippets Container --}}
-                <div id="snippetsContainer">
-                    @if ($snippets->count() > 0)
-                        <div id="snippetsGrid" class="flex flex-col gap-4">
-                            @foreach ($snippets as $snippet)
-                                <div class="snippet-card group rounded-2xl   hover:border-white/20 shadow-xl transition-all duration-300"
-                                    data-language="{{ strtolower($snippet->language ?? '') }}"
-                                    data-status="{{ $snippet->isActive }}" data-title="{{ strtolower($snippet->title) }}"
-                                    data-description="{{ strtolower($snippet->description ?? '') }}">
-                                    <div class="p-5 flex items-center gap-5">
+                @foreach ($snippets as $snippet)
+                    <div class="snippet-card group border-b border-white/10 p-5 hover:bg-white/[0.02] transition-all"
+                        data-language="{{ strtolower($snippet->language ?? '') }}"
+                        data-status="{{ $snippet->isActive }}" data-title="{{ strtolower($snippet->title) }}">
 
-                                        <div class="flex-1 min-w-0">
-                                            <div class="flex items-center gap-3 mb-1 flex-wrap">
-                                                <a href="{{ url('snippets/' . $snippet->id . '/edit') }}"
-                                                    class="text-white font-bold group-hover:text-blue-400 truncate transition-colors">
-                                                    {{ $snippet->title }}
-                                                </a>
-                                                @if ($snippet->language)
-                                                    <span
-                                                        class="px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[10px] uppercase tracking-widest font-black rounded-md border border-blue-500/20">
-                                                        {{ $snippet->language }}
-                                                    </span>
-                                                @endif
-                                                @if ($snippet->isActive == 0)
-                                                    <span
-                                                        class="px-2 py-0.5 bg-red-500/10 text-red-400 text-[10px] uppercase tracking-widest font-black rounded-md border border-red-500/20">
-                                                        Inactive
-                                                    </span>
-                                                @endif
-                                            </div>
-                                            <p class="text-gray-500 text-xs line-clamp-1 mb-2">{{ $snippet->description }}
-                                            </p>
-                                            <div class="flex items-center gap-4 text-gray-400 text-[11px] font-bold">
-                                                <span class="flex items-center gap-1">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-width="2"
-                                                            d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
-                                                        </path>
-                                                    </svg>
-                                                    {{ $snippet->files->count() }} files
-                                                </span>
-                                                <span>• {{ $snippet->created_at->diffForHumans() }}</span>
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <a href="{{ url('snippets/' . $snippet->id . '/edit') }}"
-                                                class="p-2.5 bg-white/5 hover:bg-yellow-500/20 hover:text-yellow-400 rounded-xl border border-white/5 transition-all">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                                    </path>
-                                                </svg>
-                                            </a>
-                                            <button
-                                                onclick="deleteSnippet({{ $snippet->id }}, '{{ addslashes($snippet->title) }}')"
-                                                class="p-2.5 bg-white/5 hover:bg-red-500/20 hover:text-red-400 rounded-xl border border-white/5 transition-all">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1 1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                    </path>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
+                        {{-- Main Flex Wrapper: Column on mobile, Row on desktop --}}
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+
+                            {{-- Left Side: Title, Description, Meta --}}
+                            <div class="flex-1 min-w-0">
+                                <div class="flex flex-wrap items-center gap-2 mb-2">
+                                    <a href="{{ url('snippets/' . $snippet->id . '/edit') }}"
+                                        class="text-blue-400 text-lg md:text-xl font-semibold hover:underline decoration-2 truncate max-w-[200px] md:max-w-none">
+                                        {{ strtolower($snippet->title) }}
+                                    </a>
+                                    <span
+                                        class="px-2 py-0.5 bg-transparent text-gray-500 text-[10px] uppercase tracking-wider rounded-md border border-gray-800 font-bold">
+                                        Public
+                                    </span>
                                 </div>
-                            @endforeach
-                        </div>
 
-                        <div class="mt-8" id="paginationContainer">
-                            {{ $snippets->links('pagination::tailwind') }}
-                        </div>
-                    @else
-                        {{-- Empty State --}}
-                        <div class=" rounded-[3rem] p-5 text-center border-dashed border-white/10 shadow-inner ">
-                            <div
-                                class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10 animate-pulse">
-                                <svg class="w-12 h-12 text-gray-600" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                                </svg>
+                                <p
+                                    class="text-gray-400 text-sm leading-snug whitespace-pre-line mb-4 line-clamp-2 md:line-clamp-none">
+                                    {{ $snippet->description }}
+                                </p>
+
+                                {{-- Meta Info: Wraps naturally on small screens --}}
+                                <div
+                                    class="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-500 text-[11px] md:text-xs">
+                                    @if ($snippet->language)
+                                        <span class="flex items-center gap-1.5">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                                            {{ $snippet->language }}
+                                        </span>
+                                    @endif
+
+                                    <span>Updated {{ $snippet->created_at->diffForHumans() }}</span>
+
+                                    <span class="flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-width="2"
+                                                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
+                                            </path>
+                                        </svg>
+                                        {{ $snippet->files->count() }} files
+                                    </span>
+                                </div>
                             </div>
-                            <h3 class="text-3xl font-bold text-white mb-3 tracking-tight">The Vault is Silent</h3>
-                            <p class="text-gray-500 mb-10 max-w-sm mx-auto leading-relaxed">No code fragments detected in
-                                your collection. Start your legacy by adding your first snippet.</p>
-                            <a href="{{ route('snippets-create') }}"
-                                class="inline-flex items-center gap-2 btn-primary text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-lg">
-                                Create Your First Snippet
-                            </a>
+
+                            {{-- Right Side: Action Buttons --}}
+                            <div class="flex items-center gap-2 mt-2 md:mt-0 self-end md:self-start">
+                                <a href="{{ url('snippets/' . $snippet->id . '/edit') }}"
+                                    class="p-2.5 md:p-2 bg-white/5 hover:bg-yellow-500/20 hover:text-yellow-400 border border-white/10 rounded-lg transition-all"
+                                    title="Edit">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                        </path>
+                                    </svg>
+                                </a>
+
+                                <button onclick="deleteSnippet({{ $snippet->id }}, '{{ addslashes($snippet->title) }}')"
+                                    class="p-2.5 md:p-2 bg-white/5 hover:bg-red-500/20 hover:text-red-400 border border-white/10 rounded-lg transition-all"
+                                    title="Delete">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1 1h-4a1 1 0 00-1 1v3M4 7h16">
+                                        </path>
+                                    </svg>
+                                </button>
+
+                                <button
+                                    class="flex items-center gap-1.5 px-4 md:px-3 py-2 md:py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-bold text-gray-300 transition-all">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.921-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z">
+                                        </path>
+                                    </svg>
+                                    Star
+                                </button>
+                            </div>
                         </div>
-                    @endif
-                </div>
+                    </div>
+                @endforeach
 
                 {{-- No Results Message --}}
                 <div id="noResults"
@@ -297,35 +322,8 @@
                 </div>
             </div>
 
-            {{-- Right Sidebar: User Profile Card --}}
-            <div class="md:col-span-1">
-                <div class="sticky top-8 space-y-6">
-                    <div
-                        class="glass-card bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center relative overflow-hidden shadow-2xl">
-                        <div class="relative inline-block mb-4">
-                            <div
-                                class="w-24 h-24 rounded-3xl bg-blue-600/20 border-2 border-blue-500/50 flex items-center justify-center mx-auto shadow-2xl shadow-blue-500/20">
-                                <span
-                                    class="text-4xl font-bold text-blue-500">{{ substr(Auth::user()->name, 0, 1) }}</span>
-                            </div>
-                        </div>
+            {{-- User Profile Card --}}
 
-                        <h2 class="text-xl font-bold text-white">{{ Auth::user()->name }}</h2>
-                        <p class="text-gray-500 text-sm mb-6">{{ Auth::user()->email }}</p>
-
-                        <div class="pt-6 border-t border-white/5">
-                            <div class="flex justify-between text-xs mb-4">
-                                <span class="text-gray-500 uppercase tracking-widest font-bold">Total Snippets</span>
-                                <span class="text-gray-300" id="sidebarCount">{{ $snippets->total() }}</span>
-                            </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-gray-500 uppercase tracking-widest font-bold">Member Since</span>
-                                <span class="text-gray-300">{{ Auth::user()->created_at->format('M Y') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -508,8 +506,17 @@
             document.querySelectorAll('.language-checkbox').forEach(cb => cb.checked = false);
             filterState.languages = [];
 
+            // Reset language filter bar buttons
+            document.querySelectorAll('.lang-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-500/20', 'text-blue-400', 'border-blue-500/30');
+                btn.classList.add('bg-white/5', 'text-gray-400', 'border-white/10');
+            });
+            document.querySelector('[onclick="setLanguageFilter(\'all\')"]').classList.add('bg-blue-500/20',
+                'text-blue-400', 'border-blue-500/30');
+
             // Reset sort
             document.getElementById('sortSelect').value = 'latest';
+            document.getElementById('sortFilter').value = 'latest';
             filterState.sort = 'latest';
 
             // Reset status
@@ -519,6 +526,7 @@
             });
             document.querySelector('[data-status="all"]').classList.add('bg-blue-600', 'text-white', 'shadow-lg');
             document.querySelector('[data-status="all"]').classList.remove('text-gray-500');
+            document.getElementById('statusFilter').value = 'all';
             filterState.status = 'all';
 
             applyFilters();
@@ -580,11 +588,99 @@
                 });
             });
 
+
+
             // Clear filters button
             const clearFiltersBtn = document.getElementById('clearFilters');
             if (clearFiltersBtn) {
                 clearFiltersBtn.addEventListener('click', resetAllFilters);
             }
         });
+
+        // Sync filter bar with sidebar
+        function setLanguageFilter(language) {
+            // Update button styles
+            document.querySelectorAll('.lang-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-500/20', 'text-blue-400', 'border-blue-500/30');
+                btn.classList.add('bg-white/5', 'text-gray-400', 'border-white/10');
+            });
+
+            const activeBtn = event.currentTarget;
+            activeBtn.classList.remove('bg-white/5', 'text-gray-400', 'border-white/10');
+            activeBtn.classList.add('bg-blue-500/20', 'text-blue-400', 'border-blue-500/30');
+
+            // Update sidebar checkboxes
+            if (language === 'all') {
+                document.querySelectorAll('.language-checkbox').forEach(cb => cb.checked = false);
+                filterState.languages = [];
+            } else {
+                document.querySelectorAll('.language-checkbox').forEach(cb => {
+                    if (cb.value === language) {
+                        cb.checked = true;
+                    } else {
+                        cb.checked = false;
+                    }
+                });
+                filterState.languages = [language];
+            }
+
+            applyFilters();
+        }
+
+        function setStatusFilter(status) {
+            // Update the status buttons in sidebar
+            document.querySelectorAll('.status-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
+                btn.classList.add('text-gray-500');
+
+                if (btn.getAttribute('data-status') === status) {
+                    btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
+                    btn.classList.remove('text-gray-500');
+                }
+            });
+
+            filterState.status = status;
+            applyFilters();
+        }
+
+        function setSortFilter(sortValue) {
+            document.getElementById('sortSelect').value = sortValue;
+            filterState.sort = sortValue;
+            applyFilters();
+        }
+
+        // Sync sidebar changes to filter bar
+        function syncFilterBarFromSidebar() {
+            // Update language filter buttons
+            const activeLanguages = filterState.languages;
+
+            document.querySelectorAll('.lang-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-500/20', 'text-blue-400', 'border-blue-500/30');
+                btn.classList.add('bg-white/5', 'text-gray-400', 'border-white/10');
+            });
+
+            if (activeLanguages.length === 0) {
+                document.querySelector('[onclick="setLanguageFilter(\'all\')"]')?.classList.add('bg-blue-500/20',
+                    'text-blue-400', 'border-blue-500/30');
+            } else if (activeLanguages.length === 1) {
+                const langBtn = document.querySelector(`[onclick="setLanguageFilter('${activeLanguages[0]}')"]`);
+                if (langBtn) {
+                    langBtn.classList.add('bg-blue-500/20', 'text-blue-400', 'border-blue-500/30');
+                }
+            }
+
+            // Update status filter
+            document.getElementById('statusFilter').value = filterState.status;
+
+            // Update sort filter
+            document.getElementById('sortFilter').value = filterState.sort;
+        }
+
+        // Override the original applyFilters to sync the bar
+        const originalApplyFilters = applyFilters;
+        applyFilters = function() {
+            originalApplyFilters();
+            syncFilterBarFromSidebar();
+        };
     </script>
 @endsection

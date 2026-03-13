@@ -26,12 +26,7 @@
     </div>
 
     <!-- Search (hidden on mobile) - Only shown on pages that yield it -->
-    @hasSection('show-search')
-        <div class="hidden md:block relative flex-1 max-w-md mx-4">
-            <input type="text" x-model="searchQuery" @input.debounce.300ms="fetchSnippets()" placeholder="Search..."
-                class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 outline-none focus:border-white/30 transition-all">
-        </div>
-    @endif
+    
 
     <!-- Right side -->
     <div class="flex items-center gap-2 md:gap-4">
@@ -149,7 +144,7 @@
                         <img src="{{ asset('profileImages/' . Auth::user()->profile_image) }}"
                             alt="{{ Auth::user()->name }}" class="w-full h-full object-cover">
                     @else
-                        {{-- කොටුව කුඩා නිසා font size එක text-xs හෝ text-sm ලෙස තබා ගන්න --}}
+                       
                         <span class="text-xs">{{ substr(Auth::user()->name, 0, 1) }}</span>
                     @endif
                 </div>
