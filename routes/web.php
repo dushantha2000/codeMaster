@@ -67,6 +67,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // delete single snippet
     Route::post('/snippet-delete', [SnippetController::class, 'SnippetDelete']);
 
+
+    
     //category routes
     Route::post('/category-create', [CategoriesController::class, 'Create']);
     Route::get('/create-new', [CategoriesController::class, 'NewCreate']);
@@ -80,6 +82,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     
     Route::delete('/categories/{categoryId}', [CategoriesController::class, 'destroy']);
+
+    //marked
+    Route::post('/snippet-marked', [SnippetController::class, 'SnippetMarked']);    
 
 
 });

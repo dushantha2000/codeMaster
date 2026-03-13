@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Snippet extends Model
 {
     use HasFactory; 
-    protected $fillable = ['title', 'description', 'language', 'user_id'];
+    protected $fillable = ['title', 'description', 'language', 'user_id', 'isActive', 'isMark'];
 
     public function files()
     {
