@@ -457,7 +457,7 @@ class SnippetController extends Controller
                 ->pluck('language');
         });
 
-        //dd($languages);
+        // return $snippets;
 
         return view('auth.mysnippets', compact('snippets', 'languages'));
     }
@@ -574,6 +574,45 @@ class SnippetController extends Controller
                 'error',
                 'Failed to delete snippet. Please try again later.',
             );
+        }
+    }
+
+    public function SnippetMarked(Request $request)
+    {
+        $snippetId = $request->input('snippet_id');
+
+        try {
+            $snippet = DB::table('snippets')->where('id', $snippetId)->first(['user_id', 'isMark']);
+
+            if (!$snippet) {
+                return redirect()->back()->with('error', 'Snippet not found.');
+            }
+
+            $newStatus = $snippet->isMark == 1 ? 0 : 1;
+
+            DB::table('snippets')
+                ->where('id', $snippetId)
+                ->update([
+                    'isMark' => $newStatus,
+                    'updated_at' => now()
+                ]);
+
+            // Invalidate cache for this user's snippets
+            $this->invalidateUserSnippetCaches($snippet->user_id);
+
+            $partners = DB::table('partnerships')
+                ->where('user_id', $snippet->user_id)
+                ->pluck('partner_id');
+
+            foreach ($partners as $partnerId) {
+                $this->invalidateUserSnippetCaches($partnerId);
+            }
+
+            $message = $newStatus == 1 ? 'Snippet marked successfully.' : 'Snippet unmarked successfully.';
+            return redirect()->back()->with('success', $message);
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update snippet status.');
         }
     }
 }

@@ -170,9 +170,7 @@
                     <p class="text-gray-500 mb-8 max-w-sm mx-auto leading-relaxed">Try adjusting your filters or search
                         terms.</p>
                     <button
-                        @click="selectedLanguage = 'all'; selectedStatus = 'all'; sortBy = 'latest'; searchQuery = ''; fetchSnippets();
-                        class="px-6
-                        py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition-all"
+                        @click="selectedLanguage = 'all'; selectedStatus = 'all'; sortBy = 'latest'; searchQuery = ''; fetchSnippets()"
                         class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-all">
                         Clear Filters
                     </button>
@@ -183,7 +181,7 @@
         <!-- Right Sidebar-->
         <aside class="col-span-1 xl:col-span-1 mt-8 xl:mt-0">
             <div class="glass-card rounded-2xl p-6 border border-white/10 sticky top-8 text-left">
-                <h2 class="text-sm font-bold text-white mb-6">Latest from our changelog</h2>
+                <h2 class="text-sm font-bold text-white mb-6">Latest Activity</h2>
 
                 <div class="relative space-y-6">
                     <div class="absolute left-[5px] top-2 bottom-2 w-0.5 bg-white/10"></div>
