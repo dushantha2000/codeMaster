@@ -13,6 +13,7 @@
             <input type="hidden" name="title" x-model="projectInfo.title">
             <input type="hidden" name="description" x-model="projectInfo.description">
             <input type="hidden" name="language" x-model="projectInfo.language">
+            <input type="hidden" name="category" x-model="projectInfo.category">
 
             <!-- Modern Header -->
             <header
@@ -310,6 +311,32 @@
                             <option value="python">Python</option>
                         </select>
                     </div>
+
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">
+                            Category
+                        </label>
+
+                        @if ($categories->isEmpty())
+                            <div
+                                class="flex items-center gap-5 mt-2 bg-white/5 p-3 rounded-lg border border-dashed border-white/10">
+                                <span class="text-[11px] text-gray-500 italic">No categories?</span>
+                                <a href="{{ url('/create-new') . '?type=category' }}"
+                                    class="text-[11px] text-blue-400 hover:text-blue-300 font-medium transition-colors">+
+                                    Create New</a>
+                            </div>
+                        @else
+                            <select x-model="projectInfo.category"
+                                class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
+                                <option value="" disabled selected>Choose a category</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->category_id }}">
+                                        {{ $category->category_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endif
+                    </div>
                 </div>
 
                 {{-- <div class="flex gap-3 mt-6 md:mt-8">
@@ -384,6 +411,31 @@
                             <option value="php">PHP</option>
                             <option value="python">Python</option>
                         </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">
+                            Category
+                        </label>
+
+                        @if ($categories->isEmpty())
+                            <div
+                                class="flex items-center gap-5 mt-2 bg-white/5 p-3 rounded-lg border border-dashed border-white/10">
+                                <span class="text-[11px] text-gray-500 italic">No categories?</span>
+                                <a href="{{ url('/create-new') . '?type=category' }}"
+                                    class="text-[11px] text-blue-400 hover:text-blue-300 font-medium transition-colors">+
+                                    Create New</a>
+                            </div>
+                        @else
+                            <select x-model="projectInfo.category"
+                                class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
+                                <option value="" disabled selected>Choose a category</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->category_id }}">
+                                        {{ $category->category_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endif
                     </div>
                 </div>
 
@@ -571,8 +623,11 @@
                     projectInfo: {
                         title: '',
                         description: '',
-                        language: 'laravel'
+                        language: 'laravel',
+                        category: '',
+
                     },
+
                     projectValidation: {
                         title: '',
                         description: ''
@@ -641,6 +696,11 @@
                             isValid = false;
                         } else if (this.projectInfo.description.trim().length < 10) {
                             this.projectValidation.description = 'Description must be at least 10 characters';
+                            isValid = false;
+                        }
+                        if (!this.projectInfo.category) {
+                            // You can add category validation if needed
+                            this.projectValidation.category = 'Please select a category';
                             isValid = false;
                         }
 

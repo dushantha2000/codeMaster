@@ -4,16 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('category_id');
+            $table->id(); // Primary increment ID
+            $table->string('category_id')->unique(); // Foreign key
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('category_name');
             $table->string('color_name');
@@ -21,8 +20,7 @@ return new class extends Migration
             $table->tinyInteger('isActive')->default(1);
             $table->timestamps();
 
-            // Unique constraint
-            $table->unique(['user_id', 'category_name', 'category_description', 'color_name'], 'user_cat_desc_color_unique');
+            $table->unique(['user_id', 'category_name'], 'user_category_unique');
         });
     }
 

@@ -9,84 +9,164 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SnippetController extends Controller
 {
     /**
-     * Invalidate all snippet-related caches for a user
-     *
+
      * @return void
      */
     private function invalidateUserSnippetCaches($userId)
     {
-        //Update the Version 
-        Cache::forever("user:{$userId}:version", time());
+        //  Use increment instead of forever with time()
+        Cache::increment("user:{$userId}:version");
+
+        // If no version exists, set to 1
+        if (Cache::get("user:{$userId}:version") === null) {
+            Cache::forever("user:{$userId}:version", 1);
+        }
+
         // Forget specific static keys
         Cache::forget("languages:user:{$userId}:list");
-        // Forget partnership caches
         Cache::forget("partnerships:user:{$userId}:shared_with_me");
+
+        // Delete pattern-based caches for this user
+        $store = Cache::getStore();
+        if (method_exists($store, 'getRedis')) {
+            try {
+                $redis = $store->getRedis();
+                $prefix = Cache::getPrefix();
+
+                // Use scan instead of keys
+                $dashboardPattern = $prefix . "snippets:user:{$userId}:dashboard:*";
+                $this->scanAndDelete($redis, $dashboardPattern);
+
+                // Delete all search caches for this user
+                $searchPattern = $prefix . "search:user:{$userId}:*";
+                $this->scanAndDelete($redis, $searchPattern);
+
+            } catch (Exception $e) {
+                Log::warning('Redis pattern deletion failed: ' . $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Helper method to scan and delete Redis keys
+     */
+    private function scanAndDelete($redis, $pattern)
+    {
+        $iterator = null;
+        $keys = [];
+
+        do {
+            $result = $redis->scan($iterator, $pattern, 100);
+            if ($result !== false) {
+                $keys = array_merge($keys, $result);
+
+                // Delete in batches
+                if (count($keys) >= 100) {
+                    $redis->del($keys);
+                    $keys = [];
+                }
+            }
+        } while ($iterator > 0);
+
+        // Delete remaining keys
+        if (!empty($keys)) {
+            $redis->del($keys);
+        }
     }
 
     public function index(Request $request)
     {
-
         $currentUserId = auth()->id();
 
         try {
-            //Handle Partnerships logic 
+            //Handle Partnerships logic
             $partnershipCacheKey = "partnerships:user:{$currentUserId}:shared_with_me";
 
-            $ownersWhoSharedWithMe = Cache::rememberForever($partnershipCacheKey, function () use ($currentUserId) {
-                return DB::table('partnerships')
-                    ->where('partner_id', $currentUserId)
-                    ->pluck('user_id')
-                    ->toArray();
-            });
-
-            //Prepare Cache Key for Snippets Dashboard
-            $queryString = $request->getQueryString() ?? '';
-            $dashboardCacheKey = "snippets:user:{$currentUserId}:dashboard:" . md5($queryString);
-
-            //Handle Snippets Retrieval 
-            $snippets = Cache::rememberForever($dashboardCacheKey, function () use ($currentUserId, $ownersWhoSharedWithMe, $request) {
-
-                $query = Snippet::query();
-
-                //Own snippets OR shared by partners
-                $query->where(function ($q) use ($currentUserId, $ownersWhoSharedWithMe) {
-                    $q->where('user_id', $currentUserId);
-                    if (!empty($ownersWhoSharedWithMe)) {
-                        $q->orWhereIn('user_id', $ownersWhoSharedWithMe);
-                    }
-                });
-
-                // Search Logic
-                if ($request->search) {
-                    $search = $request->search;
-                    if (strlen($search) >= 3) {
-                        $query->whereFullText(['title', 'description'], $search);
-                    } else {
-                        $query->where('title', 'LIKE', "{$search}%");
-                    }
+            $ownersWhoSharedWithMe = Cache::remember(
+                $partnershipCacheKey,
+                now()->addDay(),
+                function () use ($currentUserId) {
+                    return DB::table('partnerships')
+                        ->where('partner_id', $currentUserId)
+                        ->pluck('user_id')
+                        ->toArray();
                 }
+            );
 
-                // Finalize query
-                return $query->select(['id', 'user_id', 'title', 'description', 'created_at'])
-                    ->with(['user:id,name', 'files:id,snippet_id,file_name'])
-                    ->latest()
-                    ->cursorPaginate(20)
-                    ->appends($request->all());
-            });
+            // Get version
+            $version = Cache::get("user:{$currentUserId}:version", 1);
+            $queryString = $request->getQueryString() ?? '';
+            $dashboardCacheKey = "snippets:user:{$currentUserId}:dashboard:v{$version}:" . md5($queryString);
 
-            return view('user.dashboard', compact('snippets'));
+            // Get snippets
+            $snippets = Cache::remember(
+                $dashboardCacheKey,
+                now()->addHours(6),
+                function () use ($currentUserId, $ownersWhoSharedWithMe, $request) {
+                    $query = Snippet::query();
+
+                    $query->where(function ($q) use ($currentUserId, $ownersWhoSharedWithMe) {
+                        $q->where('user_id', $currentUserId);
+                        if (!empty($ownersWhoSharedWithMe)) {
+                            $q->orWhereIn('user_id', $ownersWhoSharedWithMe);
+                        }
+                    });
+
+                    if ($request->search) {
+                        $search = $request->search;
+                        if (strlen($search) >= 3) {
+                            $query->whereFullText(['title', 'description'], $search);
+                        } else {
+                            $query->where('title', 'LIKE', "{$search}%");
+                        }
+                    }
+
+                    return $query->select(['id', 'user_id', 'title', 'description', 'created_at'])
+                        ->with(['user:id,name', 'files:id,snippet_id,file_name'])
+                        ->latest()
+                        ->cursorPaginate(20)
+                        ->appends($request->all());
+                }
+            );
+
+            // Get unique languages for filter
+            $languages = Cache::remember(
+                "languages:user:{$currentUserId}:v{$version}:list",
+                now()->addHours(12),
+                function () use ($currentUserId, $ownersWhoSharedWithMe) {
+                    $allRelevantUserIds = array_merge([$currentUserId], $ownersWhoSharedWithMe);
+                    return DB::table('snippets')
+                        ->whereIn('user_id', $allRelevantUserIds)
+                        ->whereNotNull('language')
+                        ->distinct()
+                        ->pluck('language')
+                        ->toArray();
+                }
+            );
+
+            // Pass both variables to view
+            return view('user.dashboard', compact('snippets', 'languages'));
 
         } catch (Exception $e) {
-            // return redirect('maintanance')->with('error', 'Something went wrong with the dashboard. Please try again later.');
+            Log::error('Dashboard error: ' . $e->getMessage());
+
+            // Even on error, pass empty arrays
+            return view('user.dashboard', [
+                'snippets' => collect(),
+                'languages' => []
+            ]);
         }
     }
 
     public function store(Request $request)
     {
+
+        // return $request;
         // Validation
         $request->validate([
             'title' => 'required|string|max:255',
@@ -96,6 +176,7 @@ class SnippetController extends Controller
             'file_names.*' => 'required|string|max:255',
             'contents' => 'required|array|min:1',
             'contents.*' => 'required|string',
+            'category_id' => 'exists:categories,id',
         ]);
 
         try {
@@ -109,6 +190,7 @@ class SnippetController extends Controller
                     'title' => $request->title,
                     'description' => $request->description,
                     'language' => $request->language,
+                    'category_id' => $request->category,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -131,34 +213,23 @@ class SnippetController extends Controller
                 DB::table('snippet_files')->insert($filesData);
 
 
-                // $fileNames = $request->file_names;
-                // $filePaths = $request->file_paths ?? [];
-                // $contents = $request->contents;
-
-                // foreach ($fileNames as $index => $fileName) {
-                //     $extension = pathinfo($fileName, PATHINFO_EXTENSION) ?: 'txt';
-
-                //     DB::table('snippet_files')->insert([
-                //         'snippet_id' => $snippetId,
-                //         'file_name' => $fileName,
-                //         'file_path' => $filePaths[$index] ?? null,
-                //         'content' => $contents[$index],
-                //         'extension' => $extension,
-                //         'created_at' => now(),
-                //         'updated_at' => now(),
-                //     ]);
-                // }
-
                 // Invalidate cache
                 $this->invalidateUserSnippetCaches($userId);
+
+                // Also invalidate for partners who might see this snippet
+                $partners = DB::table('partnerships')
+                    ->where('user_id', $userId)
+                    ->pluck('partner_id');
+                foreach ($partners as $partnerId) {
+                    $this->invalidateUserSnippetCaches($partnerId);
+                }
             });
 
             // Redirect to dashboard after transaction completes
             return redirect()->route('dashboard')->with('success', 'Snippet Added successfully.');
 
-
-
         } catch (Exception $e) {
+            Log::error('Store error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Something went wrong. Please try again later.');
         }
     }
@@ -168,36 +239,26 @@ class SnippetController extends Controller
         $currentUserId = auth()->id();
 
         try {
-            $cacheKey = "snippet:user:{$currentUserId}:{$id}";
+            $version = Cache::get("user:{$currentUserId}:version", 1);
+            $cacheKey = "snippet:user:{$currentUserId}:v{$version}:{$id}";
 
-            // Detailed view can be cached forever until updated/deleted
-            $snippet = Cache::rememberForever(
+            // FIXED: Added TTL
+            $snippet = Cache::remember(
                 $cacheKey,
-
+                now()->addDay(), // 1 day TTL
                 function () use ($id) {
                     return Snippet::with(['user:id,name', 'files'])->findOrFail($id);
                 }
             );
 
+
+
             return response()->json($snippet);
         } catch (Exception $e) {
-            //return response()->json([], 500);
+            Log::error('Show error: ' . $e->getMessage());
+            return response()->json(['error' => 'Snippet not found'], 404);
         }
-
-
-
-        // try {
-
-        //     $snippet = Snippet::with('files')->findOrFail($id);
-        //     return response()->json($snippet);
-
-        // } catch (Exception $e) {
-        //     return back()->with('error', 'Something went wrong. Please try again later.');
-        // }
     }
-
-
-
 
     public function search(Request $request)
     {
@@ -205,76 +266,114 @@ class SnippetController extends Controller
         $currentUserId = auth()->id();
 
         try {
-
-            //give Version Number to user to invalidate cache
-            $version = Cache::rememberForever("user:{$currentUserId}:version", fn() => time());
-
-            //  return $version;
+            //  instead of rememberForever
+            $version = Cache::get("user:{$currentUserId}:version", 1);
 
             // Create a unique code for the current search
             $searchKey = md5($request->getQueryString() ?? '');
-            // v:{$version} 
-            $searchCacheKey = "search:user:{$currentUserId}:v:{$version}:" . $searchKey;
+            $searchCacheKey = "search:user:{$currentUserId}:v{$version}:" . $searchKey;
 
-            $results = Cache::rememberForever($searchCacheKey, function () use ($request, $currentUserId) {
-                $query = Snippet::with(['user:id,name', 'files'])->select(
-                    'id',
-                    'user_id',
-                    'title',
-                    'description',
-                    'language',
-                    'created_at'
-                );
 
-                $query->where(function ($q) use ($currentUserId) {
-                    $q->where('user_id', $currentUserId)->orWhereExists(function ($sub) use ($currentUserId) {
-                        $sub->select(DB::raw(1))
-                            ->from('partnerships')
-                            ->whereColumn('partnerships.user_id', 'snippets.user_id')
-                            ->where('partnerships.partner_id', $currentUserId);
+            $results = Cache::remember(
+                $searchCacheKey,
+                now()->addMinutes(30), // 30 minutes TTL
+                function () use ($request, $currentUserId) {
+                    $query = Snippet::with(['user:id,name', 'files'])->select(
+                        'id',
+                        'user_id',
+                        'title',
+                        'description',
+                        'language',
+                        'created_at'
+                    );
+
+                    $query->where(function ($q) use ($currentUserId) {
+                        $q->where('user_id', $currentUserId)->orWhereExists(function ($sub) use ($currentUserId) {
+                            $sub->select(DB::raw(1))
+                                ->from('partnerships')
+                                ->whereColumn('partnerships.user_id', 'snippets.user_id')
+                                ->where('partnerships.partner_id', $currentUserId);
+                        });
                     });
-                });
 
-                if ($request->filled('q')) {
-                    $keyword = $request->q;
+                    if ($request->filled('q')) {
+                        $keyword = $request->q;
 
-                    $query->where(function ($q) use ($keyword) {
-                        $q->where('title', 'LIKE', "{$keyword}%")
-                            ->orWhere('description', 'LIKE', "%{$keyword}%");
-                    });
+                        $query->where(function ($q) use ($keyword) {
+                            $q->where('title', 'LIKE', "{$keyword}%")
+                                ->orWhere('description', 'LIKE', "%{$keyword}%");
+                        });
+                    }
+
+                    if ($request->filled('lang')) {
+                        $query->where('language', $request->lang);
+                    }
+
+                    return $query->latest()->paginate(20);
                 }
-
-                if ($request->filled('lang')) {
-                    $query->where('language', $request->lang);
-                }
-
-                return $query->latest()->paginate(20);
-            });
-
-            return $results;
+            );
 
             return response()->json($results);
 
         } catch (Exception $e) {
-            return response()->json(['massage' => 'Something went wrong (searching)'], 500);
+            Log::error('Search error: ' . $e->getMessage());
+            return response()->json(['message' => 'Something went wrong (searching)'], 500);
         }
-
-
     }
 
     public function edit($id)
     {
+
+        //return $id;
+
         try {
-            $snippet = Snippet::with('files')->findOrFail($id);
-            return view('user.editsnippet', compact('snippet'));
+
+            $userId = auth()->id();
+
+            $snippet = DB::table('snippets')
+                ->where('id', $id)
+                ->where('user_id', $userId)
+                ->first();
+
+            if (!$snippet) {
+                return back()->with('error', 'Snippet not found or you are not authorized to perform this action.');
+            }
+
+            $files = DB::table('snippet_files')
+                ->where('snippet_id', $id)
+                ->get()
+                ->map(function ($file) {
+                    return [
+                        'name' => $file->file_name,
+                        'path' => $file->file_path,
+                        'content' => $file->content,
+                    ];
+                });
+
+            $categories = DB::table('categories')
+                ->where('user_id', $userId)
+                ->where('isActive', 1)
+                ->get();
+
+            // arry of files data
+            $files = $files->toArray();
+
+            // return $files;
+
+
+            // $snippet = Snippet::with('files')->findOrFail($id);
+            return view('user.editsnippet', compact('snippet', 'files', 'categories'));
 
         } catch (Exception $e) {
+            Log::error('Edit error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Something went wrong. Please try again later.');
         }
     }
 
     public function Update(Request $request, $id)
     {
+
+        // return $request;
         // Validation
         $request->validate([
             'title' => 'required|string|max:255',
@@ -284,6 +383,7 @@ class SnippetController extends Controller
             'file_names.*' => 'required|string|max:255',
             'contents' => 'required|array|min:1',
             'contents.*' => 'required|string',
+            'category' => 'string',
         ]);
 
         try {
@@ -297,6 +397,7 @@ class SnippetController extends Controller
                     ->where('id', $id)
                     ->update([
                         'title' => $request->title,
+                        'category_id' => $request->category,
                         'description' => $request->description,
                         'language' => $request->language,
                         'updated_at' => now(),
@@ -310,8 +411,7 @@ class SnippetController extends Controller
                 $contents = $request->contents;
 
                 foreach ($fileNames as $index => $fileName) {
-                    $extension =
-                        pathinfo($fileName, PATHINFO_EXTENSION) ?: 'txt';
+                    $extension = pathinfo($fileName, PATHINFO_EXTENSION) ?: 'txt';
 
                     DB::table('snippet_files')->insert([
                         'snippet_id' => $id,
@@ -340,6 +440,7 @@ class SnippetController extends Controller
             });
 
         } catch (Exception $e) {
+            Log::error('Update error: ' . $e->getMessage());
             return redirect()->back()->with([
                 'error' => 'Something went wrong while loading the page.',
             ]);
@@ -377,6 +478,7 @@ class SnippetController extends Controller
 
             return response()->json(['message' => 'Snippet deleted successfully']);
         } catch (Exception $e) {
+            Log::error('Destroy error: ' . $e->getMessage());
             return response()->json(['message' => 'Something went wrong. Please try again later.'], 500);
         }
     }
@@ -385,15 +487,15 @@ class SnippetController extends Controller
     {
         $currentUserId = auth()->id();
 
-        $version = Cache::rememberForever("user:{$currentUserId}:version", fn() => time());
-        // Cache partnership lookups
+        // FIXED: Use get() instead of rememberForever
+        $version = Cache::get("user:{$currentUserId}:version", 1);
 
-        // unique code for the current search
-        $partnershipCacheKey = "partnerships:user:{$currentUserId}:shared_with_me:v:{$version}";
+        // unique code for the current search - FIXED: Added TTL
+        $partnershipCacheKey = "partnerships:user:{$currentUserId}:shared_with_me:v{$version}";
 
-        $ownersWhoSharedWithMe = Cache::rememberForever(
+        $ownersWhoSharedWithMe = Cache::remember(
             $partnershipCacheKey,
-
+            now()->addDay(), // 1 day TTL
             function () use ($currentUserId) {
                 return DB::table('partnerships')
                     ->where('partner_id', $currentUserId)
@@ -401,8 +503,6 @@ class SnippetController extends Controller
                     ->toArray();
             }
         );
-
-        //$ownersWhoSharedWithMe 
 
         $query = Snippet::with('files')->where(function ($q) use ($currentUserId, $ownersWhoSharedWithMe) {
             $q->where('user_id', $currentUserId)
@@ -435,29 +535,35 @@ class SnippetController extends Controller
 
         $perPage = in_array($request->per_page, [10, 25, 50, 100]) ? $request->per_page : 50;
         $queryString = $request->getQueryString() ?? '';
-        // 6. Cache snippets (Added 5 min TTL instead of 0)
-        $dashboardCacheKey = "snippets:user:{$currentUserId}:dashboard:v:{$version}:" . md5($queryString);
 
-        // Snippets Pagination Cache එක
-        $snippets = Cache::rememberForever($dashboardCacheKey, function () use ($query, $perPage, $request) {
-            return $query->paginate($perPage)->appends($request->all());
-        });
+        //  TTL (6 hours)
+        $dashboardCacheKey = "snippets:user:{$currentUserId}:dashboard:v{$version}:" . md5($queryString);
 
-        //dd($snippets);
+        // Snippets Pagination Cache 
+        $snippets = Cache::remember(
+            $dashboardCacheKey,
+            now()->addHours(6), // 6 hours TTL
+            function () use ($query, $perPage, $request) {
+                return $query->paginate($perPage)->appends($request->all());
+            }
+        );
 
-        $languagesCacheKey = "languages:user:{$currentUserId}:list";
+        // languages cache
+        $languagesCacheKey = "languages:user:{$currentUserId}:v{$version}:list";
 
-        // Language List Cache 
-        $languages = Cache::rememberForever($languagesCacheKey, function () use ($currentUserId, $ownersWhoSharedWithMe) {
-            $allRelevantUserIds = array_merge([$currentUserId], $ownersWhoSharedWithMe);
-            return DB::table('snippets')
-                ->whereIn('user_id', $allRelevantUserIds)
-                ->whereNotNull('language')
-                ->distinct()
-                ->pluck('language');
-        });
-
-        // return $snippets;
+        // Language List Cache
+        $languages = Cache::remember(
+            $languagesCacheKey,
+            now()->addHours(12), // 12 hours TTL
+            function () use ($currentUserId, $ownersWhoSharedWithMe) {
+                $allRelevantUserIds = array_merge([$currentUserId], $ownersWhoSharedWithMe);
+                return DB::table('snippets')
+                    ->whereIn('user_id', $allRelevantUserIds)
+                    ->whereNotNull('language')
+                    ->distinct()
+                    ->pluck('language');
+            }
+        );
 
         return view('auth.mysnippets', compact('snippets', 'languages'));
     }
@@ -471,7 +577,6 @@ class SnippetController extends Controller
             return response()->json([]);
         }
 
-        //dd($query);
         try {
             // Cache user search results 
             $searchCacheKey = 'users:search:' . md5($query);
@@ -479,16 +584,19 @@ class SnippetController extends Controller
                 $searchCacheKey,
                 now()->addMinutes(5),
                 function () use ($query) {
-                    return User::where('name', 'LIKE', '%' . $query . '%')->get([
-                        'id',
-                        'name',
-                    ]);
+                    return User::where('name', 'LIKE', '%' . $query . '%')
+                        ->limit(20) // Added limit for performance
+                        ->get([
+                            'id',
+                            'name',
+                        ]);
                 },
             );
 
             return response()->json($users);
         } catch (Exception $e) {
-            // return response()->json([], 500);
+            Log::error('UsersSearch error: ' . $e->getMessage());
+            return response()->json([], 500);
         }
     }
 
@@ -531,6 +639,7 @@ class SnippetController extends Controller
 
             return back()->with('success', 'Vault access updated successfully!');
         } catch (Exception $e) {
+            Log::error('updatePartnerships error: ' . $e->getMessage());
             return redirect()->back()->with(
                 'error',
                 'Failed to update vault access. Please try again later.',
@@ -570,6 +679,7 @@ class SnippetController extends Controller
 
             return back()->with('success', 'Snippet deleted successfully.');
         } catch (Exception $e) {
+            Log::error('SnippetDelete error: ' . $e->getMessage());
             return redirect()->back()->with(
                 'error',
                 'Failed to delete snippet. Please try again later.',
@@ -612,7 +722,40 @@ class SnippetController extends Controller
             return redirect()->back()->with('success', $message);
 
         } catch (Exception $e) {
+            Log::error('SnippetMarked error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to update snippet status.');
+        }
+    }
+
+
+    // create the snippet
+    public function snippetCreate()
+    {
+        $userId = auth()->id();
+
+        if (!$userId) {
+            return redirect()->route('login');
+        }
+
+        try {
+            $versionKey = "user:{$userId}:categories_version";
+            $version = Cache::rememberForever($versionKey, fn() => time());
+
+            // Version Key 
+            $cacheKey = "categories:user:{$userId}:v:{$version}";
+
+            $categories = Cache::rememberForever($cacheKey, function () use ($userId) {
+                return DB::table('categories')
+                    ->where('user_id', $userId)
+                    ->where('isActive', 1)
+                    ->select('category_id', 'category_name', 'category_description', 'color_name', 'isActive')
+                    ->get();
+            });
+
+            return view('user.snippetcreate', compact('categories'));
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Unable to load categories.');
         }
     }
 }

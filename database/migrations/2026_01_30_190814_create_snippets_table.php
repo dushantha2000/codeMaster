@@ -10,6 +10,11 @@ return new class extends Migration {
         Schema::create('snippets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+            // Category 
+            $table->string('category_id')->nullable();
+            $table->foreign('category_id')->references('category_id')->on('categories')->onDelete('set null');
+
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('language')->default('php');

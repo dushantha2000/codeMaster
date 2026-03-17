@@ -132,7 +132,7 @@ class AuthController extends Controller
             "password_confirmation" => "required",
         ]);
 
-        try {
+         try {
             DB::beginTransaction();
             // User Create 
             $user = User::create([
@@ -252,6 +252,7 @@ class AuthController extends Controller
             ->select(
                 "users.id",
                 "users.name",
+                "users.profile_image",  
                 "users.email",
                 "partnerships.is_read",
                 "partnerships.is_edit",

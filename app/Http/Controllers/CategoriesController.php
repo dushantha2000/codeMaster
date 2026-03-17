@@ -25,13 +25,13 @@ class CategoriesController extends Controller
                 return DB::table('categories')
                     ->where('category_id', $request->category_id)
                     ->update([
-                            'user_id' => $userId,
-                            'category_id' => $request->category_id,
-                            'category_name' => $request->name,
-                            'category_description' => $request->description,
-                            'color_name' => $request->color,
-                            'isActive' => 1,
-                        ]);
+                        'user_id' => $userId,
+                        'category_id' => $request->category_id,
+                        'category_name' => $request->name,
+                        'category_description' => $request->description,
+                        'color_name' => $request->color,
+                        'isActive' => 1,
+                    ]);
             });
 
             //  Forget categories_version
@@ -176,7 +176,9 @@ class CategoriesController extends Controller
             ->update(['isActive' => 0]);
 
         if ($updated) {
+
             Cache::forget("user:{$userId}:categories_version");
+
             return redirect()->route('categories.index')->with('success', 'Deleted successfully.');
         }
 

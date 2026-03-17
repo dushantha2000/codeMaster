@@ -39,7 +39,7 @@
                 <div>
                     <h1 class="text-4xl font-black text-white tracking-tight"> Vault & Code Library</h1>
                     <p class="text-gray-400 text-sm font-medium">
-                        Managing <span id="totalCount" class="text-blue-400 font-bold">{{ $snippets->total() }}</span> saved
+                        Managing <span id="totalCount" class="text-blue-400 font-bold">{{ count($snippets) }}</span> saved
                         snippets
                     </p>
                 </div>
@@ -47,7 +47,7 @@
         </div>
 
 
-        {{-- Hidden Languages Dropdown (shown when clicking "More") --}}
+        {{-- Hidden Languages Dropdown --}}
         <div id="moreLanguagesDropdown"
             class="hidden absolute z-50 mt-2 p-4 bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl backdrop-blur-xl"
             style="min-width: 200px;">
@@ -121,7 +121,7 @@
                             <div class="flex justify-between text-xs">
                                 <span class="text-gray-500 uppercase tracking-widest font-bold text-[10px]">Total
                                     Snippets</span>
-                                <span class="text-blue-400 font-bold" id="sidebarCount">{{ $snippets->total() }}</span>
+                               <span class="text-blue-400 font-bold" id="sidebarCount">{{ count($snippets) }}</span>
                             </div>
 
 
@@ -152,7 +152,7 @@
                         {{-- Search Input --}}
                         <div class="relative group w-full md:w-80">
                             <input type="text" id="searchInput" placeholder="Find a snippet..."
-                                class="bg-[#0d1117] border border-[#30363d] text-gray-300 text-sm rounded-lg pl-10 pr-4 py-1.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all w-full">
+                                class="bg-[#0d1117] border border-[#30363d] text-gray-300 text-sm rounded-lg pl-10 pr-4 py-1.5 focus:outline-none focus:border-white-500 focus:ring-1 focus:ring-white-500 transition-all w-full">
                             <svg class="w-4 h-4 text-gray-500 absolute left-3.5 top-1/2 -translate-y-1/2 group-focus-within:text-blue-400 transition-colors"
                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -191,7 +191,7 @@
                     </div>
 
                     {{-- New Snippet Button --}}
-                    <div class="w-full lg:w-auto">
+                    {{-- <div class="w-full lg:w-auto">
                         <a href="#"
                             class="flex items-center justify-center gap-2 btn-primary text-white text-sm px-3 py-2 rounded-xl font-bold transition-all duration-200 shadow-lg shadow-blue-900/20">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,7 +199,7 @@
                             </svg>
                             New
                         </a>
-                    </div>
+                    </div> --}}
                 </div>
 
 
@@ -227,7 +227,7 @@
                             <div class="flex-1 min-w-0">
                                 <div class="flex flex-wrap items-center gap-2 mb-2">
                                     <a href="{{ url('snippets/' . $snippet->id . '/edit') }}"
-                                        class="text-blue-400 text-lg md:text-xl font-semibold hover:underline decoration-2 truncate max-w-[200px] md:max-w-none">
+                                        class="text-white-400 text-lg md:text-xl font-semibold hover:underline decoration-2 truncate max-w-[200px] md:max-w-none">
                                         {{ strtolower($snippet->title) }}
                                     </a>
                                     <span

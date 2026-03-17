@@ -49,9 +49,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/partners/update', [partnershipController::class, 'PartnerPermission']);
 
-    Route::get('/snippets-create', function () {
-        return view('user.snippetcreate');
-    })->name('snippets-create');
+    // Route::get('/snippets-create', function () {
+    //     return view('user.snippetcreate');
+    // })->name('snippets-create');
+
+    Route::get('/snippets-create', [SnippetController::class, 'snippetCreate'])->name('snippets-create');
+
 
     Route::post('/snippet-store', [SnippetController::class, 'store']);
 
