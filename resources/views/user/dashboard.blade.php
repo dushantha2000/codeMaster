@@ -33,9 +33,9 @@
                         <select id="languageFilter" x-model="selectedLanguage" @change="fetchSnippets()"
                             class="bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-300 hover:bg-[#30363d] hover:border-[#8b949e] focus:outline-none cursor-pointer transition-all">
                             <option value="all">Language</option>
-                            {{-- @foreach ($languages as $language)
-                            <option value="{{ $language }}">{{ $language }}</option>
-                        @endforeach --}}
+                            @foreach ($languages as $language)
+                            <option value="{{ $language }}">{{ $language }}</option> 
+                         @endforeach 
                         </select>
 
                         {{-- Status/Type Filter --}}

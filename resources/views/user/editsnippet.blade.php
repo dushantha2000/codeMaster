@@ -1,19 +1,45 @@
 @extends('layout.snippet')
 
-@section('title', 'Edit')
+@section('title', 'My Profile')
 
 @section('content')
-<body class="text-gray-100" x-data="snippetEditor()" x-cloak>
-        <form action="{{ url('/snippets/update', $snippet->id) }}" method="POST" class="h-full flex flex-col">
+
+    <body class="text-gray-100" x-data="snippetEditor()" x-cloak>
+
+        @if (isset($snippet))
+            <script>
+                window.snippetData = {
+                    projectInfo: {
+                        title: @json($snippet->title),
+                        description: @json($snippet->description),
+                        language: @json($snippet->language ?? 'laravel'),
+                        category: @json($snippet->category_id),
+
+                    },
+                    files: @json($files)
+                };
+            </script>
+        @endif
+
+        <form action="{{ isset($snippet) ? url('/snippets/update/' . $snippet->id) : url('/snippet-store') }}" method="POST"
+            class="h-full flex flex-col">
             {{ csrf_field() }}
 
-            <!-- Header -->
+            <!-- Hidden inputs for project metadata -->
+            <input type="hidden" name="title" x-model="projectInfo.title">
+            <input type="hidden" name="description" x-model="projectInfo.description">
+            <input type="hidden" name="language" x-model="projectInfo.language">
+            <input type="hidden" name="category" x-model="projectInfo.category">
+
+
+
+            <!-- Modern Header -->
             <header
                 class="h-20 flex items-center justify-between px-4 md:px-8 shrink-0 glass-card border-b border-white/5 gap-4">
 
                 <div class="flex items-center gap-3 md:gap-4 shrink-0">
                     <button type="button" @click="toggleMobileSidebar"
-                        class="md:hidden p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+                        class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 12h16M4 18h16"></path>
@@ -36,74 +62,49 @@
                     </div>
                 </div>
 
-                <div class="flex-1 flex items-center justify-center gap-3 max-w-2xl px-2 min-w-0">
-                    <div class="relative flex-1 min-w-0 max-w-[280px] md:max-w-none">
-                        <input type="text" name="title" value="{{ $snippet->title }}" required
-                            placeholder="Project name..."
-                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm md:text-base font-bold text-white placeholder-gray-600 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/40 transition-all">
-                    </div>
-
-                    <div class="relative flex-1 hidden lg:block group min-w-0">
-                        <input type="text" name="description" value="{{ $snippet->description }}" required
-                            placeholder="Brief description..."
-                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-400 placeholder-gray-700 outline-none focus:border-white/20 transition-all cursor-help">
-                        <!-- Tooltip for long descriptions -->
-                        <div x-show="'{{ $snippet->description }}'.length > 50" 
-                            class="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-64 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-xl border border-white/10 z-50 pointer-events-none">
-                            <div class="break-words">{{ $snippet->description }}</div>
-                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-                                <div class="border-4 border-transparent border-t-gray-900"></div>
+                <!-- Project Info Display (Center) -->
+                <div class="flex-1 flex items-center justify-center gap-2 md:gap-3 max-w-2xl px-2 min-w-0">
+                    <div class="text-center min-w-0 flex-1">
+                        <h2 class="text-sm md:text-lg font-bold text-white truncate px-2"
+                            x-text="projectInfo.title || 'Untitled Project'"></h2>
+                        <div class="hidden md:block relative group">
+                            <p class="text-xs text-gray-400 truncate px-2 cursor-help"
+                                x-text="projectInfo.description || 'No description'"></p>
+                            <!-- Tooltip for long descriptions -->
+                            <div x-show="projectInfo.description && projectInfo.description.length > 50"
+                                class="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-64 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-xl border border-white/10 z-50 pointer-events-none">
+                                <div class="break-words" x-text="projectInfo.description"></div>
+                                <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                                    <div class="border-4 border-transparent border-t-gray-900"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <button type="button" @click="showProjectModal = true"
+                        class="p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all group shrink-0">
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+                            </path>
+                        </svg>
+                    </button>
                 </div>
 
                 <div class="flex items-center gap-2 md:gap-3 shrink-0">
-                    <div class="relative hidden sm:block">
-                        <select name="language"
-                            class="appearance-none bg-gray-900 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-xs font-bold text-white outline-none hover:bg-gray-800 focus:border-blue-500/40 transition-all cursor-pointer">
-                            <option value="laravel" {{ $snippet->language == 'laravel' ? 'selected' : '' }}>🔸 Laravel
-                            </option>
-                            <option value="php" {{ $snippet->language == 'php' ? 'selected' : '' }}>🐘 PHP</option>
-                            <option value="javascript" {{ $snippet->language == 'javascript' ? 'selected' : '' }}>📜 JS
-                            </option>
-                            <option value="python" {{ $snippet->language == 'python' ? 'selected' : '' }}>🐍 Python</option>
-                            <option value="html" {{ $snippet->language == 'html' ? 'selected' : '' }}>🌐 HTML</option>
-                            <option value="css" {{ $snippet->language == 'css' ? 'selected' : '' }}>🎨 CSS</option>
-                        </select>
-                        <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7">
-                                </path>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-2 border-l border-white/10 pl-2 md:pl-4">
-                        <button type="button" @click="showSettings = true"
-                            class="hidden md:flex p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-blue-500/30 transition-all group">
-                            <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-400" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                                </path>
-                                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                        </button>
-
+                    <div class="flex items-center gap-2 border-l border-white/10 pl-2 md:pl-3">
                         <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-500 text-white px-4 md:px-6 py-2.5 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20 active:scale-95">
+                            class="bg-blue-600 hover:bg-blue-500 text-white p-2 md:px-5 md:py-2 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                                 </path>
                             </svg>
-                            <span class="hidden md:inline">Save Changes</span>
+                            <span class="hidden md:inline text-sm">Save</span>
                         </button>
 
-                        <a href="{{ url('/my-snippets') }}"
-                            class="p-2.5 rounded-xl border border-white/10 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all group">
-                            <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
+                        <a href="{{ url('/dashboard') }}"
+                            class="p-2 md:px-4 md:py-2 rounded-xl border border-white/10 bg-white/5 text-gray-400 hover:text-white transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                             </svg>
@@ -220,8 +221,8 @@
                                             </svg>
                                             File Path
                                         </label>
-                                        <input type="text" x-model="file.path" name="file_paths[]" required
-                                            placeholder="e.g. app/Http/Controllers"
+                                        <input type="text" x-model="file.path" name="file_paths[]"
+                                            placeholder="e.g. app/Http/Controllers" required
                                             class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm focus:border-white/30 focus:bg-white/10 outline-none transition-all">
                                     </div>
                                 </div>
@@ -267,6 +268,202 @@
             </div>
         </form>
 
+        <!-- Initial Project Setup Modal -->
+        <div x-show="showInitialModal" x-cloak
+            class="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+            x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100">
+            <div @click.away="false" x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                class="modal-mobile glass-card rounded-2xl p-6 md:p-8 w-full max-w-lg shadow-2xl border border-white/10">
+
+                <div class="flex items-center justify-between mb-4 md:mb-6">
+                    <h3 class="text-xl md:text-2xl font-bold flex items-center gap-2 md:gap-3">
+
+                        <span
+                            class="text-base md:text-2xl">{{ isset($snippet) ? 'Edit Code Snippet' : 'New Code Snippet' }}</span>
+                        {{-- i need add back button and icon  --}}
+
+                    </h3>
+                </div>
+
+                <p class="text-sm text-gray-400 mb-6">Create and organize your code snippets with ease.</p>
+
+                <div class="space-y-4 md:space-y-5">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">
+                            Snippet Title
+                            <span class="text-red-400">*</span>
+                        </label>
+                        <input type="text" x-model="projectInfo.title" @keyup.enter="submitProjectInfo"
+                            placeholder="e.g. User Authentication System"
+                            class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all"
+                            :class="{ 'border-red-500/50': projectValidation.title }">
+                        <p x-show="projectValidation.title" class="text-xs text-red-400 mt-1"
+                            x-text="projectValidation.title"></p>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">
+                            Description
+                            <span class="text-red-400">*</span>
+                        </label>
+                        <textarea x-model="projectInfo.description" rows="3"
+                            placeholder="Brief description of what this snippet does..."
+                            class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all resize-none"
+                            :class="{ 'border-red-500/50': projectValidation.description }"></textarea>
+                        <p x-show="projectValidation.description" class="text-xs text-red-400 mt-1"
+                            x-text="projectValidation.description"></p>
+                    </div>
+
+                    <div>
+                        <label
+                            class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Language</label>
+                        <select x-model="projectInfo.language"
+                            class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
+                            <option value="laravel">Laravel</option>
+                            <option value="tailwind">Tailwind CSS</option>
+                            <option value="react">React</option>
+                            <option value="vue">Vue.js</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="php">PHP</option>
+                            <option value="python">Python</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">Category</label>
+                        @if ($categories->isEmpty())
+                            <div
+                                class="flex items-center gap-5 mt-2 bg-white/5 p-3 rounded-lg border border-dashed border-white/10">
+                                <span class="text-[11px] text-gray-500 italic">No categories?</span>
+                                <a href="{{ url('/create-new') . '?type=category' }}"
+                                    class="text-[11px] text-blue-400 hover:text-blue-300 font-medium transition-colors">+
+                                    Create New</a>
+                            </div>
+                        @else
+                            <select x-model="projectInfo.category"
+                                class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
+                                <option value="" disabled selected>Choose a category</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->category_id }}">
+                                        {{ $category->category_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endif
+                    </div>
+                </div>
+
+
+
+                <div class="flex gap-3 mt-6 md:mt-8">
+                    <a href="{{ isset($snippet) ? url('/my-snippets') : url('/') }}" type="button"
+                        class="flex-1 bg-white/5 hover:bg-white/10 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-white/10 text-center ">
+                        Cancel
+                    </a>
+                    <button type="button" @click="submitProjectInfo"
+                        class="flex-1 btn-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all">
+                        {{ isset($snippet) ? 'Save Changes' : 'Save Changes' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Info Edit Modal -->
+        <!-- Project Info Edit Modal -->
+        <div x-show="showProjectModal" x-cloak @click.self="showProjectModal = false"
+            class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
+            <div @click.away="showProjectModal = false" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                class="modal-mobile glass-card rounded-2xl p-6 md:p-8 w-full max-w-lg shadow-2xl border border-white/10">
+
+                <div class="flex items-center justify-between mb-4 md:mb-6">
+                    <h3 class="text-xl md:text-2xl font-bold flex items-center gap-2 md:gap-3">
+                        <div class="bg-white/10 backdrop-blur-sm p-2 rounded-lg border border-white/10">
+                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span class="text-base md:text-2xl">Edit Project</span>
+                    </h3>
+                    <button @click="showProjectModal = false"
+                        class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-all">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="space-y-4 md:space-y-5">
+                    <div>
+                        <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">Project Name</label>
+                        <input type="text" x-model="projectInfo.title" required placeholder="e.g. My Awesome Project"
+                            class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all">
+                    </div>
+
+                    <div>
+                        <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">Description</label>
+                        <textarea x-model="projectInfo.description" required rows="3" placeholder="Brief description..."
+                            class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all resize-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">Language</label>
+                        <select x-model="projectInfo.language"
+                            class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
+                            <option value="laravel">Laravel</option>
+                            <option value="tailwind">Tailwind CSS</option>
+                            <option value="react">React</option>
+                            <option value="vue">Vue.js</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="php">PHP</option>
+                            <option value="python">Python</option>
+                        </select>
+                    </div>
+
+                    <!-- ✅ ADD CATEGORY DROPDOWN HERE (This is missing in your code) -->
+                    <div>
+                        <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">Category</label>
+                        @if ($categories->isEmpty())
+                            <div
+                                class="flex items-center gap-5 mt-2 bg-white/5 p-3 rounded-lg border border-dashed border-white/10">
+                                <span class="text-[11px] text-gray-500 italic">No categories?</span>
+                                <a href="{{ url('/create-new') . '?type=category' }}"
+                                    class="text-[11px] text-blue-400 hover:text-blue-300 font-medium transition-colors">+
+                                    Create New</a>
+                            </div>
+                        @else
+                            <select x-model="projectInfo.category"
+                                class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
+                                <option value="" disabled selected>Choose a category</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->category_id }}">
+                                        {{ $category->category_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="flex gap-3 mt-6 md:mt-8">
+                    <button type="button" @click="showProjectModal = false"
+                        class="flex-1 bg-white/5 hover:bg-white/10 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-white/10">
+                        Cancel
+                    </button>
+                    <button type="button"
+                        @click="showProjectModal = false; $el.closest('form').dispatchEvent(new Event('submit'))"
+                        class="flex-1 btn-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Add File Modal -->
         <div x-show="showAddFileModal" x-cloak @click.self="showAddFileModal = false"
             class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
@@ -296,15 +493,16 @@
                 <div class="space-y-4 md:space-y-5">
                     <div>
                         <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">File Name</label>
-                        <input type="text" x-model="newFile.name" @keyup.enter="addFile" required placeholder="e.g. index.php"
+                        <input type="text" x-model="newFile.name" @keyup.enter="addFile" required
+                            placeholder="e.g. index.php"
                             class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all">
                     </div>
 
                     <div>
                         <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">File Path
                             (Optional)</label>
-                        <input type="text" x-model="newFile.path" @keyup.enter="addFile" required
-                            placeholder="e.g. src/components"
+                        <input type="text" x-model="newFile.path" @keyup.enter="addFile"
+                            placeholder="e.g. src/components" required
                             class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all">
                     </div>
 
@@ -427,35 +625,51 @@
                 return {
                     activeTab: 0,
                     showAddFileModal: false,
+                    showProjectModal: false,
+                    showInitialModal: true,
                     showSettings: false,
                     showLineNumbers: true,
                     autoSave: false,
                     deleteConfirm: null,
                     mobileMenuOpen: false,
+                    projectInfo: {
+                        title: '',
+                        description: '',
+                        language: 'laravel',
+                        category: ''
+                    },
+                    projectValidation: {
+                        title: '',
+                        description: ''
+                    },
                     newFile: {
                         name: '',
                         path: '',
                         content: ''
                     },
-                    files: {!! json_encode(
-                        $snippet->files->map(function ($file) {
-                                return [
-                                    'name' => $file->file_name,
-                                    'path' => $file->file_path,
-                                    'content' => $file->content,
-                                ];
-                            })->toArray(),
-                    ) !!},
+                    files: [{
+                        name: 'web.php',
+                        path: 'routes/',
+                        content: ''
+                    }],
 
                     init() {
+                        // Load existing snippet data if editing
+                        if (window.snippetData) {
+                            Object.assign(this.projectInfo, window.snippetData.projectInfo);
+                            this.files = window.snippetData.files;
+                            this.showInitialModal = false;
+                            this.activeTab = 0;
+                        }
+
                         // Keyboard shortcuts
                         document.addEventListener('keydown', (e) => {
                             // Ctrl/Cmd + S to save
                             if ((e.ctrlKey || e.metaKey) && e.key === 's') {
                                 e.preventDefault();
-                                this.$el.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+                                this.$el.querySelector('form').dispatchEvent(new Event('submit'));
                             }
-                            
+
                             // Ctrl/Cmd + N for new file
                             if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
                                 e.preventDefault();
@@ -465,6 +679,7 @@
                             // Escape to close modals
                             if (e.key === 'Escape') {
                                 this.showAddFileModal = false;
+                                this.showProjectModal = false;
                                 this.showSettings = false;
                                 this.deleteConfirm = null;
                             }
@@ -473,6 +688,46 @@
 
                     toggleMobileSidebar() {
                         this.mobileMenuOpen = !this.mobileMenuOpen;
+                    },
+
+                    submitProjectInfo() {
+                        // Reset validation
+                        this.projectValidation = {
+                            title: '',
+                            description: ''
+                        };
+
+                        let isValid = true;
+
+                        // Validate title
+                        if (!this.projectInfo.title.trim()) {
+                            this.projectValidation.title = 'Project name is required';
+                            isValid = false;
+                        } else if (this.projectInfo.title.trim().length < 3) {
+                            this.projectValidation.title = 'Project name must be at least 3 characters';
+                            isValid = false;
+                        }
+
+                        // Validate description
+                        if (!this.projectInfo.description.trim()) {
+                            this.projectValidation.description = 'Description is required';
+                            isValid = false;
+                        } else if (this.projectInfo.description.trim().length < 10) {
+                            this.projectValidation.description = 'Description must be at least 10 characters';
+                            isValid = false;
+                        }
+
+                        // Validate category
+                        @if (!isset($snippet))
+                            if (!this.projectInfo.category) {
+                                this.projectValidation.category = 'Please select a category';
+                                isValid = false;
+                            }
+                        @endif
+
+                        if (isValid) {
+                            this.showInitialModal = false;
+                        }
                     },
 
                     addFile() {
@@ -546,16 +801,7 @@
                 }
             }
         </script>
-        <script>
-            setTimeout(function() {
-                const alert = document.getElementById('success-alert');
-                if (alert) {
-                    alert.style.opacity = '0';
-                    setTimeout(() => alert.remove(), 500);
-                }
-            }, 3000);
-        </script>
-</body>
+    </body>
 
 @endsection
 
@@ -584,7 +830,7 @@
         .hide-on-mobile {
             display: none !important;
         }
-        
+
         .modal-mobile {
             max-height: 90vh;
             overflow-y: auto;

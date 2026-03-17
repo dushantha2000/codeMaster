@@ -44,37 +44,74 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {{-- Sidebar: Profile Card --}}
             <div class="lg:col-span-4 space-y-6">
-                <div
-                    class="glass-card bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 text-center relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                <div class="sticky top-8 space-y-6">
+                    <div
+                        class="glass-card  backdrop-blur-xl rounded-3xl p-8 border  text-center relative overflow-hidden shadow-2xl">
 
-                    <div class="relative inline-block">
-                        <div
-                            class="w-24 h-24 rounded-3xl bg-blue-600/20 border-2 border-blue-500/50 flex items-center justify-center mx-auto mb-4 shadow-2xl shadow-blue-500/20 overflow-hidden">
+                        {{-- Decorative Background Glow --}}
+                        <div class="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/10 blur-3xl rounded-full"></div>
 
-                            @if (Auth::user()->profile_image)
-                                <img src="{{ asset('profileImages/' . Auth::user()->profile_image) }}" alt="Profile Image"
-                                    class="w-full h-full object-cover">
+                        {{-- Profile Image Section --}}
+                        <div class="relative inline-block mb-4">
+                            <div
+                                class="w-24 h-24 rounded-3xl bg-blue-600/20 border-2 border-blue-500/50 flex items-center justify-center mx-auto shadow-2xl shadow-blue-500/20 overflow-hidden">
+                                @if (Auth::user()->profile_image)
+                                    <img class="w-full h-full object-cover"
+                                        src="{{ asset('profileImages/' . Auth::user()->profile_image) }}"
+                                        alt="{{ Auth::user()->name }}">
+                                @else
+                                    <span
+                                        class="text-4xl font-bold text-blue-500">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                                @endif
+                            </div>
+                            {{-- Level Badge --}}
+                            <div
+                                class="absolute -bottom-2 -right-2 bg-blue-600 text-white text-[10px] font-black px-2 py-1 rounded-lg border-2 border-[#0f172a] shadow-xl">
+                                lVl 1
+                            </div>
+                        </div>
+
+                        {{-- Name & Email --}}
+                        <h2 class="text-xl font-bold text-white tracking-tight">{{ Auth::user()->name }}</h2>
+                        <p class="text-gray-500 text-sm mb-3">{{ Auth::user()->email }}</p>
+
+
+
+                        {{-- Profile Bio --}}
+                        <div class="mb-6">
+                            @if (Auth::user()->bio)
+                                <p class="text-gray-400 text-xs leading-relaxed px-2 italic">
+                                    "{{ Auth::user()->bio }}"
+                                </p>
                             @else
-                                <span class="text-4xl font-bold text-blue-500">
-                                    {{ substr(Auth::user()->name, 0, 1) }}
-                                </span>
+                                <p class="text-gray-600 text-xs italic">No bio added yet.</p>
                             @endif
+                        </div>
+
+
+                        {{-- Stats Section --}}
+                        <div class="pt-6 border-t border-white/5 space-y-4">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-gray-500 uppercase tracking-widest font-bold text-[10px]">Total
+                                    Snippets</span>
+                                <span class="text-blue-400 font-bold" id="sidebarCount"></span>
+                            </div>
+
+
 
                         </div>
-                    </div>
 
-                    <h2 class="text-xl font-bold text-white">{{ Auth::user()->name }}</h2>
-                    <p class="text-gray-500 text-sm mb-6">{{ Auth::user()->email }}</p>
-
-                    <div class="pt-6 border-t border-white/5 space-y-3">
-                        <div class="flex justify-between text-xs">
-                            <span class="text-gray-500 uppercase tracking-widest font-bold">Member Since</span>
-                            <span class="text-gray-300">{{ Auth::user()->created_at->format('M Y') }}</span>
+                        {{-- Action Button --}}
+                        <div class="mt-8">
+                            <a href="#"
+                                class="inline-flex items-center gap-2 btn-primary text-white text-sm px-6 py-2 rounded-xl font-bold transition-all duration-200 shadow-lg shadow-blue-900/20">
+                                Edit Profile
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
+
 
             {{-- Form Section --}}
             <div class="lg:col-span-8 space-y-6">
@@ -90,39 +127,46 @@
                     <form action="{{ url('/user/partnerships') }}" method="POST" class="space-y-4"
                         enctype="multipart/form-data">
                         {{ csrf_field() }}
-                        <div class="grid grid-cols-1 gap-4">
-                            <div class="relative">
-                                <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1">Search User</label>
-                                <input type="text" id="user-search" placeholder="Type name..."
-                                    class="bg-white/5 border border-white/10 w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
-                                    autocomplete="off">
 
-                                <div id="suggestions"
-                                    class="absolute left-0 right-0 z-[1000] mt-2 bg-slate-900 border border-white/20 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8)] hidden max-h-56 overflow-y-auto divide-y divide-white/5 backdrop-blur-2xl">
+                        <div class="relative">
+                            <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1">Search User</label>
+
+                            <div class="flex flex-col md:flex-row items-start gap-4">
+                                <div class="relative group w-full md:w-80">
+                                    <input type="text" id="user-search" placeholder="Type name..."
+                                        class="bg-[#0d1117] border border-[#30363d] text-gray-300 text-sm rounded-lg pl-10 pr-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all w-full">
+
+                                    <svg class="w-4 h-4 text-gray-500 absolute left-3.5 top-1/2 -translate-y-1/2 group-focus-within:text-blue-400 transition-colors"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+
+                                    <div id="suggestions"
+                                        class="absolute left-0 right-0 z-[1000] mt-2 bg-slate-900 border border-white/20 rounded-2xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8)] hidden max-h-56 overflow-y-auto divide-y divide-white/5 backdrop-blur-2xl">
+                                    </div>
                                 </div>
+
+                                <button type="submit"
+                                    class="btn-primary inline-flex items-center gap-2 text-gray-300 text-sm px-6 py-2.5 rounded-xl font-semibold shadow-xl hover:text-white group whitespace-nowrap">
+                                    <svg class="w-5 h-5 text-gray-400 transition-all duration-300 group-hover:scale-110 group-hover:text-white"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Save Changes
+                                </button>
                             </div>
 
-                            {{-- Selected Users Tags --}}
-                            <div id="selected-users" class="flex flex-wrap gap-2 mt-2"></div>
+                            {{-- Selected Users Tags (Appears under the search row) --}}
+                            <div id="selected-users" class="flex flex-wrap gap-2 mt-3"></div>
 
                             {{-- Hidden Inputs --}}
                             <div id="hidden-inputs"></div>
                         </div>
-
-                        <div class="pt-4 flex justify-end">
-                            <button type="submit"
-                                class="btn-primary inline-flex items-center gap-2 text-gray-300 text-sm px-6 py-3 rounded-xl font-semibold shadow-xl hover:text-white group">
-                                <svg class="w-5 h-5 text-gray-400 transition-all duration-300 group-hover:scale-110 group-hover:text-white"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7">
-                                    </path>
-                                </svg>
-                                Save Changes
-                            </button>
-                        </div>
                     </form>
 
+                    {{-- Partners List Section --}}
                     <div class="partners-section mt-8">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider ml-1">
@@ -141,9 +185,15 @@
                                     <div class="flex items-center min-w-0">
                                         <div class="relative flex-shrink-0">
                                             <div
-                                                class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                                {{ strtoupper(substr($partner->name, 0, 1)) }}
+                                                class="w-11 h-11 rounded-xl overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                                @if ($partner->profile_image)
+                                                    <img src="{{ asset('profileImages/' . $partner->profile_image) }}"
+                                                        alt="{{ $partner->name }}" class="w-full h-full object-cover">
+                                                @else
+                                                    {{ strtoupper(substr($partner->name, 0, 1)) }}
+                                                @endif
                                             </div>
+
                                         </div>
 
                                         <div class="ml-4 overflow-hidden">
@@ -151,7 +201,8 @@
                                                 class="text-sm font-semibold text-gray-200 group-hover:text-white transition-colors truncate">
                                                 {{ $partner->name }}
                                             </h4>
-                                            <p class="text-[11px] text-blue-400/80 font-medium truncate">
+                                            <p class="text-[11px] text-blue-500 font-medium truncate blur-[3px] select-none"
+                                                title="Hidden for privacy">
                                                 {{ $partner->email }}
                                             </p>
                                         </div>
@@ -162,7 +213,7 @@
                                             class="flex-shrink-0">
                                             {{ csrf_field() }}
                                             <button type="submit"
-                                                class="p-2 text-gray-500 hover:text-red-500 transition-all duration-300">
+                                                class="p-2 text-gray-500 hover:text-red-400 transition-all duration-300">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -172,7 +223,7 @@
                                         </form>
 
                                         <button type="button"
-                                            class="edit-partner-btn p-2 text-gray-500 hover:text-blue-500 transition-all duration-300"
+                                            class="edit-partner-btn p-2 text-gray-500 hover:text-blue-400 transition-all duration-300"
                                             data-partner-name="{{ $partner->name }}" data-id="{{ $partner->id }}"
                                             data-is_read="{{ $partner->is_read }}"
                                             data-is_edit="{{ $partner->is_edit }}">
@@ -185,15 +236,6 @@
                                     </div>
                                 </div>
                             @empty
-                                <div class="col-span-full py-12 text-center text-gray-500">
-                                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                                    </svg>
-                                    <p class="text-lg font-medium mb-1">No partners found</p>
-                                    <p class="text-sm">Start adding partners using the search above</p>
-                                </div>
                             @endforelse
                         </div>
                     </div>

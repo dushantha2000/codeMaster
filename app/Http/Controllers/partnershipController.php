@@ -13,6 +13,7 @@ class partnershipController extends Controller
     {
         // Delete specific known cache keys
         Cache::forget("languages:user:{$userId}:list");
+        Cache::forget("partnerships:user:{$userId}:shared_with_me");
 
         // Try to delete snippet and search caches by pattern if Redis is available
         $store = Cache::getStore();
@@ -63,6 +64,10 @@ class partnershipController extends Controller
                     'is_edit' => $request->input('is_edit'),
                 ]);
 
+            // නව part එක - Invalidate caches for both users
+            $this->invalidateUserSnippetCaches($currentUserId);
+            $this->invalidateUserSnippetCaches($request->input('partner_id'));
+
             return back()->with('success', 'Permission updated successfully');
         } catch (Exception $e) {
             return back()->with(
@@ -103,10 +108,12 @@ class partnershipController extends Controller
             // Invalidate partnership caches for both users
             Cache::forget("partnerships:user:{$userId}:shared_with_me");
             Cache::forget("partnerships:user:{$id}:shared_with_me");
+            
+            //Invalidate all snippet caches for both users
             $this->invalidateUserSnippetCaches($userId);
             $this->invalidateUserSnippetCaches($id);
 
-            // Return success message on successful deletion
+            // Return success 
             return back()->with(
                 'success',
                 'Partner has been removed successfully.',
