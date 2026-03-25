@@ -34,8 +34,8 @@
                             class="bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-300 hover:bg-[#30363d] hover:border-[#8b949e] focus:outline-none cursor-pointer transition-all">
                             <option value="all">Language</option>
                             @foreach ($languages as $language)
-                            <option value="{{ $language }}">{{ $language }}</option> 
-                         @endforeach 
+                                <option value="{{ $language }}">{{ $language }}</option>
+                            @endforeach
                         </select>
 
                         {{-- Status/Type Filter --}}
@@ -113,6 +113,9 @@
                                                 class="px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[10px] uppercase tracking-widest font-black rounded-md border border-blue-500/20"
                                                 x-text="snippet.language"></span>
                                         </template>
+
+                                    
+
                                     </div>
                                     <p class="text-gray-400 text-[14px] leading-snug whitespace-pre-line mb-4 max-w-4xl"
                                         x-text="snippet.description || '// No documentation attached...'"></p>
@@ -233,4 +236,203 @@
             </div>
         </aside>
     </div>
+
+    <!-- Alpine.js Script  -->
+    <script>
+        function snippetBrowser() {
+            return {
+                // Data properties
+                snippets: [],
+                searchQuery: '',
+                selectedLanguage: '',
+                selectedLanguageName: 'All Languages',
+                sortBy: 'recent',
+                statusFilter: 'all',
+                mobileFiltersOpen: false,
+                loading: false,
+                showPreview: false,
+                selectedSnippet: null,
+                activeFileTab: 0,
+                mobileMenuOpen: false,
+                mobileFileListOpen: false,
+                copyDone: false,
+                searchTimeout: null,
+
+                languageList: [{
+                        id: '',
+                        name: 'All Languages',
+                        icon: '🌐'
+                    },
+                    {
+                        id: 'Laravel',
+                        name: 'Laravel',
+                        icon: '🟠'
+                    },
+                    {
+                        id: 'React',
+                        name: 'React',
+                        icon: '⚛️'
+                    },
+                    {
+                        id: 'Tailwind',
+                        name: 'Tailwind',
+                        icon: '🍃'
+                    },
+                    {
+                        id: 'Javascript',
+                        name: 'Javascript',
+                        icon: '🟨'
+                    },
+                    {
+                        id: 'Python',
+                        name: 'Python',
+                        icon: '🐍'
+                    },
+                    {
+                        id: 'PHP',
+                        name: 'PHP',
+                        icon: '🐘'
+                    },
+                ],
+
+                // Methods
+                fetchSnippets() {
+                    this.loading = true;
+                    const url =
+                        `/api/search?q=${encodeURIComponent(this.searchQuery)}&lang=${this.selectedLanguage}&status=${this.statusFilter}`;
+
+                    fetch(url)
+                        .then(res => res.json())
+                        .then(data => {
+                            let snippets = data.data || data;
+
+                            if (this.sortBy === 'title') {
+                                snippets.sort((a, b) => a.title.localeCompare(b.title));
+                            } else if (this.sortBy === 'files') {
+                                snippets.sort((a, b) => (b.files?.length || 0) - (a.files?.length || 0));
+                            }
+
+                            this.snippets = snippets;
+                            this.loading = false;
+                        })
+                        .catch(err => {
+                            console.error("Fetch Error:", err);
+                            this.loading = false;
+                        });
+                },
+
+                openSnippet(id) {
+                    this.loading = true;
+
+                    fetch(`/api/snippets/${id}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            this.selectedSnippet = data;
+                            this.activeFileTab = 0;
+                            this.showPreview = true;
+                            this.mobileFileListOpen = false;
+                            this.loading = false;
+
+                            this.$nextTick(() => {
+                                if (typeof Prism !== 'undefined') {
+                                    Prism.highlightAll();
+                                }
+                            });
+                        })
+                        .catch(err => {
+                            console.error("Detail Error:", err);
+                            this.loading = false;
+                        });
+                },
+
+                copyCode(text) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        this.copyDone = true;
+                        setTimeout(() => this.copyDone = false, 2000);
+                    }).catch(() => {
+                        // Fallback
+                        const textarea = document.createElement('textarea');
+                        textarea.value = text;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+
+                        this.copyDone = true;
+                        setTimeout(() => this.copyDone = false, 2000);
+                    });
+                },
+
+                getLangIcon(lang) {
+                    if (!lang) return '📄';
+                    const icons = {
+                        'php': '🐘',
+                        'laravel': '🟠',
+                        'javascript': '🟨',
+                        'js': '🟨',
+                        'python': '🐍',
+                        'html': '🌐',
+                        'css': '🎨',
+                        'react': '⚛️',
+                        'vue': '🖖',
+                        'database': '🗄️',
+                        'sql': '💾'
+                    };
+                    return icons[lang.toLowerCase()] || '📄';
+                },
+
+                getFileIcon(filename) {
+                    if (!filename) return '📄';
+                    const ext = filename.split('.').pop().toLowerCase();
+                    const icons = {
+                        'js': '📘',
+                        'jsx': '⚛️',
+                        'ts': '📘',
+                        'tsx': '⚛️',
+                        'php': '🐘',
+                        'py': '🐍',
+                        'html': '🌐',
+                        'css': '🎨',
+                        'json': '📋',
+                        'md': '📝',
+                        'vue': '💚',
+                        'sql': '🗄️'
+                    };
+                    return icons[ext] || '📄';
+                },
+
+                // Mobile handlers
+                handleResize() {
+                    if (window.innerWidth > 768) {
+                        this.mobileFileListOpen = false;
+                        this.mobileMenuOpen = false;
+                        this.mobileFiltersOpen = false;
+                    }
+                },
+
+                toggleMobileFileList() {
+                    this.mobileFileListOpen = !this.mobileFileListOpen;
+                },
+
+                init() {
+                    // Resize listener
+                    window.addEventListener('resize', () => this.handleResize());
+
+                    // Click outside handler for mobile file list
+                    document.addEventListener('click', (e) => {
+                        if (window.innerWidth <= 768 && this.mobileFileListOpen) {
+                            if (!e.target.closest('aside') && !e.target.closest('button[class*="md:hidden"]')) {
+                                this.mobileFileListOpen = false;
+                            }
+                        }
+                    });
+
+                    // Initial fetch
+                    this.fetchSnippets();
+                }
+            }
+        }
+    </script>
+
+
 @endsection

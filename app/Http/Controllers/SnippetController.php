@@ -242,7 +242,7 @@ class SnippetController extends Controller
             $version = Cache::get("user:{$currentUserId}:version", 1);
             $cacheKey = "snippet:user:{$currentUserId}:v{$version}:{$id}";
 
-            // FIXED: Added TTL
+            //Added TTL
             $snippet = Cache::remember(
                 $cacheKey,
                 now()->addDay(), // 1 day TTL
@@ -250,8 +250,6 @@ class SnippetController extends Controller
                     return Snippet::with(['user:id,name', 'files'])->findOrFail($id);
                 }
             );
-
-
 
             return response()->json($snippet);
         } catch (Exception $e) {
@@ -291,6 +289,7 @@ class SnippetController extends Controller
                         $q->where('user_id', $currentUserId)->orWhereExists(function ($sub) use ($currentUserId) {
                             $sub->select(DB::raw(1))
                                 ->from('partnerships')
+                                
                                 ->whereColumn('partnerships.user_id', 'snippets.user_id')
                                 ->where('partnerships.partner_id', $currentUserId);
                         });
@@ -309,7 +308,7 @@ class SnippetController extends Controller
                         $query->where('language', $request->lang);
                     }
 
-                    return $query->latest()->paginate(20);
+                    return $query->latest()->paginate(10);
                 }
             );
 
@@ -490,7 +489,7 @@ class SnippetController extends Controller
         // FIXED: Use get() instead of rememberForever
         $version = Cache::get("user:{$currentUserId}:version", 1);
 
-        // unique code for the current search - FIXED: Added TTL
+        // unique code for the current search 
         $partnershipCacheKey = "partnerships:user:{$currentUserId}:shared_with_me:v{$version}";
 
         $ownersWhoSharedWithMe = Cache::remember(
@@ -756,6 +755,71 @@ class SnippetController extends Controller
 
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Unable to load categories.');
+        }
+    }
+
+
+     public function MySnippetSearch(Request $request)
+    {
+        // get the ID of the current user
+        $currentUserId = auth()->id();
+
+        try {
+            //  instead of rememberForever
+            $version = Cache::get("user:{$currentUserId}:version", 1);
+
+            // Create a unique code for the current search
+            $searchKey = md5($request->getQueryString() ?? '');
+            $searchCacheKey = "search:user:{$currentUserId}:v{$version}:" . $searchKey;
+
+
+            $results = Cache::remember(
+                $searchCacheKey,
+                now()->addMinutes(30), // 30 minutes TTL
+                function () use ($request, $currentUserId) {
+                    $query = Snippet::with(['user:id,name', 'files'])->select(
+                        'id',
+                        'user_id',
+                        'title',
+                        'description',
+                        'language',
+                        'created_at'
+                    );
+
+                    $query->where(function ($q) use ($currentUserId) {
+                        $q->where('user_id', $currentUserId)->orWhereExists(function ($sub) use ($currentUserId) {
+                            $sub->select(DB::raw(1))
+                                ->from('partnerships')
+                                
+                                ->whereColumn('partnerships.user_id', 'snippets.user_id')
+                                ->where('partnerships.partner_id', $currentUserId);
+                        });
+                    });
+
+                    if ($request->filled('q')) {
+                        $keyword = $request->q;
+
+                        $query->where(function ($q) use ($keyword) {
+                            $q->where('title', 'LIKE', "{$keyword}%")
+                                ->orWhere('description', 'LIKE', "%{$keyword}%");
+                        });
+                    }
+
+                    if ($request->filled('lang')) {
+                        $query->where('language', $request->lang);
+                    }
+
+                    return $query->latest()->paginate(10);
+                }
+            );
+
+            
+
+            return response()->json($results);
+
+        } catch (Exception $e) {
+            Log::error('Search error: ' . $e->getMessage());
+            return response()->json(['message' => 'Something went wrong (searching)'], 500);
         }
     }
 }

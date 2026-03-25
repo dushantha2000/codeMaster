@@ -31,9 +31,10 @@ Route::middleware('guest')->group(function () {
 
 
 });
-
+//searching routes
 Route::get('/api/search', [SnippetController::class, 'search']);
 Route::get('/api/snippets/{id}', [SnippetController::class, 'show']);
+Route::get('/api/search/my-snippets', [SnippetController::class, 'MySnippetSearch']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [SnippetController::class, 'index'])->name('dashboard');
