@@ -233,7 +233,7 @@
                 </div>
 
                 {{-- Privacy Settings --}}
-                <div class="glass-card rounded-3xl p-6 border border-white/10 bg-white/5 shadow-2xl">
+                {{-- <div class="glass-card rounded-3xl p-6 border border-white/10 bg-white/5 shadow-2xl">
                     <h3 class="text-sm font-bold text-white mb-4 uppercase tracking-widest text-gray-400">Privacy</h3>
                     <div class="space-y-3">
                         <label class="flex items-center justify-between cursor-pointer">
@@ -255,7 +255,7 @@
                             <input type="checkbox" checked class="rounded bg-white/5 border-white/10">
                         </label>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="glass-card rounded-3xl p-6 border border-red-500/20 bg-red-500/5 shadow-2xl">
                     <h3 class="text-sm font-bold text-red-500 mb-4 uppercase tracking-widest">Danger Zone</h3>

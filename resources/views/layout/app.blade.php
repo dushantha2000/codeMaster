@@ -252,8 +252,8 @@
     <!-- Preview Modal with Mobile Support -->
     @include('common.preview-modal')
 
-    <!-- Alpine.js Script (Fixed) -->
-    <script>
+    <!-- Alpine.js Script  -->
+    {{-- <script>
         function snippetBrowser() {
             return {
                 // Data properties
@@ -447,9 +447,11 @@
                 }
             }
         }
+    </script> --}}
 
-        
-    </script>
+
+
+
 
     <!-- Prism.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>

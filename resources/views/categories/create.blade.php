@@ -4,7 +4,7 @@
 
 @section('content')
     <div
-        class="flex flex-col md:flex-row w-full max-w-6xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+        class="flex flex-col md:flex-row w-full max-w-6xl glass-card rounded-3xl overflow-hidden shadow-2xl ">
         {{-- Left Side - Preview --}}
         <div
             class="hidden md:flex md:w-1/2 relative bg-black/40 items-center justify-center p-8 overflow-hidden border-r border-white/5">

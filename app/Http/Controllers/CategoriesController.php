@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+use Auth;
 use Cache;
 use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Models\Snippet;
 use Illuminate\Support\Str;
 use Exception;
 use App\Http\Requests\StoreCategoryRequest;
@@ -31,6 +33,7 @@ class CategoriesController extends Controller
                         'category_description' => $request->description,
                         'color_name' => $request->color,
                         'isActive' => 1,
+                        'updated_at' => now(),
                     ]);
             });
 
@@ -51,16 +54,32 @@ class CategoriesController extends Controller
     }
     public function Show($category_id)
     {
+        $userId = auth()->id();
 
-        //return $category_id;
+        if (!$userId) {
+            return redirect()->route('login');
 
-        // $category = Category::find($category_id);
-        try {
-            return view('categories.show');
-        } catch (Exception $e) {
-            return back()->with('error', 'Something went wrong. Please try again later.');
-            //throw $th;
         }
+
+        $categories = DB::table('categories')
+            ->where('category_id', $category_id)
+            ->where('user_id', $userId)
+            ->where('isActive', 1)
+            ->first();
+
+
+        $snippets = Snippet::with('files')
+            ->where('user_id', auth()->id())
+            ->where('category_id', $category_id)
+            ->where('isActive', 1)
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+
+        //return $snippets;
+
+        return view('categories.show', compact('snippets', 'categories'));
+
 
     }
 
@@ -150,6 +169,7 @@ class CategoriesController extends Controller
                         'category_description' => $request->description,
                         'color_name' => $request->color,
                         'isActive' => 1,
+                        'created_at' => now(),
                     ]);
             });
 
