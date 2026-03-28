@@ -3,49 +3,41 @@
 @section('title', 'My Snippets')
 
 @section('content')
-    <div x-data="snippetManager()" x-init="fetchSnippets()">
+    <div x-data="snippetBrowser()" x-init="init()">
 
         <div class="w-full max-w-6xl mx-auto px-4  animate-in fade-in slide-in-from-bottom-4 duration-500">
 
             <!-- Breadcrumb -->
-            <nav class="flex mb-6" aria-label="Breadcrumb">
-                <ol class="flex items-center space-x-2">
+            <nav class="flex mb-8" aria-label="Breadcrumb">
+                <ol class="flex items-center space-x-3">
                     <li>
-                        <a href="{{ url('/') }}" class="text-gray-500 hover:text-gray-700">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        <a href="{{ url('/') }}" class="text-[#71717A] hover:text-white transition-colors">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
                         </a>
                     </li>
-                    <li>
-                        <span class="text-gray-400">/</span>
+                    <li class="flex items-center gap-3">
+                        <span class="text-[#3F3F46] text-xs">/</span>
+                        <a href="{{ url('/') }}" class="text-2xs font-bold tracking-normal text-[#71717A] hover:text-white transition-colors nocaps">workspace</a>
                     </li>
-                    <li>
-                        <a href="{{ url('/') }}" class="text-gray-500 hover:text-gray-700">Profile</a>
-                    </li>
-                    <li>
-                        <span class="text-gray-400">/</span>
-                    </li>
-                    <li>
-                        <span class="text-blue-400 font-medium"> Vault & Code Library</span>
+                    <li class="flex items-center gap-3">
+                        <span class="text-[#3F3F46] text-xs">/</span>
+                        <span class="text-2xs font-bold tracking-normal text-purple-400 nocaps">personal vault</span>
                     </li>
                 </ol>
             </nav>
 
             {{-- Global Page Header --}}
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between  mb-10">
-                <div class=" items-center gap-5">
-
-                    {{-- Title & Count --}}
-                    <div>
-                        <h1 class="text-4xl font-black text-white tracking-tight"> Vault & Code Library</h1>
-                        <p class="text-gray-400 text-sm font-medium">
-                            Managing <span id="totalCount" class="text-blue-400 font-bold">{{ count($snippets) }}</span>
-                            saved
-                            snippets
-                        </p>
-                    </div>
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-16">
+                <div>
+                    <h1 class="text-6xl font-black text-white tracking-tighter mb-3 nocaps">vaulted <span class="text-purple-500">logic</span></h1>
+                    <p class="text-[#3F3F46] text-2xs font-bold tracking-normal flex items-center gap-3 nocaps">
+                        collective index <span class="w-1.5 h-1.5 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"></span> 
+                        <span id="totalCount" class="text-[#EDEDED] font-black text-xs">{{ count($snippets) }}</span>
+                        nodes archived
+                    </p>
                 </div>
             </div>
 
@@ -74,68 +66,45 @@
 
                 {{-- profile  --}}
                 <div class="md:col-span-1">
-                    <div class="sticky top-8 space-y-6">
-                        <div
-                            class="glass-card  backdrop-blur-xl rounded-3xl p-8 border  text-center relative overflow-hidden shadow-2xl">
-
+                    <div class="sticky top-20 space-y-6">
+                        <div class="glass-card bg-[#050505]/40 backdrop-blur-3xl rounded-[2.5rem] p-10 text-center relative overflow-hidden shadow-2xl group border-white/5">
                             {{-- Decorative Background Glow --}}
-                            <div class="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/10 blur-3xl rounded-full"></div>
+                            <div class="absolute -top-24 -left-24 w-48 h-48 bg-purple-500/10 blur-3xl rounded-full group-hover:bg-purple-500/20 transition-colors"></div>
 
                             {{-- Profile Image Section --}}
-                            <div class="relative inline-block mb-4">
-                                <div
-                                    class="w-24 h-24 rounded-3xl bg-blue-600/20 border-2 border-blue-500/50 flex items-center justify-center mx-auto shadow-2xl shadow-blue-500/20 overflow-hidden">
+                            <div class="relative inline-block mb-8">
+                                <div class="w-32 h-32 rounded-[2.5rem] bg-purple-500/5 border border-purple-500/20 flex items-center justify-center mx-auto shadow-2xl overflow-hidden group-hover:border-purple-500/40 transition-all duration-500">
                                     @if (Auth::user()->profile_image)
-                                        <img class="w-full h-full object-cover"
+                                        <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                             src="{{ asset('profileImages/' . Auth::user()->profile_image) }}"
                                             alt="{{ Auth::user()->name }}">
                                     @else
-                                        <span
-                                            class="text-4xl font-bold text-blue-500">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                                        <span class="text-6xl font-black text-purple-500/80">{{ substr(Auth::user()->name, 0, 1) }}</span>
                                     @endif
                                 </div>
                                 {{-- Level Badge --}}
-                                <div
-                                    class="absolute -bottom-2 -right-2 bg-blue-600 text-white text-[10px] font-black px-2 py-1 rounded-lg border-2 border-[#0f172a] shadow-xl">
-                                    lVl 1
+                                <div class="absolute -bottom-2 -right-2 bg-purple-600 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl border-4 border-[#030303] shadow-2xl tracking-normal">
+                                    Lvl 1
                                 </div>
                             </div>
 
                             {{-- Name & Email --}}
-                            <h2 class="text-xl font-bold text-white tracking-tight">{{ Auth::user()->name }}</h2>
-                            <p class="text-gray-500 text-sm mb-3">{{ Auth::user()->email }}</p>
-
-
-
-                            {{-- Profile Bio --}}
-                            <div class="mb-6">
-                                @if (Auth::user()->bio)
-                                    <p class="text-gray-400 text-xs leading-relaxed px-2 italic">
-                                        "{{ Auth::user()->bio }}"
-                                    </p>
-                                @else
-                                    <p class="text-gray-600 text-xs italic">No bio added yet.</p>
-                                @endif
-                            </div>
-
+                            <h2 class="text-2xl font-black text-[#EDEDED] tracking-tighter mb-1 nocaps">{{ Auth::user()->name }}</h2>
+                            <p class="text-[#3F3F46] text-2xs font-bold mb-6 tracking-normal nocaps">{{ Auth::user()->email }}</p>
 
                             {{-- Stats Section --}}
-                            <div class="pt-6 border-t border-white/5 space-y-4">
-                                <div class="flex justify-between text-xs">
-                                    <span class="text-gray-500 uppercase tracking-widest font-bold text-[10px]">Total
-                                        Snippets</span>
-                                    <span class="text-blue-400 font-bold" id="sidebarCount">{{ count($snippets) }}</span>
+                            <div class="pt-8 border-t border-white/5 grid grid-cols-1 gap-4">
+                                <div class="flex flex-col items-center p-4 bg-white/[0.02] rounded-2xl border border-white/5">
+                                    <span class="text-[#3F3F46] text-3xs font-bold tracking-normal mb-1 nocaps">index density</span>
+                                    <span class="text-white font-black text-xl" id="sidebarCount">{{ count($snippets) }}</span>
                                 </div>
-
-
-
                             </div>
 
                             {{-- Action Button --}}
                             <div class="mt-8">
-                                <a href="#"
-                                    class="inline-flex items-center gap-2 btn-primary text-white text-sm px-6 py-2 rounded-xl font-bold transition-all duration-200 shadow-lg shadow-blue-900/20">
-                                    Edit Profile
+                                <a href="{{ url('/profile') }}"
+                                    class="btn-primary inline-flex items-center justify-center w-full py-4 text-2xs nocaps">
+                                    modify profile
                                 </a>
                             </div>
                         </div>
@@ -146,217 +115,210 @@
                 {{-- Snippets Vault --}}
                 <div class="md:col-span-3 space-y-4">
 
-                    <div x-show="loading" x-transition:enter="transition opacity-ease-out duration-300"
-                        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                        x-transition:leave="transition opacity-ease-in duration-300" x-transition:leave-start="opacity-100"
-                        x-transition:leave-end="opacity-0"
-                        class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black backdrop-blur-md">
-
-                        <div class="absolute w-32 h-32 bg-black rounded-full blur-3xl animate-pulse"></div>
-
-                        <div class="relative">
-                            <div class="w-12 h-12 rounded-full border-4 border-white/10 border-t-white-500 animate-spin">
+                    {{-- Loading Skeleton --}}
+                    <div x-show="loading" class="space-y-4" style="display: none;">
+                        <template x-for="i in 3">
+                            <div class="glass-card p-5 animate-pulse mb-3 border-white/5 bg-white/[0.01]">
+                                <div class="h-5 bg-white/5 rounded-lg w-1/3 mb-4"></div>
+                                <div class="h-3.5 bg-white/5 rounded-lg w-full mb-2"></div>
+                                <div class="h-3.5 bg-white/5 rounded-lg w-2/3"></div>
+                                <div class="flex gap-4 mt-6">
+                                    <div class="h-3 bg-white/5 rounded w-16"></div>
+                                    <div class="h-3 bg-white/5 rounded w-16"></div>
+                                    <div class="h-3 bg-white/5 rounded w-16"></div>
+                                </div>
                             </div>
-                        </div>
-
-                        <p class="mt-4 text-white font-medium tracking-wide animate-pulse">
-                            Loading snippets...
-                        </p>
+                        </template>
                     </div>
 
-                    {{-- Filters Bar --}}
-                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+                        {{-- DASHBOARD-STYLE Filters Bar --}}
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+                            {{-- Search Input & Filters Group --}}
+                            <div class="flex flex-col md:flex-row flex-1 items-center gap-2">
+                                {{-- Search Input --}}
+                                <div class="relative group w-full md:w-96">
+                                    <input type="text" x-model="searchQuery" @input.debounce.300ms="fetchSnippets()"
+                                        placeholder="Find indexed logic..."
+                                        class="bg-[#050505] border border-white/5 text-[#EDEDED] text-sm rounded-2xl pl-11 pr-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500/40 transition-all w-full placeholder-[#3F3F46] shadow-2xl">
+                                    <svg class="w-4 h-4 text-[#3F3F46] absolute left-4 top-1/2 -translate-y-1/2 group-focus-within:text-purple-400 transition-colors"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
 
-                        {{-- Search Input & Filters Group --}}
-                        <div class="flex flex-col md:flex-row flex-1 items-center gap-2">
+                                {{-- Filters --}}
+                                <div class="flex items-center gap-2 w-full md:w-auto">
+                                    {{-- Language Filter --}}
+                                    <label for="mysnippets-lang" class="sr-only">Filter by Language</label>
+                                    <select id="mysnippets-lang" x-model="selectedLanguage" @change="fetchSnippets()"
+                                        class="bg-[#050505] border border-white/5 rounded-2xl px-5 py-3.5 text-2xs font-black uppercase tracking-widest text-[#71717A] hover:bg-white/5 hover:border-white/10 focus:outline-none focus:ring-4 focus:ring-purple-500/10 cursor-pointer transition-all appearance-none shadow-2xl nocaps">
+                                        <option value="all">language</option>
+                                        @foreach ($languages as $language)
+                                            <option value="{{ $language }}">{{ $language }}</option>
+                                        @endforeach
+                                    </select>
 
-                            {{-- Search Input --}}
-                            <div class="relative group w-full md:w-80">
-                                <input type="text" x-model="searchQuery" @input.debounce.300ms="fetchSnippets()"
-                                    placeholder="Find a snippet..."
-                                    class="bg-[#0d1117] border border-[#30363d] text-gray-300 text-sm rounded-lg pl-10 pr-4 py-1.5 focus:outline-none focus:border-white-500 focus:ring-1 focus:ring-white-500 transition-all w-full">
-                                <svg class="w-4 h-4 text-gray-500 absolute left-3.5 top-1/2 -translate-y-1/2 group-focus-within:text-blue-400 transition-colors"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </div>
+                                    {{-- Status/Type Filter --}}
+                                    <label for="mysnippets-status" class="sr-only">Filter by Status</label>
+                                    <select id="mysnippets-status" x-model="selectedStatus" @change="fetchSnippets()"
+                                        class="bg-[#050505] border border-white/5 rounded-2xl px-5 py-3.5 text-2xs font-black uppercase tracking-widest text-[#71717A] hover:bg-white/5 hover:border-white/10 focus:outline-none focus:ring-4 focus:ring-purple-500/10 cursor-pointer transition-all appearance-none shadow-2xl nocaps">
+                                        <option value="all">status</option>
+                                        <option value="1">verified</option>
+                                        <option value="0">draft</option>
+                                    </select>
 
-
-                            {{-- Filters --}}
-                            <div class="flex items-center gap-2 w-full md:w-auto">
-                                {{-- Language Filter --}}
-
-                                <select x-model="selectedLanguage" @change="fetchSnippets()"
-                                    class="bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-300 hover:bg-[#30363d] hover:border-[#8b949e] focus:outline-none cursor-pointer transition-all">
-                                    <option value="all">Language</option>
-                                    @foreach ($languages as $language)
-                                        <option value="{{ $language }}">{{ $language }}</option>
-                                    @endforeach
-
-                                </select>
-
-                                {{-- Status/Type Filter --}}
-                                <select x-model="selectedStatus" @change="fetchSnippets()"
-                                    class="bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-300 hover:bg-[#30363d] hover:border-[#8b949e] focus:outline-none cursor-pointer transition-all">
-                                    <option value="all">Status</option>
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
-                                </select>
-
-                                {{-- Sort Filter --}}
-                                <select x-model="selectedSort" @change="fetchSnippets()"
-                                    class="bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-300 hover:bg-[#30363d] hover:border-[#8b949e] focus:outline-none cursor-pointer transition-all">
-                                    <option value="latest">Sort</option>
-                                    <option value="oldest">Oldest</option>
-                                    <option value="az">A-Z</option>
-                                    <option value="za">Z-A</option>
-                                </select>
+                                    {{-- Sort Filter --}}
+                                    <label for="mysnippets-sort" class="sr-only">Sort snippets</label>
+                                    <select id="mysnippets-sort" x-model="selectedSort" @change="fetchSnippets()"
+                                        class="bg-[#050505] border border-white/5 rounded-2xl px-5 py-3.5 text-2xs font-black uppercase tracking-widest text-[#71717A] hover:bg-white/5 hover:border-white/10 focus:outline-none focus:ring-4 focus:ring-purple-500/10 cursor-pointer transition-all appearance-none shadow-2xl nocaps">
+                                        <option value="latest">newest first</option>
+                                        <option value="oldest">oldest first</option>
+                                        <option value="az">a-z</option>
+                                        <option value="za">z-a</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-
-                        {{-- New Snippet Button --}}
-                        {{-- <div class="w-full lg:w-auto">
-                        <a href="#"
-                            class="flex items-center justify-center gap-2 btn-primary text-white text-sm px-3 py-2 rounded-xl font-bold transition-all duration-200 shadow-lg shadow-blue-900/20">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                            New
-                        </a>
-                    </div> --}}
-                    </div>
 
 
 
                     {{-- Loading Spinner --}}
                     <div id="loadingSpinner" class="hidden flex items-center justify-center py-12">
                         <div class="flex flex-col items-center gap-4">
-                            <div class="w-12 h-12 rounded-full border-4 border-white/20 border-t-blue-500 animate-spin">
+                            <div class="w-12 h-12 rounded-full border-4 border-white/5 border-t-purple-500 animate-spin">
                             </div>
-                            <p class="text-gray-400 text-sm font-medium">Loading snippets...</p>
+                            <p class="text-[#71717A] text-sm font-medium">Loading snippets...</p>
                         </div>
                     </div>
 
 
 
                     {{-- Snippets Container --}}
-                    <template x-for="snippet in snippets" :key="snippet.id">
-                        <div class="snippet-card group border-b border-white/10 p-5 hover:bg-white/[0.02] transition-all"  @click="openSnippet(snippet.id)">
+                    <div class="grid grid-cols-1 gap-4 mt-2" x-show="!loading" style="display: none;">
+                        <template x-for="snippet in snippets" :key="snippet.id">
+                            <div class="glass-card group p-6 hover:border-purple-500/30 transition-all duration-500 cursor-pointer relative overflow-hidden"
+                                @click="openSnippet(snippet.id)">
+                                
+                                {{-- Subtle Card Glow on Hover --}}
+                                <div class="absolute -top-12 -right-12 w-24 h-24 bg-purple-500/5 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
-                            {{-- Column on mobile, Row on desktop --}}
-                            <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                                <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 relative">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-3 mb-3 flex-wrap">
+                                            <h3 class="text-white text-xl font-black group-hover:text-purple-400 transition-colors tracking-tight nocaps" x-text="snippet.title"></h3>
+                                            <div class="flex items-center gap-2">
+                                                <span class="px-2 py-0.5 bg-purple-500/10 border border-purple-500/20 text-purple-400 text-3xs rounded-md font-black uppercase tracking-widest nocaps">vaulted</span>
+                                                <template x-if="snippet.isMark == 1">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]"></span>
+                                                </template>
+                                            </div>
+                                        </div>
 
-                                {{-- Title, Description, Meta --}}
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex flex-wrap items-center gap-2 mb-2">
-                                        <a href="#"
-                                            class="text-white-400 text-lg md:text-xl font-semibold hover:underline decoration-2 truncate max-w-[200px] md:max-w-none"
-                                            x-text="snippet.title">
+                                        <p class="text-[#71717A] text-xs font-medium leading-relaxed mb-6 line-clamp-2 nocaps" x-text="snippet.description || 'no description provided.'"></p>
 
+                                        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-[#71717A] text-3xs font-black uppercase tracking-widest nocaps">
+                                            <template x-if="snippet.language">
+                                                <div class="flex items-center gap-2 group/lang px-2 py-1 bg-white/5 rounded-lg border border-white/5 transition-colors group-hover:border-purple-500/20">
+                                                    <span class="text-xs" x-text="getFileIcon(snippet.language)">📂</span>
+                                                    <span class="text-[#EDEDED] group-hover:text-purple-400 transition-colors" x-text="snippet.language"></span>
+                                                </div>
+                                            </template>
+
+                                            <div class="flex items-center gap-2">
+                                                <svg class="w-3.5 h-3.5 text-[#3F3F46]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                <span x-text="new Date(snippet.updated_at || snippet.created_at).toLocaleDateString()"></span>
+                                            </div>
+
+                                            <div class="flex items-center gap-2">
+                                                <svg class="w-3.5 h-3.5 text-[#3F3F46]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                                </svg>
+                                                <span class="text-white" x-text="snippet.files ? snippet.files.length + ' Files' : '0 Files'"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-3 mt-4 md:mt-0 self-end md:self-start opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                                        <a :href="`/snippets/${snippet.id}/edit`"
+                                            class="p-2.5 bg-[#0A0A0A] hover:bg-purple-500/10 text-[#71717A] hover:text-purple-400 border border-white/5 hover:border-purple-500/30 rounded-xl transition-all shadow-inner"
+                                            :aria-label="'Edit snippet: ' + snippet.title">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
                                         </a>
-                                        <span
-                                            class="px-2 py-0.5 bg-transparent text-gray-500 text-[10px] uppercase tracking-wider rounded-md border border-gray-800 font-bold">
-                                            Public
-                                        </span>
-                                    </div>
 
-                                    <p class="text-gray-400 text-sm leading-snug whitespace-pre-line mb-4 line-clamp-2 md:line-clamp-none"
-                                        x-text="snippet.description">
-                                        {{-- {{ $snippet->description }} --}}
-                                    </p>
-
-                                    {{-- Meta Info: Wraps naturally on small screens --}}
-                                    <div
-                                        class="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-500 text-[11px] md:text-xs">
-
-                                        <span class="flex items-center gap-1.5">
-                                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-
-                                        </span>
-
-
-                                        <span>Updated</span>
-
-                                        <span class="flex items-center gap-1">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-width="2"
-                                                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
-                                                </path>
+                                        <button @click.stop="openDeleteModal(snippet.id)"
+                                            class="p-2.5 bg-[#0A0A0A] hover:bg-red-500/10 text-[#71717A] hover:text-red-400 border border-white/5 hover:border-red-500/30 rounded-xl transition-all shadow-inner"
+                                            :aria-label="'Delete snippet: ' + snippet.title">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                             </svg>
-                                            files
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {{-- Action Buttons --}}
-                                <div class="flex items-center gap-2 mt-2 md:mt-0 self-end md:self-start">
-
-                                    {{-- Edit Button --}}
-                                    <a href="#"
-                                        class="p-2.5 md:p-2 bg-white/5 hover:bg-yellow-500/20 hover:text-yellow-400 border border-white/10 rounded-lg transition-all"
-                                        title="Edit">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                            </path>
-                                        </svg>
-                                    </a>
-
-                                    {{-- Delete Button --}}
-                                    <button
-                                        class="p-2.5 md:p-2 bg-white/5 hover:bg-red-500/20 hover:text-red-400 border border-white/10 rounded-lg transition-all"
-                                        title="Delete">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                            </path>
-                                        </svg>
-                                    </button>
-
-                                    {{-- Star / Marked Toggle --}}
-                                    <form action="#" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="">
-
-                                        <button type="submit"
-                                            class="flex items-center gap-1.5 px-4 md:px-3 py-2 md:py-1.5 border transition-all rounded-lg text-xs font-bold
-           ">
-
-                                            <svg class="w-3.5 h-3" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.921-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z">
-                                                </path>
-                                            </svg>
-
-                                            <span></span>
                                         </button>
-                                    </form>
+                                    </div>
                                 </div>
                             </div>
+                        </template>
+                    </div>
 
+
+                    {{-- Premium Pagination --}}
+                    <div x-show="lastPage > 1 && !loading" class="flex flex-col sm:flex-row items-center justify-between mt-12 pt-8 border-t border-white/5 gap-4">
+                        <div class="flex items-center gap-3 text-sm font-medium text-[#71717A] nocaps">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-[#EDEDED]" x-text="currentPage"></span>
+                            <span>of</span>
+                            <span class="text-[#EDEDED]" x-text="lastPage"></span>
+                            <span class="ml-2 text-2xs uppercase tracking-widest opacity-50 nocaps">pages</span>
                         </div>
-                    </template>
+
+                        <div class="flex items-center gap-2">
+                            <button @click="fetchSnippets(currentPage - 1)" 
+                                :disabled="currentPage === 1"
+                                class="group flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm font-bold text-[#EDEDED]">
+                                <svg class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                                <span>Previous</span>
+                            </button>
+                            
+                            <button @click="fetchSnippets(currentPage + 1)" 
+                                :disabled="currentPage === lastPage"
+                                class="group flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm font-bold text-[#EDEDED]">
+                                <span>Next</span>
+                                <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="hidden lg:block text-xs font-medium text-[#71717A] tracking-tight">
+                            Showing <span class="text-purple-400 font-bold" x-text="snippets.length"></span> of <span class="text-[#EDEDED] font-bold" x-text="total"></span> results
+                        </div>
+                    </div>
+                    </div>
 
 
                     {{-- No Results Message --}}
                     <div id="noResults"
-                        class="hidden glass-card rounded-[3rem] p-16 text-center border-dashed border-white/10 shadow-inner bg-white/[0.02]">
+                        class="hidden glass-card rounded-[3rem] p-16 text-center border-dashed border-white/10 shadow-inner bg-[#0A0A0A]/50 backdrop-blur-3xl relative overflow-hidden">
+                        {{-- Decorative background sparkle --}}
+                        <div class="absolute -top-12 -left-12 w-24 h-24 bg-purple-500/5 blur-2xl rounded-full"></div>
+
                         <div
-                            class="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10">
-                            <svg class="w-10 h-10 text-gray-600" fill="none" stroke="currentColor"
+                            class="w-24 h-24 bg-purple-500/5 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-purple-500/10 shadow-2xl">
+                            <svg class="w-10 h-10 text-purple-400" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-3 tracking-tight">No Snippets Found</h3>
-                        <p class="text-gray-500 mb-8 max-w-sm mx-auto leading-relaxed">Try adjusting your filters or search
-                            terms.</p>
-                        <button onclick="resetAllFilters()"
-                            class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-all">
-                            Clear Filters
+                        <h3 class="text-3xl font-black text-white mb-3 tracking-tighter nocaps">vault empty</h3>
+                        <p class="text-[#71717A] mb-10 max-w-xs mx-auto text-xs font-medium leading-relaxed nocaps">the logic you are searching for is not indexed in the current archive stream.</p>
+                        <button onclick="window.location.reload()"
+                            class="btn-primary text-white px-8 py-3 rounded-2xl text-2xs font-black uppercase tracking-widest transition-all nocaps">
+                            refresh index
                         </button>
                     </div>
                 </div>
@@ -366,30 +328,34 @@
 
         {{-- Delete Modal --}}
         <div id="deleteModal"
-            class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden z-[100] items-center justify-center p-6 transition-all duration-300 opacity-0">
-            <div class="glass-card bg-zinc-900 rounded-[2.5rem] p-10 max-w-sm w-full border border-white/10 shadow-2xl transform transition-all scale-90"
+            class="fixed inset-0 bg-black/95 backdrop-blur-2xl hidden z-[100] items-center justify-center p-6 transition-all duration-500 opacity-0">
+            <div class="glass-card bg-[#0A0A0A] rounded-[3rem] p-12 max-w-md w-full border border-white/5 shadow-[0_0_50px_rgba(0,0,0,0.5)] transform transition-all scale-95 relative overflow-hidden"
                 id="modalContainer">
+                
+                <div class="absolute -top-24 -left-24 w-48 h-48 bg-red-500/5 blur-3xl rounded-full"></div>
+
                 <div
-                    class="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-red-500/20">
-                    <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    class="w-24 h-24 bg-red-500/10 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-red-500/20 shadow-2xl">
+                    <svg class="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
                         </path>
                     </svg>
                 </div>
-                <h3 class="text-2xl font-black text-white text-center mb-3 tracking-tight">Erase Snippet?</h3>
-                <p class="text-gray-400 text-center text-sm mb-10 leading-relaxed" id="deleteMessage">This operation will
-                    permanently delete the code from your vault.</p>
-                <div class="flex flex-col gap-3">
+                <h3 class="text-3xl font-black text-white text-center mb-4 tracking-tighter nocaps">erase logic?</h3>
+                <p class="text-[#71717A] text-center text-xs font-medium mb-12 leading-relaxed px-4 nocaps" id="deleteMessage">this operation will permanently purge the selected logic from your secure vault. this action is irreversible.</p>
+                <div class="flex flex-col gap-4">
                     <form id="deleteForm" action="{{ url('snippet-delete') }}" method="POST">
                         @csrf
                         <input type="hidden" name="snippet_id" id="modalSnippetId" value="">
                         <button type="submit"
-                            class="w-full bg-red-600 hover:bg-red-500 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-red-900/40 mb-3">Yes,
-                            Delete Permanently</button>
+                            class="w-full bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white py-4 rounded-2xl text-2xs font-black uppercase tracking-widest border border-red-500/30 transition-all shadow-xl mb-2 nocaps">
+                            purge permanent memory
+                        </button>
                         <button type="button" onclick="closeDeleteModal()"
-                            class="w-full py-4 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-2xl font-bold transition-colors">Keep
-                            Snippet</button>
+                            class="w-full py-4 bg-white/5 hover:bg-white/10 text-[#71717A] hover:text-white rounded-2xl text-2xs font-black uppercase tracking-widest border border-white/5 transition-all nocaps">
+                            abort command
+                        </button>
                     </form>
                 </div>
             </div>
@@ -404,6 +370,9 @@
             return {
                 // Data properties
                 snippets: [],
+                currentPage: 1,
+                lastPage: 1,
+                total: 0,
                 searchQuery: '',
                 selectedLanguage: '',
                 selectedLanguageName: 'All Languages',
@@ -457,10 +426,11 @@
                 ],
 
                 // Methods
-                fetchSnippets() {
+                fetchSnippets(page = 1) {
+                    this.currentPage = page;
                     this.loading = true;
                     const url =
-                        `/api/search/my-snippets?q=${encodeURIComponent(this.searchQuery)}&lang=${this.selectedLanguage}&status=${this.statusFilter}`;
+                        `/api/search/my-snippets?q=${encodeURIComponent(this.searchQuery)}&lang=${this.selectedLanguage}&status=${this.statusFilter}&page=${this.currentPage}`;
 
                     fetch(url)
                         .then(res => res.json())
@@ -474,6 +444,8 @@
                             }
 
                             this.snippets = snippets;
+                            this.lastPage = data.last_page || 1;
+                            this.total = data.total || 0;
                             this.loading = false;
                         })
                         .catch(err => {
@@ -520,8 +492,35 @@
                         document.body.removeChild(textarea);
 
                         this.copyDone = true;
-                        setTimeout(() => this.copyDone = false, 2000);
                     });
+                },
+
+                openDeleteModal(id) {
+                    const modal = document.getElementById('deleteModal');
+                    const input = document.getElementById('modalSnippetId');
+                    if (modal && input) {
+                        input.value = id;
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                        setTimeout(() => {
+                            modal.classList.add('opacity-100');
+                            document.getElementById('modalContainer').classList.remove('scale-95');
+                            document.getElementById('modalContainer').classList.add('scale-100');
+                        }, 50);
+                    }
+                },
+
+                closeDeleteModal() {
+                    const modal = document.getElementById('deleteModal');
+                    if (modal) {
+                        modal.classList.remove('opacity-100');
+                        document.getElementById('modalContainer').classList.remove('scale-100');
+                        document.getElementById('modalContainer').classList.add('scale-95');
+                        setTimeout(() => {
+                            modal.classList.add('hidden');
+                            modal.classList.remove('flex');
+                        }, 500);
+                    }
                 },
 
                 getLangIcon(lang) {

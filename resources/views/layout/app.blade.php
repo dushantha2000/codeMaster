@@ -247,7 +247,6 @@
         </div>
     </main>
 
-    @include('common.footer')
 
     <!-- Preview Modal with Mobile Support -->
     @include('common.preview-modal')

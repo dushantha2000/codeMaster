@@ -17,12 +17,12 @@
 
             <!-- Modern Header -->
             <header
-                class="h-20 flex items-center justify-between px-4 md:px-8 shrink-0 glass-card border-b border-white/5 gap-4">
+                class="h-16 flex items-center justify-between px-4 md:px-8 shrink-0 bg-[#030303] border-b border-white/5 gap-4">
 
                 <div class="flex items-center gap-3 md:gap-4 shrink-0">
                     <button type="button" @click="toggleMobileSidebar"
                         class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-[#A1A1AA]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
@@ -30,16 +30,16 @@
 
                     <div class="flex items-center gap-3">
                         <div
-                            class="w-8 h-8 bg-black-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="w-7 h-7 bg-white/5 rounded-lg flex items-center justify-center border border-white/10">
+                            <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
                                 </path>
                             </svg>
                         </div>
-                        <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile"><a
-                                href="{{ url('/') }}">CodeVault</a> <span
-                                class="text-blue-500 text-xs font-normal">v1.1</span>
+                        <h1 class="text-base font-semibold text-[#EDEDED] tracking-tight hide-on-mobile">
+                            <a href="{{ url('/') }}" class="hover:text-white transition-colors">codevault</a>
+                            <span class="text-blue-500/60 text-2xs ml-1 font-medium tracking-normal">pro</span>
                         </h1>
                     </div>
                 </div>
@@ -47,24 +47,24 @@
                 <!-- Project Info Display (Center) -->
                 <div class="flex-1 flex items-center justify-center gap-2 md:gap-3 max-w-2xl px-2 min-w-0">
                     <div class="text-center min-w-0 flex-1">
-                        <h2 class="text-sm md:text-lg font-bold text-white truncate px-2"
-                            x-text="projectInfo.title || 'Untitled Project'"></h2>
+                        <h2 class="text-sm md:text-base font-medium text-[#EDEDED] truncate px-2"
+                            x-text="projectInfo.title || 'untitled project'"></h2>
                         <div class="hidden md:block relative group">
-                            <p class="text-xs text-gray-400 truncate px-2 cursor-help"
-                                x-text="projectInfo.description || 'No description'"></p>
+                            <p class="text-2xs text-[#71717A] truncate px-2 cursor-help"
+                                x-text="projectInfo.description || 'no description'"></p>
                             <!-- Tooltip for long descriptions -->
                             <div x-show="projectInfo.description && projectInfo.description.length > 50"
-                                class="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-64 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-xl border border-white/10 z-50 pointer-events-none">
+                                class="absolute left-1/2 transform -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-64 bg-[#121212] text-[#EDEDED] text-xs rounded-lg px-3 py-2 shadow-2xl border border-white/10 z-50 pointer-events-none">
                                 <div class="break-words" x-text="projectInfo.description"></div>
                                 <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-                                    <div class="border-4 border-transparent border-t-gray-900"></div>
+                                    <div class="border-4 border-transparent border-t-[#121212]"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <button type="button" @click="showProjectModal = true"
-                        class="p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all group shrink-0">
-                        <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none"
+                        class="p-1.5 rounded-md bg-white/5 border border-white/10 hover:bg-white/10 transition-all group shrink-0">
+                        <svg class="w-3.5 h-3.5 text-[#71717A] group-hover:text-[#EDEDED] transition-colors" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
@@ -76,19 +76,19 @@
                 <div class="flex items-center gap-2 md:gap-3 shrink-0">
                     <div class="flex items-center gap-2 border-l border-white/10 pl-2 md:pl-3">
                         <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-500 text-white p-2 md:px-5 md:py-2 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="btn-primary px-4 py-1.5 flex items-center gap-2">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
                                 </path>
                             </svg>
-                            <span class="hidden md:inline text-sm">Save</span>
+                            <span class="hidden md:inline text-xs font-semibold">deploy</span>
                         </button>
 
                         <a href="{{ url('/dashboard') }}"
-                            class="p-2 md:px-4 md:py-2 rounded-xl border border-white/10 bg-white/5 text-gray-400 hover:text-white transition-all">
+                            class="p-1.5 rounded-md border border-white/10 bg-white/5 text-[#71717A] hover:text-[#EDEDED] transition-all">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                    d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                         </a>
                     </div>
@@ -103,64 +103,60 @@
 
                 <!-- Sidebar - Files List -->
                 <aside
-                    class="sidebar-container w-80 glass-card rounded-xl md:rounded-2xl flex flex-col overflow-hidden shadow-2xl"
+                    class="sidebar-container w-72 glass-card rounded-xl flex flex-col overflow-hidden shadow-2xl"
                     :class="{ 'mobile-open': mobileMenuOpen }">
                     <!-- Sidebar Header -->
-                    <div class="p-4 md:p-5 border-b border-white/5 bg-white/5">
-                        <div class="flex justify-between items-center mb-3 md:mb-4">
+                    <div class="p-6 border-b border-white/5 bg-white/[0.01]">
+                        <div class="flex justify-between items-center mb-6">
                             <h2
-                                class="text-xs md:text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                class="text-3xs font-bold tracking-normal text-[#3F3F46] flex items-center gap-2">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                         d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
                                     </path>
                                 </svg>
-                                Files
+                                logic nodes
                             </h2>
                             <div class="flex items-center gap-2">
-                                <span class="text-xs px-2 py-1 rounded-full bg-white/10 text-gray-300 font-semibold"
+                                <span class="text-2xs px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-400 font-bold border border-blue-500/20"
                                     x-text="files.length"></span>
-                                <button type="button" @click="toggleMobileSidebar"
-                                    class="md:hidden p-1.5 rounded-lg hover:bg-white/10">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </button>
                             </div>
                         </div>
 
                         <button type="button" @click="showAddFileModal = true; mobileMenuOpen = false"
-                            class="w-full bg-white/10 hover:bg-white/15 border border-white/10 text-white px-3 md:px-4 py-2.5 md:py-3 rounded-xl font-semibold text-xs md:text-sm transition-all flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                            class="w-full bg-white/5 hover:bg-white/10 border border-white/5 text-[#EDEDED] px-4 py-3 rounded-xl font-bold text-2xs tracking-normal transition-all flex items-center justify-center gap-2 shadow-xl">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4">
                                 </path>
                             </svg>
-                            Add File
+                            add node
                         </button>
                     </div>
 
                     <!-- Files List -->
-                    <div class="flex-1 overflow-y-auto p-2 md:p-3 space-y-2 custom-scrollbar">
+                    <div class="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
                         <template x-for="(file, index) in files" :key="index">
                             <div @click="activeTab = index; mobileMenuOpen = false"
-                                :class="activeTab === index ? 'tab-active text-white scale-105' :
-                                    'bg-white/5 text-gray-400 hover:bg-white/10'"
-                                class="file-item flex items-center justify-between p-3 md:p-4 rounded-xl cursor-pointer group transition-all">
-                                <div class="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
-                                    <div class="text-xl md:text-2xl shrink-0" x-text="getFileIcon(file.name)">📄</div>
+                                :class="activeTab === index ? 'bg-blue-500/5 text-[#EDEDED] border-blue-500/20 shadow-[0_0_20px_rgba(168,85,247,0.05)]' :
+                                    'text-[#3F3F46] hover:bg-white/[0.02] hover:text-[#71717A] border-transparent'"
+                                class="file-item flex items-center justify-between p-3 rounded-xl cursor-pointer group transition-all border">
+                                <div class="flex items-center gap-3 flex-1 min-w-0">
+                                    <div class="text-xl shrink-0 transition-all duration-300" 
+                                         :class="activeTab === index ? 'opacity-100 scale-110' : 'opacity-40 grayscale group-hover:opacity-60 group-hover:grayscale-0'"
+                                         x-text="getFileIcon(file.name)">📄</div>
                                     <div class="flex-1 min-w-0">
                                         <div x-text="file.name || 'untitled.php'"
-                                            class="text-xs md:text-sm font-semibold truncate"></div>
+                                            class="text-2xs font-bold truncate tracking-tight"></div>
                                         <div x-text="file.path || 'root'"
-                                            class="text-[10px] md:text-xs opacity-60 truncate"></div>
+                                            class="text-3xs opacity-40 truncate font-mono tracking-tighter"
+                                            :class="activeTab === index ? 'text-blue-400' : ''"></div>
                                     </div>
                                 </div>
                                 <button type="button" @click.stop="confirmDelete(index)" x-show="files.length > 1"
-                                    class="ml-2 opacity-0 group-hover:opacity-100 md:opacity-100 text-gray-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-white/10 transition-all shrink-0">
-                                    <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor"
+                                    class="opacity-0 group-hover:opacity-100 text-[#3F3F46] hover:text-red-400 p-1.5 rounded-lg hover:bg-red-400/10 transition-all shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                         </path>
                                     </svg>
@@ -168,6 +164,7 @@
                             </div>
                         </template>
                     </div>
+v>
                 </aside>
 
                 <!-- Main Editor Area -->
@@ -175,72 +172,72 @@
                     <template x-for="(file, index) in files" :key="index">
                         <div x-show="activeTab === index" class="h-full flex flex-col">
                             <!-- File Metadata -->
-                            <div class="p-4 md:p-6 border-b border-white/5 bg-white/5">
-                                <div class="file-meta-mobile grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                            <div class="p-6 md:p-8 border-b border-white/5 bg-white/[0.01]">
+                                <div class="file-meta-mobile grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                                     <div>
                                         <label
-                                            class="text-[10px] md:text-xs font-bold text-gray-400 block mb-2 flex items-center gap-2">
-                                            <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor"
+                                            class="text-3xs font-black text-[#3F3F46] uppercase tracking-[0.2em] block mb-3 flex items-center gap-2 ml-1">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                     d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z">
                                                 </path>
                                             </svg>
-                                            File Name
+                                            node identity
                                         </label>
                                         <input type="text" x-model="file.name" name="file_names[]" required
                                             placeholder="e.g. UserController.php"
-                                            class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm focus:border-white/30 focus:bg-white/10 outline-none transition-all">
+                                            class="w-full bg-[#050505] border border-white/5 rounded-2xl px-5 py-3.5 text-xs text-[#EDEDED] focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/40 outline-none transition-all placeholder-[#3F3F46] shadow-inner">
                                     </div>
                                     <div>
                                         <label
-                                            class="text-[10px] md:text-xs font-bold text-gray-400 block mb-2 flex items-center gap-2">
-                                            <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor"
+                                            class="text-3xs font-black text-[#3F3F46] uppercase tracking-[0.2em] block mb-3 flex items-center gap-2 ml-1">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                     d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
                                                 </path>
                                             </svg>
-                                            File Path
+                                            namespace path
                                         </label>
                                         <input type="text" x-model="file.path" name="file_paths[]"
                                             placeholder="e.g. app/Http/Controllers" required
-                                            class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-2.5 text-xs md:text-sm focus:border-white/30 focus:bg-white/10 outline-none transition-all">
+                                            class="w-full bg-[#050505] border border-white/5 rounded-2xl px-5 py-3.5 text-xs text-[#EDEDED] focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/40 outline-none transition-all placeholder-[#3F3F46] shadow-inner">
                                     </div>
                                 </div>
 
                                 <!-- Quick Stats -->
-                                <div class="flex gap-4 md:gap-6 mt-3 md:mt-4 text-[10px] md:text-xs text-gray-500">
+                                <div class="flex gap-6 mt-6 text-3xs text-[#3F3F46] font-black uppercase tracking-[0.2em] ml-1">
                                     <div class="flex items-center gap-2">
-                                        <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor"
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                 d="M4 6h16M4 12h16m-7 6h7"></path>
                                         </svg>
                                         <span x-text="(file.content || '').split('\n').length + ' lines'"></span>
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        <svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor"
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                 d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
                                         </svg>
-                                        <span x-text="(file.content || '').length + ' chars'"></span>
+                                        <span x-text="(file.content || '').length + ' bytes'"></span>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Code Editor -->
-                            <div class="flex-1 relative code-editor overflow-hidden">
+                            <div class="flex-1 relative bg-[#030303] overflow-hidden">
                                 <textarea name="contents[]" x-model="file.content" @input="updateStats" required
-                                    class="absolute inset-0 w-full h-full bg-transparent p-4 pl-10 md:p-8 md:pl-16 code-font text-xs md:text-sm text-green-400 outline-none resize-none leading-[1.5]"
-                                    placeholder="// Start coding...&#10;// Enjoy! 🚀" spellcheck="false"></textarea>
+                                    class="absolute inset-0 w-full h-full bg-transparent p-6 pl-14 code-font text-[13px] text-[#A1A1AA] focus:text-[#EDEDED] outline-none resize-none leading-[1.6] transition-colors"
+                                    placeholder="// Initialize logic stream...&#10;// Enjoy! 🚀" spellcheck="false"></textarea>
 
                                 <!-- Line Numbers -->
                                 <div x-show="showLineNumbers"
-                                    class="absolute left-0 top-0 bottom-0 w-8 md:w-12 bg-black/30 border-r border-white/5 text-gray-600 text-[10px] md:text-xs code-font pt-4 md:pt-8 pr-2 select-none pointer-events-none overflow-hidden">
+                                    class="absolute left-0 top-0 bottom-0 w-10 bg-white/[0.01] border-r border-white/5 text-[#3F3F46] text-2xs code-font pt-6 pr-3 select-none pointer-events-none overflow-hidden text-right">
                                     <template x-for="(line, i) in (file.content || '').split('\n')" :key="i">
-                                        <div class="text-right leading-[1.5] h-[1.5em]" x-text="i + 1"></div>
+                                        <div class="leading-[1.6] h-[1.6em]" x-text="i + 1"></div>
                                     </template>
                                 </div>
                             </div>
@@ -252,108 +249,96 @@
 
         <!-- Initial Project Setup Modal -->
         <div x-show="showInitialModal" x-cloak
-            class="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+            class="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-xl p-4"
             x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100">
             <div @click.away="false" x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                class="modal-mobile glass-card rounded-2xl p-6 md:p-8 w-full max-w-lg shadow-2xl border border-white/10">
+                class="modal-mobile glass-card rounded-[2.5rem] p-10 w-full max-w-lg shadow-2xl border border-white/5 relative overflow-hidden">
+                
+                {{-- Decorative Background Glow --}}
+                <div class="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/5 blur-3xl rounded-full"></div>
 
-                <div class="flex items-center justify-between mb-4 md:mb-6">
-                    <h3 class="text-xl md:text-2xl font-bold flex items-center gap-2 md:gap-3">
-
-                        <span class="text-base md:text-2xl">New Code Snippet</span>
-                        {{-- i need add back button and icon  --}}
-
-                    </h3>
+                <div class="mb-10 relative">
+                    <h3 class="text-4xl font-bold text-[#EDEDED] mb-3 tracking-tighter">new logic entry</h3>
+                    <p class="text-2xs font-bold tracking-normal text-[#3F3F46]">initialize your vault snippet with secure metadata.</p>
                 </div>
 
-                <p class="text-sm text-gray-400 mb-6">Create and organize your code snippets with ease.</p>
-
-                <div class="space-y-4 md:space-y-5">
+                <div class="space-y-6 relative">
                     <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">
-                            Snippet Title
-                            <span class="text-red-400">*</span>
-                        </label>
+                        <label class="text-2xs font-bold text-[#71717A] tracking-normal mb-3 block ml-1">archive title</label>
                         <input type="text" x-model="projectInfo.title" @keyup.enter="submitProjectInfo"
-                            placeholder="e.g. User Authentication System"
-                            class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all"
-                            :class="{ 'border-red-500/50': projectValidation.title }">
-                        <p x-show="projectValidation.title" class="text-xs text-red-400 mt-1"
+                            placeholder="e.g. auth protocol"
+                            class="w-full bg-[#0A0A0A] border border-white/5 rounded-2xl px-5 py-4 text-sm text-[#EDEDED] outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 transition-all shadow-inner placeholder-[#3F3F46]"
+                            :class="{ 'border-red-500/30': projectValidation.title }">
+                        <p x-show="projectValidation.title" class="text-2xs text-red-500 mt-2 font-bold uppercase tracking-widest"
                             x-text="projectValidation.title"></p>
                     </div>
 
                     <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">
-                            Description
-                            <span class="text-red-400">*</span>
+                        <label class="text-2xs font-black text-[#71717A] uppercase tracking-[0.2em] mb-3 block ml-1">
+                            secure description
                         </label>
                         <textarea x-model="projectInfo.description" rows="3"
-                            placeholder="Brief description of what this snippet does..."
-                            class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all resize-none"
-                            :class="{ 'border-red-500/50': projectValidation.description }"></textarea>
-                        <p x-show="projectValidation.description" class="text-xs text-red-400 mt-1"
+                            placeholder="define the scope of this logic..."
+                            class="w-full bg-[#0A0A0A] border border-white/5 rounded-2xl px-5 py-4 text-sm text-[#EDEDED] outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 transition-all shadow-inner resize-none placeholder-[#3F3F46]"
+                            :class="{ 'border-red-500/30': projectValidation.description }"></textarea>
+                        <p x-show="projectValidation.description" class="text-2xs text-red-500 mt-2 font-bold uppercase tracking-widest"
                             x-text="projectValidation.description"></p>
                     </div>
 
-                    <div>
-                        <label
-                            class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Language</label>
-                        <select x-model="projectInfo.language"
-                            class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
-                            <option value="laravel">Laravel</option>
-                            <option value="tailwind">Tailwind CSS</option>
-                            <option value="react">React</option>
-                            <option value="vue">Vue.js</option>
-                            <option value="javascript">JavaScript</option>
-                            <option value="php">PHP</option>
-                            <option value="python">Python</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">
-                            Category
-                        </label>
-
-                        @if ($categories->isEmpty())
-                            <div
-                                class="flex items-center gap-5 mt-2 bg-white/5 p-3 rounded-lg border border-dashed border-white/10">
-                                <span class="text-[11px] text-gray-500 italic">No categories?</span>
-                                <a href="{{ url('/create-new') . '?type=category' }}"
-                                    class="text-[11px] text-blue-400 hover:text-blue-300 font-medium transition-colors">+
-                                    Create New</a>
+                    <div class="grid grid-cols-2 gap-6 relative">
+                        <div>
+                            <label class="text-2xs font-bold text-[#71717A] tracking-normal mb-3 block ml-1">language</label>
+                            <div class="relative">
+                                <select x-model="projectInfo.language"
+                                    class="w-full bg-[#0A0A0A] border border-white/5 rounded-2xl px-5 py-4 text-xs text-[#EDEDED] outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 transition-all cursor-pointer shadow-inner appearance-none">
+                                    <option value="laravel">laravel</option>
+                                    <option value="tailwind">tailwind css</option>
+                                    <option value="react">react</option>
+                                    <option value="vue">vue.js</option>
+                                    <option value="javascript">javascript</option>
+                                    <option value="php">php</option>
+                                    <option value="python">python</option>
+                                </select>
+                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                                    <svg class="w-4 h-4 text-[#3F3F46]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
                             </div>
-                        @else
-                            <select x-model="projectInfo.category"
-                                class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
-                                <option value="" disabled selected>Choose a category</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->category_id }}">
-                                        {{ $category->category_name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        @endif
+                        </div>
+
+                        <div>
+                            <label class="text-2xs font-bold text-[#71717A] tracking-normal mb-3 block ml-1">category</label>
+                            @if ($categories->isEmpty())
+                                <div class="h-[54px] flex items-center px-5 bg-[#0A0A0A] rounded-2xl border border-dashed border-white/10">
+                                    <a href="{{ url('/create-new') . '?type=category' }}"
+                                        class="text-2xs text-blue-400 hover:text-blue-300 font-bold tracking-normal transition-colors">invoke category</a>
+                                </div>
+                            @else
+                                <select x-model="projectInfo.category"
+                                    class="w-full bg-[#0A0A0A] border border-white/5 rounded-2xl px-5 py-4 text-xs text-[#EDEDED] outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 transition-all cursor-pointer shadow-inner appearance-none">
+                                    <option value="" disabled selected>select category</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->category_id }}">
+                                            {{ $category->category_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @endif
+                        </div>
                     </div>
                 </div>
 
-                {{-- <div class="flex gap-3 mt-6 md:mt-8">
-                    <button type="button" @click="submitProjectInfo"
-                        class="flex-1 btn-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all">
-                        Start Coding
-                    </button>
-                </div> --}}
-
-                <div class="flex gap-3 mt-6 md:mt-8">
-                    <a href="{{ url('/') }}" type="button"
-                        class="flex-1 bg-white/5 hover:bg-white/10 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-white/10 text-center ">
-                        Cancel
+                <div class="flex gap-4 mt-12 relative">
+                    <a href="{{ url('/') }}"
+                        class="flex-1 bg-white/5 hover:bg-white/10 text-[#71717A] hover:text-[#EDEDED] px-6 py-4 rounded-2xl text-2xs font-bold tracking-normal transition-all border border-white/5 text-center flex items-center justify-center">
+                        abort
                     </a>
                     <button type="button" @click="submitProjectInfo"
-                        class="flex-1 btn-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all">
-                        Save Changes
+                        class="flex-1 btn-primary px-6 py-4 rounded-2xl text-2xs font-bold tracking-normal h-[54px]">
+                        create snippet
                     </button>
                 </div>
             </div>
@@ -361,92 +346,77 @@
 
         <!-- Project Info Edit Modal -->
         <div x-show="showProjectModal" x-cloak @click.self="showProjectModal = false"
-            class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
-            <div @click.away="showProjectModal = false" x-transition:enter="transition ease-out duration-200"
+            class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xl p-6 hidden animate-in fade-in duration-300">
+            <div @click.away="showProjectModal = false" x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                class="modal-mobile glass-card rounded-2xl p-6 md:p-8 w-full max-w-lg shadow-2xl border border-white/10">
+                class="modal-mobile glass-card rounded-[2.5rem] p-10 w-full max-w-lg shadow-2xl border border-white/5 relative overflow-hidden">
+                
+                <div class="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/5 blur-3xl rounded-full"></div>
 
-                <div class="flex items-center justify-between mb-4 md:mb-6">
-                    <h3 class="text-xl md:text-2xl font-bold flex items-center gap-2 md:gap-3">
-                        <div class="bg-white/10 backdrop-blur-sm p-2 rounded-lg border border-white/10">
-                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                </path>
-                            </svg>
-                        </div>
-                        <span class="text-base md:text-2xl">Edit Project</span>
+                <div class="flex items-center justify-between mb-10 relative">
+                    <h3 class="text-3xl font-black text-[#EDEDED] flex items-center gap-3 tracking-tighter">
+                        archive metadata
                     </h3>
                     <button @click="showProjectModal = false"
-                        class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-all">
-                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
+                        class="text-[#71717A] hover:text-white transition-colors text-3xl">&times;</button>
                 </div>
 
-                <div class="space-y-4 md:space-y-5">
+                <div class="space-y-6 relative">
                     <div>
-                        <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">Project Name</label>
-                        <input type="text" x-model="projectInfo.title" required placeholder="e.g. My Awesome Project"
-                            class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all">
+                        <label class="text-2xs font-black text-[#71717A] uppercase tracking-[0.2em] mb-3 block ml-1">archive title</label>
+                        <input type="text" x-model="projectInfo.title" required placeholder="e.g. auth protocol"
+                            class="w-full bg-[#0A0A0A] border border-white/5 rounded-2xl px-5 py-4 text-sm text-[#EDEDED] focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 outline-none transition-all shadow-inner placeholder-[#3F3F46]">
                     </div>
 
                     <div>
-                        <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">Description</label>
-                        <textarea x-model="projectInfo.description" required rows="3" placeholder="Brief description..."
-                            class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all resize-none"></textarea>
+                        <label class="text-2xs font-black text-[#71717A] uppercase tracking-[0.2em] mb-3 block ml-1">secure description</label>
+                        <textarea x-model="projectInfo.description" required rows="3" placeholder="define the scope..."
+                            class="w-full bg-[#0A0A0A] border border-white/5 rounded-2xl px-5 py-4 text-sm text-[#EDEDED] focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 outline-none transition-all resize-none shadow-inner placeholder-[#3F3F46]"></textarea>
                     </div>
 
-                    <div>
-                        <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">Language</label>
-                        <select x-model="projectInfo.language"
-                            class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
-                            <option value="laravel">Laravel</option>
-                            <option value="tailwind">Tailwind CSS</option>
-                            <option value="react">React</option>
-                            <option value="vue">Vue.js</option>
-                            <option value="javascript">JavaScript</option>
-                            <option value="php">PHP</option>
-                            <option value="python">Python</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">
-                            Category
-                        </label>
-
-                        @if ($categories->isEmpty())
-                            <div
-                                class="flex items-center gap-5 mt-2 bg-white/5 p-3 rounded-lg border border-dashed border-white/10">
-                                <span class="text-[11px] text-gray-500 italic">No categories?</span>
-                                <a href="{{ url('/create-new') . '?type=category' }}"
-                                    class="text-[11px] text-blue-400 hover:text-blue-300 font-medium transition-colors">+
-                                    Create New</a>
-                            </div>
-                        @else
-                            <select x-model="projectInfo.category"
-                                class="w-full bg-gray-900 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base text-white outline-none focus:border-white/30 focus:bg-gray-800 transition-all cursor-pointer">
-                                <option value="" disabled selected>Choose a category</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->category_id }}">
-                                        {{ $category->category_name }}
-                                    </option>
-                                @endforeach
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-2xs font-black text-[#71717A] uppercase tracking-[0.2em] mb-3 block ml-1">language</label>
+                            <select x-model="projectInfo.language"
+                                class="w-full bg-[#0A0A0A] border border-white/5 rounded-2xl px-5 py-4 text-xs text-[#EDEDED] outline-none focus:ring-4 focus:ring-blue-500/10 transition-all cursor-pointer shadow-inner appearance-none">
+                                <option value="laravel">laravel</option>
+                                <option value="tailwind">tailwind css</option>
+                                <option value="react">react</option>
+                                <option value="vue">vue.js</option>
+                                <option value="javascript">javascript</option>
+                                <option value="php">php</option>
+                                <option value="python">python</option>
                             </select>
-                        @endif
+                        </div>
+                        <div>
+                            <label class="text-2xs font-black text-[#71717A] uppercase tracking-[0.2em] mb-3 block ml-1">category</label>
+                            @if ($categories->isEmpty())
+                                <div class="h-[54px] flex items-center px-5 bg-[#0A0A0A] rounded-2xl border border-dashed border-white/10">
+                                    <span class="text-3xs font-black uppercase tracking-widest">locked</span>
+                                </div>
+                            @else
+                                <select x-model="projectInfo.category"
+                                    class="w-full bg-[#0A0A0A] border border-white/5 rounded-2xl px-5 py-4 text-xs text-[#EDEDED] outline-none focus:ring-4 focus:ring-blue-500/10 transition-all cursor-pointer shadow-inner appearance-none">
+                                    <option value="" disabled selected>category</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->category_id }}">
+                                            {{ $category->category_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @endif
+                        </div>
                     </div>
                 </div>
 
-                <div class="flex gap-3 mt-6 md:mt-8">
+                <div class="flex gap-4 mt-12 relative">
                     <button type="button" @click="showProjectModal = false"
-                        class="flex-1 bg-white/5 hover:bg-white/10 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-white/10">
-                        Cancel
+                        class="flex-1 bg-white/5 hover:bg-white/10 text-[#71717A] hover:text-[#EDEDED] px-6 py-4 rounded-2xl text-2xs font-black uppercase tracking-widest transition-all border border-white/5">
+                        cancel
                     </button>
                     <button type="button" @click="showProjectModal = false"
-                        class="flex-1 btn-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all">
-                        Save Changes
+                        class="flex-1 btn-primary px-6 py-4 rounded-2xl text-2xs font-black uppercase tracking-[0.2em] h-[54px]">
+                        commit updates
                     </button>
                 </div>
             </div>
@@ -454,75 +424,64 @@
 
         <!-- Add File Modal -->
         <div x-show="showAddFileModal" x-cloak @click.self="showAddFileModal = false"
-            class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
+            class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xl p-6 hidden animate-in fade-in duration-300">
             <div @click.away="showAddFileModal = false" x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                class="modal-mobile glass-card rounded-2xl p-6 md:p-8 w-full max-w-md shadow-2xl border border-white/10">
+                class="modal-mobile glass-card rounded-[2.5rem] p-10 w-full max-w-md shadow-2xl border border-white/5 relative overflow-hidden">
+                
+                <div class="absolute -top-24 -left-24 w-48 h-48 bg-blue-500/5 blur-3xl rounded-full"></div>
 
-                <div class="flex items-center justify-between mb-4 md:mb-6">
-                    <h3 class="text-xl md:text-2xl font-bold flex items-center gap-2 md:gap-3">
-                        <div class="bg-white/10 backdrop-blur-sm p-2 rounded-lg border border-white/10">
-                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
-                                </path>
-                            </svg>
-                        </div>
-                        <span class="text-base md:text-2xl">New File</span>
+                <div class="flex items-center justify-between mb-10 relative">
+                    <h3 class="text-3xl font-black text-[#EDEDED] flex items-center gap-3 tracking-tighter">
+                        new node
                     </h3>
                     <button @click="showAddFileModal = false"
-                        class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-all">
-                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
+                        class="text-[#71717A] hover:text-white transition-colors text-3xl">&times;</button>
                 </div>
 
-                <div class="space-y-4 md:space-y-5">
+                <div class="space-y-6 relative">
                     <div>
-                        <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">File Name</label>
+                        <label class="text-2xs font-black text-[#71717A] uppercase tracking-[0.2em] mb-3 block ml-1">entity name</label>
                         <input type="text" x-model="newFile.name" @keyup.enter="addFile" required
                             placeholder="e.g. index.php"
-                            class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all">
+                            class="w-full bg-[#0A0A0A] border border-white/5 rounded-2xl px-5 py-4 text-sm text-[#EDEDED] focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 outline-none transition-all shadow-inner placeholder-[#3F3F46]">
                     </div>
 
                     <div>
-                        <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2">File Path
-                            (Optional)</label>
+                        <label class="text-2xs font-black text-[#71717A] uppercase tracking-[0.2em] mb-3 block ml-1">relative path</label>
                         <input type="text" x-model="newFile.path" @keyup.enter="addFile"
-                            placeholder="e.g. src/components" required
-                            class="w-full bg-white/5 border border-white/10 rounded-lg px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base outline-none focus:border-white/30 focus:bg-white/10 transition-all">
+                            placeholder="e.g. src/logic" required
+                            class="w-full bg-[#0A0A0A] border border-white/5 rounded-2xl px-5 py-4 text-sm text-[#EDEDED] focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50 outline-none transition-all shadow-inner placeholder-[#3F3F46]">
                     </div>
 
                     <!-- Quick Templates -->
                     <div>
-                        <label class="text-xs md:text-sm font-semibold text-gray-300 block mb-2 md:mb-3">Quick
-                            Templates</label>
-                        <div class="grid grid-cols-3 gap-2">
+                        <label class="text-2xs font-black text-[#71717A] uppercase tracking-[0.2em] mb-4 block ml-1">logic archetypes</label>
+                        <div class="grid grid-cols-3 gap-3">
                             <button type="button" @click="newFile.name = 'index.php'"
-                                class="px-2 md:px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] md:text-xs font-semibold transition-all border border-white/10 hover:border-white/20">
-                                PHP
+                                class="px-3 py-3 bg-[#0A0A0A] hover:bg-blue-500/10 rounded-xl text-3xs font-black uppercase tracking-widest text-[#A1A1AA] hover:text-blue-400 transition-all border border-white/5 hover:border-blue-500/30">
+                                php
                             </button>
                             <button type="button" @click="newFile.name = 'script.js'"
-                                class="px-2 md:px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] md:text-xs font-semibold transition-all border border-white/10 hover:border-white/20">
-                                JS
+                                class="px-3 py-3 bg-[#0A0A0A] hover:bg-blue-500/10 rounded-xl text-3xs font-black uppercase tracking-widest text-[#A1A1AA] hover:text-blue-400 transition-all border border-white/5 hover:border-blue-500/30">
+                                js
                             </button>
                             <button type="button" @click="newFile.name = 'style.css'"
-                                class="px-2 md:px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] md:text-xs font-semibold transition-all border border-white/10 hover:border-white/20">
-                                CSS
+                                class="px-3 py-3 bg-[#0A0A0A] hover:bg-blue-500/10 rounded-xl text-3xs font-black uppercase tracking-widest text-[#A1A1AA] hover:text-blue-400 transition-all border border-white/5 hover:border-blue-500/30">
+                                css
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex gap-3 mt-6 md:mt-8">
+                <div class="flex gap-4 mt-12 relative">
                     <button type="button" @click="showAddFileModal = false"
-                        class="flex-1 bg-white/5 hover:bg-white/10 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-white/10">
-                        Cancel
+                        class="flex-1 bg-white/5 hover:bg-white/10 text-[#71717A] hover:text-[#EDEDED] px-6 py-4 rounded-2xl text-2xs font-black uppercase tracking-widest transition-all border border-white/5">
+                        cancel
                     </button>
                     <button type="button" @click="addFile"
-                        class="flex-1 btn-primary text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all">
-                        Create
+                        class="flex-1 btn-primary px-6 py-4 rounded-2xl text-2xs font-black uppercase tracking-[0.2em] h-[54px]">
+                        commit node
                     </button>
                 </div>
             </div>
@@ -578,12 +537,12 @@
         <div x-show="deleteConfirm !== null" x-cloak @click.self="deleteConfirm = null"
             class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
             <div x-transition
-                class="modal-mobile glass-card rounded-2xl p-6 md:p-8 w-full max-w-md shadow-2xl border border-white/10">
+                class="modal-mobile glass-card rounded-2xl p-6 md:p-10 w-full max-w-md shadow-2xl border border-white/10">
 
                 <div class="text-center">
                     <div
-                        class="mx-auto w-12 h-12 md:w-16 md:h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-3 md:mb-4 border border-red-500/20">
-                        <svg class="w-6 h-6 md:w-8 md:h-8 text-red-400" fill="none" stroke="currentColor"
+                        class="mx-auto w-14 h-14 bg-red-500/10 rounded-full flex items-center justify-center mb-6 border border-red-500/20">
+                        <svg class="w-7 h-7 text-red-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
@@ -591,16 +550,16 @@
                         </svg>
                     </div>
 
-                    <h3 class="text-lg md:text-xl font-bold mb-2">Delete File?</h3>
-                    <p class="text-sm md:text-base text-gray-400 mb-4 md:mb-6">This action cannot be undone.</p>
+                    <h3 class="text-xl font-semibold text-[#EDEDED] mb-2">Delete file?</h3>
+                    <p class="text-sm text-[#71717A] mb-8">This action cannot be undone. This will permanently remove the file from this snippet.</p>
 
                     <div class="flex gap-3">
                         <button @click="deleteConfirm = null"
-                            class="flex-1 bg-white/5 hover:bg-white/10 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-white/10">
+                            class="flex-1 bg-white/5 hover:bg-white/10 text-[#EDEDED] px-6 py-2.5 rounded-lg text-sm font-semibold transition-all border border-white/10">
                             Cancel
                         </button>
                         <button @click="removeFile(deleteConfirm)"
-                            class="flex-1 bg-red-600/20 hover:bg-red-600/30 text-red-400 px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold transition-all border border-red-500/30">
+                            class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-200 px-6 py-2.5 rounded-lg text-sm font-semibold transition-all border border-red-500/30">
                             Delete
                         </button>
                     </div>
@@ -819,7 +778,7 @@
     /* Line numbers and textarea sync */
     .code-editor textarea {
         line-height: 1.5;
-        font-family: 'Courier New', monospace;
+        font-family: 'Roboto Mono', monospace;
     }
 
     /* Mobile sidebar */

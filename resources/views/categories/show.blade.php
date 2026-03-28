@@ -41,9 +41,6 @@
                     <p class="text-gray-400 text-sm font-medium">
                         {{ $categories->category_description }}
                     </p>
-                    {{-- <p class="text-gray-400 text-sm font-medium">
-                        Category with <span id="totalCount" class="text-blue-400 font-bold">13</span> snippets
-                    </p> --}}
                 </div>
             </div>
         </div>
@@ -53,110 +50,47 @@
 
             {{-- Category Info Card --}}
             <div class="md:col-span-1">
-                <div class="sticky top-8 space-y-6">
-                    <div
-                        class="glass-card backdrop-blur-xl rounded-3xl p-8 border text-center relative overflow-hidden shadow-2xl">
-
+                <div class="sticky top-20 space-y-6">
+                    <div class="glass-card bg-[#0A0A0A]/50 backdrop-blur-xl rounded-[2.5rem] p-10 border border-white/5 text-center relative overflow-hidden shadow-2xl group">
                         {{-- Decorative Background Glow --}}
-                        <div
-                            class="absolute -top-24 -left-24 w-48 h-48 bg-{{ $categories->color_name }}-500/10 blur-3xl rounded-full">
+                        <div class="absolute -top-24 -left-24 w-48 h-48 bg-{{ $categories->color_name }}-500/10 blur-3xl rounded-full group-hover:bg-{{ $categories->color_name }}-500/20 transition-colors">
                         </div>
 
                         {{-- Category Icon Section --}}
-                        <div onclick="triggerActionMenu('{{ $categories->category_id }}', '{{ $categories->category_name }}', '{{ $categories->color_name }}')"
-                            class="group relative">
-
-                            <div class="absolute -top-2 -right-2 z-10">
-
-                            </div>
-
-                            <div class="flex flex-col items-center text-center">
-                                <div class="w-16 h-16 mb-3 relative">
-                                    <svg class="w-16 h-16 text-{{ $categories->color_name }}-500/70 group-hover:text-{{ $categories->color_name }}-400 transition-colors"
-                                        viewBox="0 0 24 24" fill="currentColor">
-                                        <path
-                                            d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
-                                    </svg>
-                                    {{-- <div
-                                class="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-{{ $categories->color_name }}-500 border-2 border-black">
-                            </div> --}}
-                                </div>
-
-
-
-
+                        <div class="relative inline-block mb-6">
+                            <div class="w-24 h-24 rounded-[2rem] bg-{{ $categories->color_name }}-500/10 border-2 border-{{ $categories->color_name }}-500/20 flex items-center justify-center mx-auto shadow-2xl shadow-{{ $categories->color_name }}-500/10 group-hover:scale-105 transition-transform duration-500">
+                                <svg class="w-12 h-12 text-{{ $categories->color_name }}-500/70 group-hover:text-{{ $categories->color_name }}-400 transition-colors"
+                                    viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
+                                </svg>
+                                <div class="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-{{ $categories->color_name }}-500 border-2 border-[#0A0A0A]"></div>
                             </div>
                         </div>
 
                         {{-- Category Name & Description --}}
-                        <h2 class="text-xl font-bold text-{{ $categories->color_name }}-400 tracking-tight">
+                        <h2 class="text-2xl font-black text-[#EDEDED] tracking-tighter mb-2">
                             {{ $categories->category_name }}</h2>
-                        <p class="text-gray-500 text-sm mb-3 line-clamp-2"> {{ $categories->category_description }}</p>
-
-                        {{-- Category Stats --}}
-                        <div class="mb-6 space-y-2">
-                            <div class="flex items-center justify-center gap-2 text-xs text-gray-400">
-                                <span class="flex items-center gap-1">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Created {{ \Carbon\Carbon::parse($categories->created_at)->diffForHumans() }}
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-center gap-2 text-xs text-gray-400">
-                                <span class="flex items-center gap-1">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                    248 total views
-                                </span>
-                            </div>
-                        </div>
+                        <p class="text-[#71717A] text-xs font-medium leading-relaxed mb-8 px-2"> 
+                            {{ $categories->category_description ?: 'No description provided for this directory.' }}
+                        </p>
 
                         {{-- Stats Section --}}
-                        <div class="pt-6 border-t border-white/5 space-y-4">
-                            <div class="flex justify-between text-xs">
-                                <span class="text-gray-500 uppercase tracking-widest font-bold text-[10px]">Total
-                                    Snippets</span>
-                                <span class="text-{{ $categories->color_name }}-400 font-bold" id="sidebarCount">13</span>
+                        <div class="pt-8 border-t border-white/5 space-y-5">
+                            <div class="flex justify-between items-center text-[10px]">
+                                <span class="text-[#71717A] uppercase tracking-[0.15em] font-black">Total Archived</span>
+                                <span class="text-{{ $categories->color_name }}-400 font-black text-xs" id="sidebarCount">{{ $totalSnippets }}</span>
                             </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-gray-500 uppercase tracking-widest font-bold text-[10px]">Languages</span>
-                                <span class="text-{{ $categories->color_name }}-400 font-bold">5</span>
+                            <div class="flex justify-between items-center text-[10px]">
+                                <span class="text-[#71717A] uppercase tracking-[0.15em] font-black">Unique Stacks</span>
+                                <span class="text-[#EDEDED] font-black text-xs">{{ $uniqueLanguages }}</span>
                             </div>
-                            <div class="flex justify-between text-xs">
-                                <span class="text-gray-500 uppercase tracking-widest font-bold text-[10px]">Last
-                                    Updated</span>
-
-                                <span class="text-{{ $categories->color_name }}-400 font-bold">
-                                    @if ($categories->updated_at)
-                                        {{ \Carbon\Carbon::parse($categories->updated_at)->diffForHumans() }}
-                                    @else
-                                        Never
-                                    @endif
+                            <div class="flex justify-between items-center text-[10px]">
+                                <span class="text-[#71717A] uppercase tracking-[0.15em] font-black">Last Sync</span>
+                                <span class="text-[#EDEDED] font-black text-[11px]">
+                                    {{ $categories->updated_at ? \Carbon\Carbon::parse($categories->updated_at)->diffForHumans() : 'Never' }}
                                 </span>
                             </div>
                         </div>
-
-                        {{-- Action Buttons --}}
-                        {{-- <div class="mt-8 flex gap-2 justify-center">
-                            <a href="#" class="inline-flex items-center gap-2 bg-{{ $categories->color_name }}-600/20 hover:bg-{{ $categories->color_name }}-600/30 text-{{ $categories->color_name }}-400 text-sm px-4 py-2 rounded-xl font-bold transition-all duration-200 shadow-lg shadow-{{ $categories->color_name }}-900/20 border border-purple-500/30">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                </svg>
-                                Edit
-                            </a>
-                            <a href="#" class="inline-flex items-center gap-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 text-sm px-4 py-2 rounded-xl font-bold transition-all duration-200 shadow-lg shadow-red-900/20 border border-red-500/30">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                                Delete
-                            </a>
-                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -164,14 +98,14 @@
             {{-- Right Content: Snippets List --}}
             <div class="md:col-span-3 space-y-4">
 
-                {{-- Filters Bar --}}
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+                {{-- DASHBOARD-STYLE Filters Bar --}}
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
                     <div class="flex flex-col md:flex-row flex-1 items-center gap-2">
                         {{-- Search Input --}}
                         <div class="relative group w-full md:w-80">
-                            <input type="text" id="searchInput" placeholder="Find a snippet in this category..."
-                                class="bg-[#0d1117] border border-[#30363d] text-gray-300 text-sm rounded-lg pl-10 pr-4 py-1.5 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all w-full">
-                            <svg class="w-4 h-4 text-gray-500 absolute left-3.5 top-1/2 -translate-y-1/2 group-focus-within:text-purple-400 transition-colors"
+                            <input type="text" id="searchInput" placeholder="Find a snippet in this directory..." x-model="searchQuery" @input.debounce.300ms="fetchSnippets()"
+                                class="bg-[#0A0A0A] border border-white/5 text-[#EDEDED] text-sm rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500/40 transition-all w-full placeholder-[#71717A] shadow-inner">
+                            <svg class="w-4 h-4 text-[#71717A] absolute left-3.5 top-1/2 -translate-y-1/2 group-focus-within:text-purple-400 transition-colors"
                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -180,23 +114,23 @@
 
                         {{-- Filters --}}
                         <div class="flex items-center gap-2 w-full md:w-auto">
-                            <select id="languageFilter"
-                                class="bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-300 hover:bg-[#30363d] hover:border-[#8b949e] focus:outline-none cursor-pointer transition-all">
+                            <select id="languageFilter" x-model="selectedLanguage" @change="fetchSnippets()"
+                                class="bg-[#0A0A0A] border border-white/5 rounded-xl px-4 py-2.5 text-xs font-semibold text-[#A1A1AA] hover:bg-white/5 hover:border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-500/40 cursor-pointer transition-all appearance-none shadow-inner">
                                 <option value="all">Language</option>
                                 <option value="php">PHP</option>
                                 <option value="blade">Blade</option>
                                 <option value="javascript">JavaScript</option>
                             </select>
 
-                            <select id="statusFilter"
-                                class="bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-300 hover:bg-[#30363d] hover:border-[#8b949e] focus:outline-none cursor-pointer transition-all">
+                            <select id="statusFilter" x-model="statusFilter" @change="fetchSnippets()"
+                                class="bg-[#0A0A0A] border border-white/5 rounded-xl px-4 py-2.5 text-xs font-semibold text-[#A1A1AA] hover:bg-white/5 hover:border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-500/40 cursor-pointer transition-all appearance-none shadow-inner">
                                 <option value="all">Status</option>
                                 <option value="1">Active</option>
                                 <option value="0">Inactive</option>
                             </select>
 
-                            <select id="sortFilter"
-                                class="bg-[#21262d] border border-[#30363d] rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-300 hover:bg-[#30363d] hover:border-[#8b949e] focus:outline-none cursor-pointer transition-all">
+                            <select id="sortFilter" x-model="sortBy" @change="fetchSnippets()"
+                                class="bg-[#0A0A0A] border border-white/5 rounded-xl px-4 py-2.5 text-xs font-semibold text-[#A1A1AA] hover:bg-white/5 hover:border-white/10 focus:outline-none focus:ring-2 focus:ring-purple-500/40 cursor-pointer transition-all appearance-none shadow-inner">
                                 <option value="latest">Sort</option>
                                 <option value="oldest">Oldest</option>
                                 <option value="az">A-Z</option>
@@ -204,136 +138,124 @@
                             </select>
                         </div>
                     </div>
+                </div>
 
-
-
+                {{-- Loading Skeleton --}}
+                <div x-show="loading" class="space-y-4" style="display: none;">
+                    <template x-for="i in 3">
+                        <div class="border border-[#30363d] bg-[#161b22] rounded-md p-5 animate-pulse mb-3">
+                            <div class="h-4 bg-[#30363d] rounded w-1/3 mb-3"></div>
+                            <div class="h-3 bg-[#30363d]/50 rounded w-full mb-2"></div>
+                            <div class="h-3 bg-[#30363d]/30 rounded w-2/3"></div>
+                        </div>
+                    </template>
                 </div>
 
                 {{-- Snippets Container --}}
-                <div class="space-y-4">
-                    {{-- Snippet Card 1 --}}
-                    <div class="snippet-card group border-b border-white/10 p-5 hover:bg-white/[0.02] transition-all">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-                            <div class="flex-1 min-w-0">
-                                <div class="flex flex-wrap items-center gap-2 mb-2">
-                                    <a href="#"
-                                        class="text-{{ $categories->color_name }}-400 text-lg md:text-xl font-semibold hover:underline decoration-2 truncate max-w-[200px] md:max-w-none">
-                                        Login System
-                                    </a>
-                                    <span
-                                        class="px-2 py-0.5 bg-transparent text-gray-500 text-[10px] uppercase tracking-wider rounded-md border border-gray-800 font-bold">
-                                        PUBLIC
-                                    </span>
+                <div class="grid grid-cols-1 gap-4 mt-2" x-show="!loading" style="display: none;">
+                    <template x-for="snippet in snippets" :key="snippet.id">
+                        <div class="glass-card group p-5 hover:border-purple-500/30 transition-all duration-200 cursor-pointer"
+                            @click="openSnippet(snippet.id)">
+                            <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                        <h3 class="text-[#EDEDED] text-lg font-semibold group-hover:text-purple-400 transition-colors" x-text="snippet.title"></h3>
+                                        <template x-if="snippet.isActive == 1">
+                                            <span class="px-2 py-0.5 bg-white/5 border border-white/10 text-[#71717A] text-[10px] rounded-md font-medium uppercase tracking-wider">Active</span>
+                                        </template>
+                                    </div>
+
+                                    <p class="text-[#A1A1AA] text-sm leading-relaxed mb-4 line-clamp-2" x-text="snippet.description || 'No description provided.'"></p>
+
+                                    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-[#71717A] text-xs font-medium">
+                                        <template x-if="snippet.language">
+                                            <span class="flex items-center gap-1.5">
+                                                <span class="w-2 h-2 rounded-full" :class="{
+                                                    'bg-[#4F5D95]': snippet.language.toLowerCase() === 'php',
+                                                    'bg-[#f1e05a]': snippet.language.toLowerCase() === 'javascript' || snippet.language.toLowerCase() === 'js',
+                                                    'bg-[#9b4F96]': snippet.language.toLowerCase() === 'css',
+                                                    'bg-[#e34c26]': snippet.language.toLowerCase() === 'html',
+                                                    'bg-[#41b883]': snippet.language.toLowerCase() === 'vue',
+                                                    'bg-[#61dafb]': snippet.language.toLowerCase() === 'react',
+                                                    'bg-[#3178c6]': snippet.language.toLowerCase() === 'typescript',
+                                                    'bg-[#A1A1AA]': !['php', 'javascript', 'js', 'html', 'css', 'vue', 'react', 'typescript'].includes(snippet.language?.toLowerCase())
+                                                }"></span>
+                                                <span x-text="snippet.language"></span>
+                                            </span>
+                                        </template>
+
+                                        <span x-text="'Updated ' + new Date(snippet.updated_at || snippet.created_at).toLocaleDateString()"></span>
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                            </svg>
+                                            <span x-text="snippet.files ? snippet.files.length + ' files' : '0 files'"></span>
+                                        </span>
+                                    </div>
                                 </div>
 
-                                <p
-                                    class="text-{{ $categories-> color_name }}-200 text-sm leading-snug whitespace-pre-line mb-4 line-clamp-2 md:line-clamp-none">
-                                    Complete authentication system with login, registration, and password reset
-                                    functionality.
-                                </p>
-
-                                <div
-                                    class="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-500 text-[11px] md:text-xs">
-                                    <span class="flex items-center gap-1.5">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-                                        PHP
-                                    </span>
-                                    <span>Updated 2 days ago</span>
-                                    <span class="flex items-center gap-1">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-width="2"
-                                                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
-                                            </path>
+                                <div class="flex items-center gap-2 mt-2 md:mt-0 self-end md:self-start opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button @click.stop="toggleStar(snippet.id)"
+                                        class="p-2 bg-white/5 border border-white/10 rounded-lg transition-all focus:outline-none"
+                                        :class="snippet.isMark == 1 ? 'hover:bg-yellow-500/10 text-yellow-500 border-yellow-500/20 bg-yellow-500/5' : 'hover:bg-white/10 text-[#A1A1AA] hover:text-yellow-500'"
+                                        title="Star">
+                                        <svg class="w-4 h-4" :fill="snippet.isMark == 1 ? 'currentColor' : 'none'" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.921-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
                                         </svg>
-                                        3 files
-                                    </span>
+                                    </button>
                                 </div>
-                            </div>
-
-                            <div class="flex items-center gap-2 mt-2 md:mt-0 self-end md:self-start">
-                                <button
-                                    class="p-2.5 md:p-2 bg-white/5 hover:bg-yellow-500/20 hover:text-yellow-400 border border-white/10 rounded-lg transition-all"
-                                    title="Star">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.921-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z">
-                                        </path>
-                                    </svg>
-                                </button>
                             </div>
                         </div>
-                    </div>
+                    </template>
 
-                    {{-- Snippet Card 2 --}}
-                    <div class="snippet-card group border-b border-white/10 p-5 hover:bg-white/[0.02] transition-all">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-                            <div class="flex-1 min-w-0">
-                                <div class="flex flex-wrap items-center gap-2 mb-2">
-                                    <a href="#"
-                                        class="text-{{ $categories->color_name }}-400 text-lg md:text-xl font-semibold hover:underline decoration-2 truncate max-w-[200px] md:max-w-none">
-                                        Eloquent Relationships
-                                    </a>
-                                    <span
-                                        class="px-2 py-0.5 bg-transparent text-gray-500 text-[10px] uppercase tracking-wider rounded-md border border-gray-800 font-bold">
-                                        PUBLIC
-                                    </span>
-                                </div>
+                    {{-- Premium Pagination --}}
+                    <div x-show="lastPage > 1 && !loading" class="flex flex-col sm:flex-row items-center justify-between mt-12 pt-8 border-t border-white/5 gap-4">
+                        <div class="flex items-center gap-3 text-sm font-medium text-[#71717A]">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-[#EDEDED]" x-text="currentPage"></span>
+                            <span>of</span>
+                            <span class="text-[#EDEDED]" x-text="lastPage"></span>
+                            <span class="ml-2 text-[10px] uppercase tracking-widest opacity-50">Pages</span>
+                        </div>
 
-                                <p
-                                    class="text-{{ $categories->color_name }}-200 text-sm leading-snug whitespace-pre-line mb-4 line-clamp-2 md:line-clamp-none">
-                                    Examples of one-to-one, one-to-many, and many-to-many relationships in Laravel Eloquent.
-                                </p>
+                        <div class="flex items-center gap-2">
+                            <button @click="fetchSnippets(currentPage - 1)" 
+                                :disabled="currentPage === 1"
+                                class="group flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm font-bold text-[#EDEDED]">
+                                <svg class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                                <span>Previous</span>
+                            </button>
+                            
+                            <button @click="fetchSnippets(currentPage + 1)" 
+                                :disabled="currentPage === lastPage"
+                                class="group flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-sm font-bold text-[#EDEDED]">
+                                <span>Next</span>
+                                <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
 
-                                <div
-                                    class="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-500 text-[11px] md:text-xs">
-                                    <span class="flex items-center gap-1.5">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-                                        PHP
-                                    </span>
-                                    <span>Updated 5 days ago</span>
-                                    <span class="flex items-center gap-1">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-width="2"
-                                                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
-                                            </path>
-                                        </svg>
-                                        5 files
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center gap-2 mt-2 md:mt-0 self-end md:self-start">
-                                <button
-                                    class="p-2.5 md:p-2 bg-white/5 hover:bg-yellow-500/20 hover:text-yellow-400 border border-white/10 rounded-lg transition-all"
-                                    title="Star">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.921-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z">
-                                        </path>
-                                    </svg>
-                                </button>
-                            </div>
+                        <div class="hidden lg:block text-xs font-medium text-[#71717A] tracking-tight">
+                            Showing <span class="text-purple-400 font-bold" x-text="snippets.length"></span> of <span class="text-[#EDEDED] font-bold" x-text="total"></span> results
                         </div>
                     </div>
                 </div>
 
-                {{-- No Results Message (hidden by default) --}}
-                <div id="noResults"
-                    class="hidden glass-card rounded-[3rem] p-16 text-center border-dashed border-white/10 shadow-inner bg-white/[0.02]">
-                    <div
-                        class="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10">
-                        <svg class="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {{-- No Results Message --}}
+                <div x-show="!loading && snippets.length === 0" style="display: none;"
+                    class="glass-card rounded-[3rem] p-16 text-center border-dashed border-{{ $categories->color_name }}-500/20 shadow-inner bg-{{ $categories->color_name }}-500/5 transition-all">
+                    <div class="w-20 h-20 bg-{{ $categories->color_name }}-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-{{ $categories->color_name }}-500/20 shadow-lg shadow-{{ $categories->color_name }}-500/10 animate-[bounce_2s_ease-in-out_infinite]">
+                        <svg class="w-10 h-10 text-{{ $categories->color_name }}-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold text-white mb-3 tracking-tight">No Snippets Found</h3>
-                    <p class="text-gray-500 mb-8 max-w-sm mx-auto leading-relaxed">Try adjusting your filters or search
-                        terms.</p>
-                    <button
-                        class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-all">
+                    <p class="text-gray-400 mb-8 max-w-sm mx-auto leading-relaxed">Try adjusting your filters or search terms.</p>
+                    <button @click="searchQuery = ''; selectedLanguage = 'all'; statusFilter = 'all'; sortBy = 'latest'; fetchSnippets()"
+                        class="inline-flex items-center gap-2 bg-{{ $categories->color_name }}-500/10 hover:bg-{{ $categories->color_name }}-500/20 text-white px-6 py-3 rounded-xl font-bold transition-all border border-{{ $categories->color_name }}-500/30">
                         Clear Filters
                     </button>
                 </div>
@@ -341,3 +263,172 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    function snippetBrowser() {
+        return {
+            categoryId: '{{ $categories->category_id }}',
+            snippets: [],
+            currentPage: 1,
+            lastPage: 1,
+            total: 0,
+            searchQuery: '',
+            selectedLanguage: 'all',
+            statusFilter: 'all',
+            sortBy: 'latest',
+            loading: false,
+            showPreview: false,
+            selectedSnippet: null,
+            activeFileTab: 0,
+            mobileMenuOpen: false,
+            mobileFileListOpen: false,
+            copyDone: false,
+            searchTimeout: null,
+
+            init() {
+                // Resize listener
+                window.addEventListener('resize', () => this.handleResize());
+                // Initial fetch
+                this.fetchSnippets();
+            },
+
+            handleResize() {
+                if (window.innerWidth > 768) {
+                    this.mobileFileListOpen = false;
+                    this.mobileMenuOpen = false;
+                }
+            },
+
+            fetchSnippets(page = 1) {
+                this.currentPage = page;
+                this.loading = true;
+                const url = `/api/search?category_id=${this.categoryId}&q=${encodeURIComponent(this.searchQuery)}&lang=${this.selectedLanguage}&status=${this.statusFilter}&sort=${this.sortBy}&page=${this.currentPage}`;
+                
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        let snippets = data.data || data;
+
+                        // Local sort fallback
+                        if (this.sortBy === 'az') {
+                            snippets.sort((a, b) => a.title.localeCompare(b.title));
+                        } else if (this.sortBy === 'za') {
+                            snippets.sort((a, b) => b.title.localeCompare(a.title));
+                        } else if (this.sortBy === 'files') {
+                            snippets.sort((a, b) => (b.files?.length || 0) - (a.files?.length || 0));
+                        }
+
+                        this.snippets = snippets;
+                        this.lastPage = data.last_page || 1;
+                        this.total = data.total || 0;
+                        this.loading = false;
+                    })
+                    .catch(e => {
+                        console.error("Error fetching snippets:", e);
+                        this.loading = false;
+                    });
+            },
+
+            toggleStar(id) {
+                const formData = new FormData();
+                formData.append('snippet_id', id);
+                formData.append('_token', '{{ csrf_token() }}');
+
+                fetch('/snippet-marked', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(() => {
+                    this.fetchSnippets();
+                })
+                .catch(err => console.error("Star Error:", err));
+            },
+
+            // Modal viewer utilities
+            openSnippet(id) {
+                this.loading = true;
+
+                fetch(`/api/snippets/${id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        this.selectedSnippet = data;
+                        this.activeFileTab = 0;
+                        this.showPreview = true;
+                        this.mobileFileListOpen = false;
+                        this.loading = false;
+
+                        this.$nextTick(() => {
+                            if (typeof Prism !== 'undefined') {
+                                Prism.highlightAll();
+                            }
+                        });
+                    })
+                    .catch(err => {
+                        console.error('Error fetching snippet details:', err);
+                        this.loading = false;
+                    });
+            },
+
+            closePreview() {
+                this.showPreview = false;
+                setTimeout(() => {
+                    this.selectedSnippet = null;
+                }, 300);
+            },
+
+            toggleMobileFileList() {
+                this.mobileFileListOpen = !this.mobileFileListOpen;
+            },
+
+            copyCode() {
+                if (!this.selectedSnippet || !this.selectedSnippet.files[this.activeFileTab]) return;
+
+                const code = this.selectedSnippet.files[this.activeFileTab].code;
+                navigator.clipboard.writeText(code).then(() => {
+                    this.copyDone = true;
+                    setTimeout(() => this.copyDone = false, 2000);
+                });
+            },
+
+            getLangIcon(lang) {
+                if (!lang) return '📄';
+                const icons = {
+                    'php': '🐘',
+                    'laravel': '🟠',
+                    'javascript': '🟨',
+                    'js': '🟨',
+                    'python': '🐍',
+                    'html': '🌐',
+                    'css': '🎨',
+                    'react': '⚛️',
+                    'vue': '🖖',
+                    'database': '🗄️',
+                    'sql': '💾'
+                };
+                return icons[lang.toLowerCase()] || '📄';
+            },
+
+            getFileIcon(filename) {
+                if (!filename) return '📄';
+                const ext = filename.split('.').pop().toLowerCase();
+                const icons = {
+                    'js': '📘',
+                    'jsx': '⚛️',
+                    'ts': '📘',
+                    'tsx': '⚛️',
+                    'php': '🐘',
+                    'py': '🐍',
+                    'html': '🌐',
+                    'css': '🎨',
+                    'json': '📋',
+                    'md': '📝',
+                    'vue': '💚',
+                    'sql': '🗄️'
+                };
+                return icons[ext] || '📄';
+            }
+        }
+    }
+</script>
+@endpush

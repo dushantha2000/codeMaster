@@ -134,7 +134,7 @@
 
     {{-- Create Category Modal --}}
     <div id="create-category-modal" class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
-        <div onclick="event.stopPropagation()" class="relative w-full max-w-2xl bg-[#0a0a0a] rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
+        <div onclick="event.stopPropagation()" class="relative w-full max-w-2xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
             <button onclick="closeCreateModal()" class="absolute top-5 right-5 z-50 text-gray-400 hover:text-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -150,19 +150,19 @@
                 <form action="{{ url('/category-create') }}" method="POST" class="space-y-4">
                     @csrf
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase tracking-widest">Name *</label>
+                        <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Name *</label>
                         <input type="text" name="name" id="categoryName" placeholder="e.g. JavaScript" required
-                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50">
+                            class="input-field w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase tracking-widest">Description</label>
+                        <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Description</label>
                         <textarea name="description" id="categoryDescription" rows="3" placeholder="What's inside?"
-                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 resize-none"></textarea>
+                            class="input-field w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none resize-none"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase tracking-widest">Color Theme</label>
+                        <label class="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest ml-1">Color Theme</label>
                         <div class="flex gap-3">
                             @foreach (['blue', 'purple', 'green', 'yellow', 'red', 'pink'] as $color)
                                 <button type="button" data-color="{{ $color }}"
@@ -187,7 +187,7 @@
 
     {{-- Update Category Modal --}}
     <div id="update-category-modal" class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
-        <div onclick="event.stopPropagation()" class="relative w-full max-w-2xl bg-[#0a0a0a] rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
+        <div onclick="event.stopPropagation()" class="relative w-full max-w-2xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
             <button onclick="closeUpdateModal()" class="absolute top-5 right-5 z-50 text-gray-400 hover:text-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -206,19 +206,19 @@
                     <input type="hidden" name="category_id" id="updateCategoryId">
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase tracking-widest">Name *</label>
+                        <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Name *</label>
                         <input type="text" name="name" id="updateCategoryName" placeholder="e.g. JavaScript" required
-                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50">
+                            class="input-field w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase tracking-widest">Description * </label>
+                        <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Description * </label>
                         <textarea name="description" id="updateCategoryDescription" rows="3" placeholder="What's inside?"
-                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 resize-none"></textarea>
+                            class="input-field w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none resize-none"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-500 mb-2 uppercase tracking-widest">Color Theme</label>
+                        <label class="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest ml-1">Color Theme</label>
                         <div class="flex gap-3">
                             @foreach (['blue', 'purple', 'green', 'yellow', 'red', 'pink'] as $color)
                                 <button type="button" data-update-color="{{ $color }}"
@@ -242,13 +242,13 @@
     </div>
 
     {{-- Action Menu Modal --}}
-    <div id="action-menu" class="hidden fixed inset-0 z-[9999]  flex items-center justify-center p-4">
-        <div onclick="event.stopPropagation()" class=" rounded-3xl p-8 flex flex-col gap-4 min-w-[340px]  animate-[menuPopIn_0.3s_cubic-bezier(0.34,1.56,0.64,1)]">
+    <div id="action-menu" class="hidden fixed inset-0 z-[9999] bg-black/40 flex items-center justify-center p-4">
+        <div onclick="event.stopPropagation()" class="glass-card rounded-3xl p-8 flex flex-col gap-4 min-w-[340px] border border-white/10 shadow-2xl animate-[menuPopIn_0.3s_cubic-bezier(0.34,1.56,0.64,1)]">
             <div id="selected-category-name" class="text-white text-3xl font-extrabold text-center mb-2">Category</div>
             <div id="selected-category-desc" class="text-gray-400 text-sm text-center mb-4"></div>
 
             <div class="flex flex-col gap-3">
-                <a href="#" id="view-link" class="group py-5 px-8 rounded-2xl font-bold text-center bg-white text-black hover:bg-black hover:text-white transition text-sm flex items-center justify-center gap-3">
+                <a href="#" id="view-link" class="group py-5 px-8 rounded-2xl font-bold text-center bg-white text-black hover:bg-gray-200 transition text-sm flex items-center justify-center gap-3">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
@@ -256,7 +256,7 @@
                 </a>
 
                 <button type="button" onclick="openUpdateModalFromAction()"
-                    class="group py-3 px-8 rounded-2xl font-bold text-center bg-[#1e1e1e] text-gray-300 border border-white/5 hover:bg-[#2a2a2a] hover:text-white transition text-xs flex items-center justify-center gap-3">
+                    class="group py-3 px-8 rounded-2xl font-bold text-center input-field hover:bg-white/10 transition text-xs flex items-center justify-center gap-3 text-white">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
@@ -278,7 +278,7 @@
 
     {{-- Delete Confirmation Modal --}}
     <div id="delete-confirmation-modal" class="hidden fixed inset-0 z-[99999] bg-black/70 flex items-center justify-center p-4">
-        <div onclick="event.stopPropagation()" class="bg-[#0a0a0a] rounded-3xl p-8 flex flex-col gap-5 min-w-[340px] max-w-md border border-red-500/30 animate-[menuPopIn_0.3s_cubic-bezier(0.34,1.56,0.64,1)]">
+        <div onclick="event.stopPropagation()" class="glass-card rounded-3xl p-8 flex flex-col gap-5 min-w-[340px] max-w-md border border-white/10 shadow-2xl animate-[menuPopIn_0.3s_cubic-bezier(0.34,1.56,0.64,1)]">
             <div class="flex justify-center">
                 <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
                     <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -306,7 +306,7 @@
                     </button>
                 </form>
 
-                <button onclick="closeDeleteConfirmation()" class="w-full py-3 px-8 rounded-2xl font-bold bg-[#1e1e1e] text-gray-300 border border-white/10 hover:bg-[#2a2a2a] hover:text-white transition text-sm">
+                <button onclick="closeDeleteConfirmation()" class="w-full py-3 px-8 rounded-2xl font-bold input-field hover:bg-white/10 transition text-sm text-gray-300 hover:text-white">
                     Cancel
                 </button>
             </div>

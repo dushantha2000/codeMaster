@@ -58,7 +58,6 @@ class CategoriesController extends Controller
 
         if (!$userId) {
             return redirect()->route('login');
-
         }
 
         $categories = DB::table('categories')
@@ -67,20 +66,28 @@ class CategoriesController extends Controller
             ->where('isActive', 1)
             ->first();
 
+        if (!$categories) {
+            return redirect()->route('categories.index')->with('error', 'Category not found.');
+        }
 
-        $snippets = Snippet::with('files')
-            ->where('user_id', auth()->id())
+        $totalSnippets = \App\Models\Snippet::where('category_id', $category_id)
+            ->where('user_id', $userId)
+            ->count();
+
+        $uniqueLanguages = \App\Models\Snippet::where('category_id', $category_id)
+            ->where('user_id', $userId)
+            ->whereNotNull('language')
+            ->distinct('language')
+            ->count('language');
+
+        $snippets = \App\Models\Snippet::with('files')
+            ->where('user_id', $userId)
             ->where('category_id', $category_id)
             ->where('isActive', 1)
             ->orderBy('created_at', 'desc')
-            ->paginate(20);
+            ->paginate(12);
 
-
-        //return $snippets;
-
-        return view('categories.show', compact('snippets', 'categories'));
-
-
+        return view('categories.show', compact('snippets', 'categories', 'totalSnippets', 'uniqueLanguages'));
     }
 
     public function EditView($categoryId)
@@ -127,31 +134,43 @@ class CategoriesController extends Controller
             return back()->with('error', 'Something went wrong. Please try again later.');
         }
     }
-    public function index()
+    public function index(Request $request)
     {
         try {
             $userId = auth()->id();
+            $search = $request->query('q');
+            $page = $request->query('page', 1);
 
-            // Get categories from cache
+            // Get categories version
             $versionKey = "user:{$userId}:categories_version";
             $version = Cache::rememberForever($versionKey, fn() => time());
 
-            $cacheKey = "categories:user:{$userId}:v:{$version}";
+            // Build dynamic cache key including search and page
+            $searchHash = md5($search ?? '');
+            $cacheKey = "categories:user:{$userId}:v:{$version}:q:{$searchHash}:p:{$page}";
 
-            $categories = Cache::rememberForever($cacheKey, function () use ($userId) {
-                return DB::table('categories')
-                    ->where('user_id', $userId)
-                    ->where('isActive', 1)
-                    ->select('category_id', 'category_name', 'category_description', 'color_name', 'isActive')
-                    ->get();
+            $categories = Cache::remember($cacheKey, now()->addHours(6), function () use ($userId, $search) {
+                $query = Category::where('user_id', $userId)
+                    ->where('isActive', 1);
+
+                if (!empty($search)) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('category_name', 'LIKE', "%{$search}%")
+                            ->orWhere('category_description', 'LIKE', "%{$search}%");
+                    });
+                }
+
+                return $query->withCount(['snippets' => function($q) use ($userId) {
+                        $q->where('user_id', $userId)->where('isActive', 1);
+                    }])
+                    ->orderBy('category_name', 'asc') // Sort A-Z by default for consistency
+                    ->paginate(12)
+                    ->appends(['q' => $search]); // Ensure search persists across pages
             });
 
-            //return $categories;
-
-            return view('categories.index', compact('categories'));
+            return view('categories.index', compact('categories', 'search'));
 
         } catch (Exception $e) {
-            // dd($e->getMessage());
             return back()->withErrors(['error' => 'Unable to load categories.']);
         }
     }
