@@ -39,7 +39,7 @@
             color: rgb(0, 0, 0);
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.4s;
-            
+
         }
 
         .btn-primary:hover {
@@ -105,7 +105,7 @@
         }
     </style>
 
-    
+
     @stack('styles')
 </head>
 
