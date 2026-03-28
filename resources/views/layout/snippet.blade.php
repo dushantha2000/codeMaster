@@ -5,27 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') | CodeVault</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+     <script src="https://cdn.tailwindcss.com"></script>
 
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
         body {
             font-family: 'Space Grotesk', sans-serif;
-            height: 100vh;
-            overflow: hidden;
             background: #0a0a0a;
         }
 
         .code-font {
             font-family: 'Fira Code', monospace;
-            line-height: 1.7;
         }
 
         [x-cloak] {
@@ -38,10 +35,36 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        .btn-primary {
+            background: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s;
+            
+        }
+
+        .btn-primary:hover {
+            background: rgb(0, 0, 0);
+            transform: translateY(-1px);
+            color: rgb(255, 255, 255);
+        }
+
+        .input-field {
+            background: #050505;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: #0969da;
+            box-shadow: 0 0 0 1px #0969da;
+        }
+
         .tab-active {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
         }
 
         .file-item {
@@ -49,76 +72,30 @@
         }
 
         .file-item:hover {
-            transform: translateX(4px);
-        }
-
-        .btn-primary {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-primary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .code-editor {
-            background: rgba(10, 10, 10, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateX(2px);
         }
 
         .modal-backdrop {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(24px);
         }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Enhanced Dropdown Styles */
-        .glass-card::-webkit-scrollbar {
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
         }
-        
-        .glass-card::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.01);
         }
-        
-        .glass-card::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-        }
-        
-        .glass-card::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
         }
 
         /* Responsive Design */
-        @media (max-width: 1024px) {
-            .sidebar-container {
-                width: 16rem;
-            }
-        }
-
         @media (max-width: 768px) {
             .sidebar-container {
                 position: fixed;
@@ -135,59 +112,14 @@
                 transform: translateX(0);
             }
 
-            .mobile-overlay {
-                display: none;
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.7);
-                z-index: 30;
-                backdrop-filter: blur(4px);
-            }
-
-            .mobile-overlay.show {
-                display: block;
-            }
-
             .hide-on-mobile {
                 display: none !important;
-            }
-
-            .show-on-mobile {
-                display: flex !important;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .sidebar-container {
-                width: 18rem;
-            }
-
-            .modal-mobile {
-                width: 90% !important;
-                max-height: 80vh;
-                overflow-y: auto;
-            }
-            
-            .file-meta-mobile {
-                grid-template-columns: 1fr !important;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .sidebar-container {
-                width: 85vw;
-                max-width: 16rem;
-            }
-
-            .modal-mobile {
-                margin: 0.5rem;
-                padding: 1.5rem !important;
             }
         }
     </style>
 </head>
 
-<body class="text-gray-100 bg-black min-h-screen" x-data="snippetEditor()" x-cloak>
+<body class="text-gray-100 bg-[#0a0a0a] min-h-screen Selection:bg-blue-500/30 overflow-hidden" x-data="snippetEditor()" x-cloak>
 
     @include('common.loading')
     

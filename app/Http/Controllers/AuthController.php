@@ -55,6 +55,7 @@ class AuthController extends Controller
 
     public function Login(Request $request)
     {
+         //return $request;   
         try {
             // dd('wdqwdqw');
             return view("auth.login");
@@ -68,7 +69,7 @@ class AuthController extends Controller
 
     public function userLogin(Request $request)
     {
-        // return $request;
+         //return $request;
         try {
             // Validation
             $credentials = $request->validate(

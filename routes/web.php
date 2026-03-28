@@ -22,7 +22,7 @@ Route::middleware('guest')->group(function () {
     Route::get('register', [AuthController::class, 'register']);
     Route::post('user-register', [AuthController::class, 'userRegister']);
     Route::post('/verify-registration', [AuthController::class, 'verifyRegistration']);
-    Route::get('reset', [AuthController::class, 'ResetPassword']);
+    Route::get('/reset', [AuthController::class, 'ResetPassword']);
     Route::post('send-Reset-Code', [AuthController::class, 'sendResetCode']);
 
     // This matches the link: /reset-password/64_character_token

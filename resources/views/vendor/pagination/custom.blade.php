@@ -19,7 +19,7 @@
                 @foreach ($element as $page => $url)
                     @if ($page == $paginator->currentPage())
                         {{-- Active Page --}}
-                        <span class="w-10 h-10 flex items-center justify-center bg-blue-600/20 border border-blue-500/50 rounded-xl text-blue-400 font-black text-sm shadow-lg shadow-blue-500/10">
+                        <span class="w-10 h-10 flex items-center justify-center bg-blue-600/20 border border-blue-500/50 rounded-xl text-blue-400 font-bold text-sm shadow-lg shadow-blue-500/10">
                             {{ $page }}
                         </span>
                     @else
@@ -34,7 +34,7 @@
 
         {{-- Next Page Link --}}
         @if ($paginator->hasMorePages())
-            <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="px-8 py-2.5 bg-[#FF9F00] rounded-xl text-black font-black text-sm hover:bg-orange-400 transition-all shadow-lg shadow-orange-500/20">
+            <a href="{{ $paginator->nextPageUrl() }}" rel="next" class="px-8 py-2.5 bg-[#FF9F00] rounded-xl text-black font-bold text-sm hover:bg-orange-400 transition-all shadow-lg shadow-orange-500/20">
                 Next
             </a>
         @else

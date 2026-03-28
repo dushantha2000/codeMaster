@@ -21,127 +21,96 @@
             </div>
         </div>
 
-        <div class="glass-card rounded-3xl p-6 md:p-8 space-y-6">
-            <div class="flex items-start gap-4">
+        <div class="glass-card rounded-[2.5rem] p-8 md:p-12 space-y-10 relative overflow-hidden">
+            {{-- Decorative Glow --}}
+            <div class="absolute -top-24 -right-24 w-64 h-64 bg-purple-500/5 blur-3xl rounded-full"></div>
+
+            <div class="flex items-start gap-6 relative">
                 <div
-                    class="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-sm font-black">
+                    class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-lg font-black shadow-[0_0_20px_rgba(94,106,210,0.1)]">
                     1
                 </div>
-                <div>
-                    <h2 class="text-lg md:text-xl font-bold text-white mb-1">Sign up and log in</h2>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        Create an account from the register page, then log in with your email and password.
-                        After login you will land on the <span class="text-blue-400 font-semibold">Dashboard</span>,
-                        which is your main view of all snippets.
+                <div class="flex-1">
+                    <h2 class="text-xl md:text-2xl font-black text-white mb-2 tracking-tight">Identity & Access</h2>
+                    <p class="text-sm text-[#A1A1AA] leading-relaxed">
+                        Establish your secure vault identity via the registration protocol. Once authenticated, you will be redirected to the <span class="text-purple-400 font-black uppercase tracking-widest text-[10px]">Command Center</span> (Dashboard) to manage your global archives.
                     </p>
                 </div>
             </div>
 
-            <div class="flex items-start gap-4">
+            <div class="flex items-start gap-6 relative">
                 <div
-                    class="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-sm font-black">
+                    class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-lg font-black shadow-[0_0_20px_rgba(94,106,210,0.1)]">
                     2
                 </div>
-                <div>
-                    <h2 class="text-lg md:text-xl font-bold text-white mb-1">Create a new snippet</h2>
-                    <p class="text-sm text-gray-400 leading-relaxed mb-2">
-                        From the Dashboard or My Snippets, click the
-                        <span class="text-blue-400 font-semibold">New / Create Snippet</span> button.
-                        You will see the snippet editor where you can:
+                <div class="flex-1">
+                    <h2 class="text-xl md:text-2xl font-black text-white mb-2 tracking-tight">Archive Construction</h2>
+                    <p class="text-sm text-[#A1A1AA] leading-relaxed mb-4">
+                        Initialize a new logic stream by invoking the <span class="text-purple-400 font-bold">New Snippet</span> action. The high-performance editor allows you to:
                     </p>
-                    <ul class="text-sm text-gray-300 space-y-1 list-disc list-inside">
-                        <li>Give the snippet a <span class="font-semibold">title</span> and short description.</li>
-                        <li>Choose a <span class="font-semibold">language</span> (Laravel, PHP, JS, etc.).</li>
-                        <li>Add one or more <span class="font-semibold">files</span> to the snippet
-                            (e.g. <code class="text-xs bg-white/10 px-1 rounded">web.php</code>,
-                            <code class="text-xs bg-white/10 px-1 rounded">Controller.php</code>).
+                    <ul class="text-sm text-[#EDEDED] space-y-2 list-none mb-4">
+                        <li class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                            Assign an <span class="font-black">Archive Title</span> and encrypted metadata.
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                            Select from <span class="font-black">20+ Syntax Archetypes</span> (PHP, React, Vue, etc.).
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                            Incorporate <span class="font-black">Multiple Logic Nodes</span> (Files) in a single archive.
                         </li>
                     </ul>
-                    <p class="text-sm text-gray-400 mt-2">
-                        When you are ready, click <span class="text-green-400 font-semibold">Save</span> to store the
-                        snippet in your vault.
+                    <p class="text-[10px] text-[#71717A] uppercase tracking-[0.2em] font-black italic">
+                        Commit your changes to secure the logic in your permanent vault.
                     </p>
                 </div>
             </div>
 
-            <div class="flex items-start gap-4">
+            <div class="flex items-start gap-6 relative">
                 <div
-                    class="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-sm font-black">
+                    class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-lg font-black shadow-[0_0_20px_rgba(94,106,210,0.1)]">
                     3
                 </div>
-                <div>
-                    <h2 class="text-lg md:text-xl font-bold text-white mb-1">Browse and search your vault</h2>
-                    <p class="text-sm text-gray-400 leading-relaxed mb-2">
-                        The Dashboard shows your snippets as interactive cards. You can:
+                <div class="flex-1">
+                    <h2 class="text-xl md:text-2xl font-black text-white mb-2 tracking-tight">Vault Intelligence</h2>
+                    <p class="text-sm text-[#A1A1AA] leading-relaxed mb-4">
+                        The Command Center provides real-time access to your entire logic collection with advanced indexing:
                     </p>
-                    <ul class="text-sm text-gray-300 space-y-1 list-disc list-inside">
-                        <li>Use the <span class="font-semibold">search bar</span> to find snippets by title or description.</li>
-                        <li>Filter by <span class="font-semibold">language</span> using the language dropdown.</li>
-                        <li>Click a card to open the <span class="font-semibold">preview panel</span> and inspect all files.</li>
-                        <li>Copy code for a file using the <span class="font-semibold">Copy Code</span> button.</li>
-                    </ul>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
+                            <h4 class="text-[10px] font-black text-purple-400 uppercase tracking-widest mb-1">Search Matrix</h4>
+                            <p class="text-xs text-[#71717A]">Instant keyword matching across titles and descriptions.</p>
+                        </div>
+                        <div class="p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
+                            <h4 class="text-[10px] font-black text-purple-400 uppercase tracking-widest mb-1">Partner Streams</h4>
+                            <p class="text-xs text-[#71717A]">Access logic shared by verified vault partners.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="flex items-start gap-4">
+            <div class="flex items-start gap-6 relative">
                 <div
-                    class="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-sm font-black">
+                    class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-lg font-black shadow-[0_0_20px_rgba(94,106,210,0.1)]">
                     4
                 </div>
-                <div>
-                    <h2 class="text-lg md:text-xl font-bold text-white mb-1">Manage your snippets</h2>
-                    <p class="text-sm text-gray-400 leading-relaxed mb-2">
-                        Open the <span class="text-blue-400 font-semibold">My Snippets</span> page to see a table view
-                        of only your own snippets.
+                <div class="flex-1">
+                    <h2 class="text-xl md:text-2xl font-black text-white mb-2 tracking-tight">External Integration</h2>
+                    <p class="text-sm text-[#A1A1AA] leading-relaxed mb-4">
+                        CodeVault leverages <span class="font-bold text-[#EDEDED]">Laravel Sanctum</span> for secure API access, enabling cross-platform logic injection:
                     </p>
-                    <ul class="text-sm text-gray-300 space-y-1 list-disc list-inside">
-                        <li>Click the <span class="font-semibold">edit</span> icon to update the title, description,
-                            language, or files.</li>
-                        <li>Use the <span class="font-semibold">delete</span> button to remove a snippet (with a safety
-                            confirmation modal).</li>
-                        <li>Use the built-in <span class="font-semibold">pagination and filters</span> to navigate large
-                            collections.</li>
+                    <ul class="text-sm text-[#EDEDED] space-y-2 list-none">
+                        <li class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                            Generate <span class="font-black">Secure API Tokens</span> via user settings.
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <div class="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                            Fetch encrypted snippets directly into your <span class="font-black">IDE or CI/CD pipelines</span>.
+                        </li>
                     </ul>
-                </div>
-            </div>
-
-            <div class="flex items-start gap-4">
-                <div
-                    class="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-sm font-black">
-                    5
-                </div>
-                <div>
-                    <h2 class="text-lg md:text-xl font-bold text-white mb-1">Share access with partners</h2>
-                    <p class="text-sm text-gray-400 leading-relaxed mb-2">
-                        From your <span class="text-blue-400 font-semibold">Profile / Partnerships</span> page you can
-                        give other users access to your vault:
-                    </p>
-                    <ul class="text-sm text-gray-300 space-y-1 list-disc list-inside">
-                        <li>Search for users by name and add them as partners.</li>
-                        <li>Partners can see snippets you have shared with them in their Dashboard.</li>
-                        <li>Remove a partner at any time to revoke access.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="flex items-start gap-4">
-                <div
-                    class="w-10 h-10 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-sm font-black">
-                    6
-                </div>
-                <div>
-                    <h2 class="text-lg md:text-xl font-bold text-white mb-1">Use CodeVault from an extension</h2>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        CodeVault exposes a secure API using Laravel Sanctum. Extensions or external tools can:
-                    </p>
-                    <ul class="text-sm text-gray-300 space-y-1 list-disc list-inside mt-1">
-                        <li>Send a login request to get an <span class="font-semibold">API token</span>.</li>
-                        <li>Call the <span class="font-semibold">snippets API</span> to fetch your snippets and files
-                            directly inside your editor or browser.</li>
-                    </ul>
-                    <p class="text-sm text-gray-400 mt-2">
-                        This lets you reuse your CodeVault snippets wherever you work, without copying them manually.
-                    </p>
                 </div>
             </div>
 

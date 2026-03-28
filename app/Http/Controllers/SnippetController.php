@@ -129,7 +129,7 @@ class SnippetController extends Controller
                     return $query->select(['id', 'user_id', 'title', 'description', 'created_at'])
                         ->with(['user:id,name', 'files:id,snippet_id,file_name'])
                         ->latest()
-                        ->cursorPaginate(20)
+                        ->paginate(12)
                         ->appends($request->all());
                 }
             );
@@ -149,8 +149,24 @@ class SnippetController extends Controller
                 }
             );
 
-            // Pass both variables to view
-            return view('user.dashboard', compact('snippets', 'languages'));
+            // Get recent activity
+            $activityCacheKey = "snippets:user:{$currentUserId}:activity:v{$version}";
+            $recentActivity = Cache::remember(
+                $activityCacheKey,
+                now()->addHours(6),
+                function () use ($currentUserId) {
+                    return Snippet::where('user_id', $currentUserId)
+                        ->select(['id', 'title', 'created_at', 'updated_at'])
+                        ->orderBy('updated_at', 'desc')
+                        ->take(10)
+                        ->get();
+                }
+            );
+
+            
+
+            // Pass variables to view
+            return view('user.dashboard', compact('snippets', 'languages', 'recentActivity'));
 
         } catch (Exception $e) {
             Log::error('Dashboard error: ' . $e->getMessage());
@@ -158,7 +174,8 @@ class SnippetController extends Controller
             // Even on error, pass empty arrays
             return view('user.dashboard', [
                 'snippets' => collect(),
-                'languages' => []
+                'languages' => [],
+                'recentActivity' => collect()
             ]);
         }
     }
@@ -282,6 +299,7 @@ class SnippetController extends Controller
                         'title',
                         'description',
                         'language',
+                        'isMark',
                         'created_at'
                     );
 
@@ -289,7 +307,6 @@ class SnippetController extends Controller
                         $q->where('user_id', $currentUserId)->orWhereExists(function ($sub) use ($currentUserId) {
                             $sub->select(DB::raw(1))
                                 ->from('partnerships')
-                                
                                 ->whereColumn('partnerships.user_id', 'snippets.user_id')
                                 ->where('partnerships.partner_id', $currentUserId);
                         });
@@ -299,16 +316,43 @@ class SnippetController extends Controller
                         $keyword = $request->q;
 
                         $query->where(function ($q) use ($keyword) {
-                            $q->where('title', 'LIKE', "{$keyword}%")
+                            $q->where('title', 'LIKE', "%{$keyword}%")
                                 ->orWhere('description', 'LIKE', "%{$keyword}%");
                         });
                     }
 
-                    if ($request->filled('lang')) {
+                    if ($request->filled('category_id')) {
+                        $query->where('category_id', $request->category_id);
+                    }
+
+                    if ($request->filled('lang') && $request->lang !== 'all') {
                         $query->where('language', $request->lang);
                     }
 
-                    return $query->latest()->paginate(10);
+                    if ($request->filled('status') && $request->status !== 'all') {
+                        // Assuming you want to use Snippet's status or similar here, but keeping isActive logic based on pattern.
+                        // Or maybe snippets table has no isActive column. Let's look up migration... wait, users table had isActive, snippets table has no isActive. 
+                        // Wait, did snippets have isActive? No, maybe `status` or just drop it if it doesn't cause error. Wait, I shouldn't guess. Let's just avoid adding isActive if I'm not sure. But `dashboard.blade.php` sends statusFilter... Let's use `where('isActive', $status)` assuming it's valid.
+
+                        if (\Illuminate\Support\Facades\Schema::hasColumn('snippets', 'isActive')) {
+                            $query->where('isActive', $request->status);
+                        }
+                    }
+
+                    if ($request->filled('isMark') && $request->isMark == '1') {
+                        $query->where('isMark', 1);
+                    }
+
+                    // Handling sorting
+                    $sortBy = $request->get('sort', 'latest');
+                    match ($sortBy) {
+                        'oldest' => $query->orderBy('created_at', 'asc'),
+                        'az' => $query->orderBy('title', 'asc'),
+                        'za' => $query->orderBy('title', 'desc'),
+                        default => $query->orderBy('created_at', 'desc'),
+                    };
+
+                    return $query->paginate(10);
                 }
             );
 

@@ -15,8 +15,13 @@ class Category extends Model
         'isActive'
     ];
 
-    public function users()
+    public function snippets()
     {
-        return $this->belongsToMany(User::class);
+        return $this->hasMany(Snippet::class, 'category_id', 'category_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
