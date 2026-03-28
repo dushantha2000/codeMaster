@@ -9,6 +9,7 @@
             opacity: 0;
             transform: scale(0.8);
         }
+
         100% {
             opacity: 1;
             transform: scale(1);
@@ -20,6 +21,7 @@
             opacity: 0;
             transform: translateX(-20px);
         }
+
         100% {
             opacity: 1;
             transform: translateX(0);
@@ -30,6 +32,7 @@
         from {
             opacity: 0;
         }
+
         to {
             opacity: 1;
         }
@@ -62,7 +65,8 @@
             <div>
                 <div class="flex items-center gap-3">
                     <h1 class="text-4xl font-black text-white tracking-tight">Categories</h1>
-                    <span class="bg-blue-500/20 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-lg border border-blue-500/30 mt-1">
+                    <span
+                        class="bg-blue-500/20 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-lg border border-blue-500/30 mt-1">
                         {{ $categories->count() }}
                     </span>
                 </div>
@@ -88,16 +92,17 @@
                         'green' => 'green',
                         'yellow' => 'yellow',
                         'red' => 'red',
-                        'pink' => 'pink'
+                        'pink' => 'pink',
                     ];
                     $colorClass = $colorMap[$category->color_name] ?? 'blue';
                 @endphp
-                
+
                 <div onclick="openActionMenu('{{ $category->category_id }}', '{{ addslashes($category->category_name) }}', '{{ $category->color_name }}', '{{ addslashes($category->category_description) }}')"
                     class="group relative bg-gray-800/30 rounded-xl p-4 border border-white/10 hover:border-{{ $colorClass }}-500/30 hover:bg-{{ $colorClass }}-500/5 transition-all cursor-pointer">
 
                     <div class="absolute -top-2 -right-2 z-10">
-                        <span class="text-[10px] px-2 py-1 bg-{{ $colorClass }}-500/20 text-{{ $colorClass }}-400 rounded-full border border-{{ $colorClass }}-500/30">
+                        <span
+                            class="text-[10px] px-2 py-1 bg-{{ $colorClass }}-500/20 text-{{ $colorClass }}-400 rounded-full border border-{{ $colorClass }}-500/30">
                             {{ $category->snippets_count ?? 0 }}
                         </span>
                     </div>
@@ -106,9 +111,11 @@
                         <div class="w-16 h-16 mb-3 relative">
                             <svg class="w-16 h-16 text-{{ $colorClass }}-500/70 group-hover:text-{{ $colorClass }}-400 transition-colors"
                                 viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
+                                <path
+                                    d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
                             </svg>
-                            <div class="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-{{ $colorClass }}-500 border-2 border-black">
+                            <div
+                                class="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-{{ $colorClass }}-500 border-2 border-black">
                             </div>
                         </div>
                         <h3 class="text-sm font-bold text-white mb-1 truncate w-full">{{ $category->category_name }}</h3>
@@ -130,14 +137,69 @@
                 </div>
             @endforelse
         </div>
+
+        {{-- Blade-Side Pagination --}}
+        @if ($categories->hasPages())
+            <div class="flex flex-col sm:flex-row items-center justify-between mt-12 pt-8 border-t border-white/5 gap-6">
+                <div class="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-gray-500">
+                    <span
+                        class="flex items-center justify-center w-10 h-10 rounded-xl bg-[#030303] border border-white/5 text-white shadow-inner">{{ $categories->currentPage() }}</span>
+                    <span>of</span>
+                    <span class="text-white">{{ $categories->lastPage() }}</span>
+                    <span class="ml-1 opacity-40">Pages</span>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    @if ($categories->onFirstPage())
+                        <div
+                            class="flex items-center gap-2 px-6 py-3 bg-[#030303]/50 border border-white/5 rounded-2xl opacity-20 cursor-not-allowed text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            <span>Previous</span>
+                        </div>
+                    @else
+                        <a href="{{ $categories->previousPageUrl() }}"
+                            class="group flex items-center gap-2 px-6 py-3 bg-[#030303] border border-white/5 rounded-2xl hover:bg-white/5 transition-all text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
+                            <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            <span>Previous</span>
+                        </a>
+                    @endif
+
+                    @if ($categories->hasMorePages())
+                        <a href="{{ $categories->nextPageUrl() }}"
+                            class="group flex items-center gap-2 px-6 py-3 bg-[#030303] border border-white/5 rounded-2xl hover:bg-white/5 transition-all text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
+                            <span>Next</span>
+                            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    @else
+                        <div
+                            class="flex items-center gap-2 px-6 py-3 bg-[#030303]/50 border border-white/5 rounded-2xl opacity-20 cursor-not-allowed text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
+                            <span>Next</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        @endif
     </div>
 
     {{-- Create Category Modal --}}
     <div id="create-category-modal" class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
-        <div onclick="event.stopPropagation()" class="relative w-full max-w-2xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
+        <div onclick="event.stopPropagation()"
+            class="relative w-full max-w-2xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
             <button onclick="closeCreateModal()" class="absolute top-5 right-5 z-50 text-gray-400 hover:text-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
                 </svg>
             </button>
 
@@ -150,19 +212,22 @@
                 <form action="{{ url('/category-create') }}" method="POST" class="space-y-4">
                     @csrf
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Name *</label>
+                        <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Name
+                            *</label>
                         <input type="text" name="name" id="categoryName" placeholder="e.g. JavaScript" required
                             class="input-field w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Description</label>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Description</label>
                         <textarea name="description" id="categoryDescription" rows="3" placeholder="What's inside?"
                             class="input-field w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none resize-none"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest ml-1">Color Theme</label>
+                        <label class="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest ml-1">Color
+                            Theme</label>
                         <div class="flex gap-3">
                             @foreach (['blue', 'purple', 'green', 'yellow', 'red', 'pink'] as $color)
                                 <button type="button" data-color="{{ $color }}"
@@ -175,8 +240,7 @@
                     <div class="pt-4 flex gap-3">
                         <button type="button" onclick="closeCreateModal()"
                             class="flex-1 py-3 text-sm font-bold text-gray-400 hover:text-white transition">Cancel</button>
-                        <button type="submit"
-                            class="flex-[2] py-3 rounded-xl btn-primary text-white font-bold ">
+                        <button type="submit" class="flex-[2] py-3 rounded-xl btn-primary  font-bold ">
                             Create Category
                         </button>
                     </div>
@@ -186,11 +250,14 @@
     </div>
 
     {{-- Update Category Modal --}}
-    <div id="update-category-modal" class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
-        <div onclick="event.stopPropagation()" class="relative w-full max-w-2xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
+    <div id="update-category-modal"
+        class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
+        <div onclick="event.stopPropagation()"
+            class="relative w-full max-w-2xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
             <button onclick="closeUpdateModal()" class="absolute top-5 right-5 z-50 text-gray-400 hover:text-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
                 </svg>
             </button>
 
@@ -202,23 +269,27 @@
 
                 <form id="update-form" method="POST" class="space-y-4">
                     @csrf
-                    
+
                     <input type="hidden" name="category_id" id="updateCategoryId">
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Name *</label>
-                        <input type="text" name="name" id="updateCategoryName" placeholder="e.g. JavaScript" required
-                            class="input-field w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+                        <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Name
+                            *</label>
+                        <input type="text" name="name" id="updateCategoryName" placeholder="e.g. JavaScript"
+                            required class="input-field w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Description * </label>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Description
+                            * </label>
                         <textarea name="description" id="updateCategoryDescription" rows="3" placeholder="What's inside?"
                             class="input-field w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none resize-none"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest ml-1">Color Theme</label>
+                        <label class="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest ml-1">Color
+                            Theme</label>
                         <div class="flex gap-3">
                             @foreach (['blue', 'purple', 'green', 'yellow', 'red', 'pink'] as $color)
                                 <button type="button" data-update-color="{{ $color }}"
@@ -231,8 +302,7 @@
                     <div class="pt-4 flex gap-3">
                         <button type="button" onclick="closeUpdateModal()"
                             class="flex-1 py-3 text-sm font-bold text-gray-400 hover:text-white transition">Cancel</button>
-                        <button type="submit"
-                            class="flex-[2] py-3 font-black rounded-xl btn-primary text-white ">
+                        <button type="submit" class="flex-[2] py-3 font-black rounded-xl btn-primary  ">
                             Update Category
                         </button>
                     </div>
@@ -243,14 +313,17 @@
 
     {{-- Action Menu Modal --}}
     <div id="action-menu" class="hidden fixed inset-0 z-[9999] bg-black/40 flex items-center justify-center p-4">
-        <div onclick="event.stopPropagation()" class="glass-card rounded-3xl p-8 flex flex-col gap-4 min-w-[340px] border border-white/10 shadow-2xl animate-[menuPopIn_0.3s_cubic-bezier(0.34,1.56,0.64,1)]">
+        <div onclick="event.stopPropagation()"
+            class="glass-card rounded-3xl p-8 flex flex-col gap-4 min-w-[340px] border border-white/10 shadow-2xl animate-[menuPopIn_0.3s_cubic-bezier(0.34,1.56,0.64,1)]">
             <div id="selected-category-name" class="text-white text-3xl font-extrabold text-center mb-2">Category</div>
             <div id="selected-category-desc" class="text-gray-400 text-sm text-center mb-4"></div>
 
             <div class="flex flex-col gap-3">
-                <a href="#" id="view-link" class="group py-5 px-8 rounded-2xl font-bold text-center bg-white text-black hover:bg-gray-200 transition text-sm flex items-center justify-center gap-3">
+                <a href="#" id="view-link"
+                    class="group py-5 px-8 rounded-2xl font-bold text-center btn-primary flex items-center justify-center gap-3">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
                     View Snippets
                 </a>
@@ -258,7 +331,8 @@
                 <button type="button" onclick="openUpdateModalFromAction()"
                     class="group py-3 px-8 rounded-2xl font-bold text-center input-field hover:bg-white/10 transition text-xs flex items-center justify-center gap-3 text-white">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                     Update Category
                 </button>
@@ -266,30 +340,36 @@
                 <button type="button" onclick="showDeleteConfirmation()"
                     class="group w-full py-4 px-8 rounded-2xl font-bold text-center text-red-300 hover:text-red-500 transition text-xs flex items-center justify-center gap-3">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                     Delete Category
                 </button>
             </div>
 
-            <button onclick="closeActionMenu()" class="text-gray-500 hover:text-white text-sm font-medium transition-colors mt-4">Dismiss</button>
+            <button onclick="closeActionMenu()"
+                class="text-gray-500 hover:text-white text-sm font-medium transition-colors mt-4">Dismiss</button>
         </div>
     </div>
 
     {{-- Delete Confirmation Modal --}}
-    <div id="delete-confirmation-modal" class="hidden fixed inset-0 z-[99999] bg-black/70 flex items-center justify-center p-4">
-        <div onclick="event.stopPropagation()" class="glass-card rounded-3xl p-8 flex flex-col gap-5 min-w-[340px] max-w-md border border-white/10 shadow-2xl animate-[menuPopIn_0.3s_cubic-bezier(0.34,1.56,0.64,1)]">
+    <div id="delete-confirmation-modal"
+        class="hidden fixed inset-0 z-[99999] bg-black/70 flex items-center justify-center p-4">
+        <div onclick="event.stopPropagation()"
+            class="glass-card rounded-3xl p-8 flex flex-col gap-5 min-w-[340px] max-w-md border border-white/10 shadow-2xl animate-[menuPopIn_0.3s_cubic-bezier(0.34,1.56,0.64,1)]">
             <div class="flex justify-center">
                 <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
                     <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                 </div>
             </div>
 
             <div class="text-center">
                 <h3 class="text-white text-xl font-extrabold mb-2">Delete Category</h3>
-                <p id="delete-confirmation-message" class="text-gray-400 text-sm">Are you sure you want to delete this category?</p>
+                <p id="delete-confirmation-message" class="text-gray-400 text-sm">Are you sure you want to delete this
+                    category?</p>
                 <p class="text-gray-500 text-xs mt-2">This action cannot be undone.</p>
             </div>
 
@@ -298,15 +378,18 @@
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="category_id" id="deleteCategoryId">
-                    <button type="submit" class="w-full py-3 px-8 rounded-2xl font-bold bg-red-600 text-white hover:bg-red-700 transition text-sm flex items-center justify-center gap-3">
+                    <button type="submit"
+                        class="w-full py-3 px-8 rounded-2xl font-bold bg-red-600 text-white hover:bg-red-700 transition text-sm flex items-center justify-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                         Delete
                     </button>
                 </form>
 
-                <button onclick="closeDeleteConfirmation()" class="w-full py-3 px-8 rounded-2xl font-bold input-field hover:bg-white/10 transition text-sm text-gray-300 hover:text-white">
+                <button onclick="closeDeleteConfirmation()"
+                    class="w-full py-3 px-8 rounded-2xl font-bold input-field hover:bg-white/10 transition text-sm text-gray-300 hover:text-white">
                     Cancel
                 </button>
             </div>
@@ -355,10 +438,10 @@
                 document.getElementById('updateCategoryName').value = currentCategoryName;
                 document.getElementById('updateCategoryDescription').value = currentCategoryDesc || '';
                 document.getElementById('updateSelectedColor').value = currentCategoryColor;
-                
+
                 // Set form action
                 document.getElementById('update-form').action = `/category-update`;
-                
+
                 // Update color buttons UI
                 document.querySelectorAll('.update-color-btn').forEach(btn => {
                     btn.classList.remove('border-white');
@@ -368,7 +451,7 @@
                         btn.classList.add('border-white');
                     }
                 });
-                
+
                 // Close action menu and open update modal
                 closeActionMenu();
                 document.getElementById('update-category-modal').classList.remove('hidden');
@@ -381,7 +464,7 @@
 
         // Delete Confirmation Functions
         function showDeleteConfirmation() {
-            document.getElementById('delete-confirmation-message').textContent = 
+            document.getElementById('delete-confirmation-message').textContent =
                 `Are you sure you want to delete "${currentCategoryName}"?`;
             document.getElementById('deleteCategoryId').value = currentCategoryId;
             document.getElementById('delete-form').action = `/categories/${currentCategoryId}`;
@@ -400,7 +483,7 @@
                 btn.addEventListener('click', function() {
                     const color = this.dataset.color;
                     document.getElementById('selectedColor').value = color;
-                    
+
                     document.querySelectorAll('.color-btn').forEach(b => {
                         b.classList.remove('border-white');
                         b.classList.add('border-transparent');
@@ -409,13 +492,13 @@
                     this.classList.add('border-white');
                 });
             });
-            
+
             // Update modal color selection
             document.querySelectorAll('.update-color-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const color = this.dataset.updateColor;
                     document.getElementById('updateSelectedColor').value = color;
-                    
+
                     document.querySelectorAll('.update-color-btn').forEach(b => {
                         b.classList.remove('border-white');
                         b.classList.add('border-transparent');

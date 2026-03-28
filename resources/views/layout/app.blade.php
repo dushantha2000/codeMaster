@@ -17,7 +17,7 @@
         /* Base Styles */
         body {
             font-family: 'Space Grotesk', sans-serif;
-            background: #0a0a0a;
+            background: #070707;
         }
 
         .code-font {
@@ -35,14 +35,29 @@
         }
 
         .btn-primary {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.2s;
+            background: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s;
+            
         }
 
         .btn-primary:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgb(0, 0, 0);
             transform: translateY(-1px);
+            color: rgb(255, 255, 255);
+        }
+
+        .input-field {
+            background: #050505;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: #0969da;
+            box-shadow: 0 0 0 1px #0969da;
         }
 
         /* Prism background styling */
@@ -83,147 +98,53 @@
             border-radius: 10px;
         }
 
-        /* Desktop file sidebar always visible */
-        @media (min-width: 768px) {
-            aside.md\:block {
-                display: block !important;
-                position: relative !important;
-                transform: none !important;
-                opacity: 1 !important;
-                visibility: visible !important;
-            }
-        }
-
-        /* Mobile Specific Styles */
-        @media (max-width: 768px) {
-            .hide-on-mobile {
-                display: none !important;
-            }
-
-            /* Smooth scrolling */
-            .overflow-auto {
-                -webkit-overflow-scrolling: touch;
-            }
-
-            /* Better touch targets */
-            button,
-            a,
-            .clickable {
-                min-height: 44px;
-                min-width: 44px;
-            }
-
-            /* Modal adjustments */
-            .glass-card {
-                border-radius: 0;
-            }
-
-            /* File sidebar */
-            aside {
-                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
-            }
-
-            /* Code area */
-            pre {
-                font-size: 11px;
-                line-height: 1.5;
-            }
-
-            code[class*="language-"] {
-                font-size: 11px !important;
-            }
-
-            /* Custom scrollbar for mobile */
-            .custom-mini-scrollbar::-webkit-scrollbar {
-                width: 3px;
-            }
-
-            /* Header fixes */
-            .header-title {
-                font-size: 1rem;
-            }
-
-            /* Card fixes */
-            .snippet-card {
-                margin-bottom: 0.75rem;
-            }
-
-            .snippet-card .p-5 {
-                padding: 1rem;
-            }
-
-            /* Max width truncate */
-            .max-w-[150px] {
-                max-width: 150px;
-            }
-        }
-
-        /* Small phones */
-        @media (max-width: 380px) {
-            .max-w-[150px] {
-                max-width: 120px;
-            }
-
-            pre,
-            code[class*="language-"] {
-                font-size: 10px !important;
-            }
-        }
-
-        /* File icon colors */
-        .file-icon-js {
-            color: #f7df1e;
-        }
-
-        .file-icon-jsx {
-            color: #61dafb;
-        }
-
-        .file-icon-php {
-            color: #8892bf;
-        }
-
-        .file-icon-html {
-            color: #e34c26;
-        }
-
-        .file-icon-css {
-            color: #264de4;
-        }
-
-        .file-icon-json {
-            color: #f7df1e;
-        }
-
-        /* Mobile Filter Panel Animation */
-        .mobile-filter-panel {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-        }
-
-        .mobile-filter-panel::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .mobile-filter-panel::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-        }
-
-        /* Ensure touch events work properly on mobile */
-        @media (max-width: 1023px) {
-            [x-cloak] {
-                display: none !important;
-            }
-        }
-
-        /* Custom CSS එකකට දාන්න */
         .bg-mesh {
             background-image:
                 radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 70%),
                 radial-gradient(at 100% 100%, rgba(147, 51, 234, 0.05) 0px, transparent 90%);
         }
     </style>
+
+    <script>
+        // Critical: Provide the global snippetBrowser function immediately for Alpine
+        window.snippetBrowser = function() {
+            return {
+                snippets: [],
+                searchQuery: '',
+                selectedLanguage: '',
+                selectedLanguageName: 'All Languages',
+                selectedStatus: 'all',
+                sortBy: 'latest',
+                mobileFiltersOpen: false,
+                loading: false,
+                showPreview: false,
+                selectedSnippet: null,
+                activeFileTab: 0,
+                mobileMenuOpen: false,
+                mobileFileListOpen: false,
+                copyDone: false,
+                total: 0,
+                currentPage: 1,
+                lastPage: 1,
+
+                languageList: [
+                    { id: '', name: 'All Languages', icon: '🌐' },
+                    { id: 'Laravel', name: 'Laravel', icon: '🐘' },
+                    { id: 'React', name: 'React', icon: '⚛️' },
+                    { id: 'Tailwind', name: 'Tailwind', icon: '🍃' },
+                    { id: 'Javascript', name: 'Javascript', icon: '🟨' },
+                    { id: 'Python', name: 'Python', icon: '🐍' },
+                    { id: 'PHP', name: 'PHP', icon: '🐘' }
+                ],
+
+                fetchSnippets() { console.log("Global fallback fetch"); },
+                init() { console.log("Global fallback init"); },
+                openSnippet(id) { console.log("Global fallback open", id); },
+                copyCode(text) { console.log("Global fallback copy"); },
+                formatDate(d) { return d ? new Date(d).toLocaleDateString() : 'N/A'; }
+            };
+        };
+    </script>
 
     @stack('styles')
 </head>
@@ -234,225 +155,16 @@
 
     @include('common.notification')
 
-    <!-- Mobile Menu Overlay -->
-    <div x-show="mobileMenuOpen" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 md:hidden"
-        @click="mobileMenuOpen = false"></div>
-
     @include('common.header')
 
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
-        <div class="max-w-7xl mx-auto flex gap-6">
+        <div class="max-w-7xl mx-auto">
             @yield('content')
         </div>
     </main>
 
-
-    <!-- Preview Modal with Mobile Support -->
-    @include('common.preview-modal')
-
-    <!-- Alpine.js Script  -->
-    {{-- <script>
-        function snippetBrowser() {
-            return {
-                // Data properties
-                snippets: [],
-                searchQuery: '',
-                selectedLanguage: '',
-                selectedLanguageName: 'All Languages',
-                sortBy: 'recent',
-                statusFilter: 'all',
-                mobileFiltersOpen: false,
-                loading: false,
-                showPreview: false,
-                selectedSnippet: null,
-                activeFileTab: 0,
-                mobileMenuOpen: false,
-                mobileFileListOpen: false,
-                copyDone: false,
-                searchTimeout: null,
-
-                languageList: [{
-                        id: '',
-                        name: 'All Languages',
-                        icon: '🌐'
-                    },
-                    {
-                        id: 'Laravel',
-                        name: 'Laravel',
-                        icon: '🟠'
-                    },
-                    {
-                        id: 'React',
-                        name: 'React',
-                        icon: '⚛️'
-                    },
-                    {
-                        id: 'Tailwind',
-                        name: 'Tailwind',
-                        icon: '🍃'
-                    },
-                    {
-                        id: 'Javascript',
-                        name: 'Javascript',
-                        icon: '🟨'
-                    },
-                    {
-                        id: 'Python',
-                        name: 'Python',
-                        icon: '🐍'
-                    },
-                    {
-                        id: 'PHP',
-                        name: 'PHP',
-                        icon: '🐘'
-                    },
-                ],
-
-                // Methods
-                fetchSnippets() {
-                    this.loading = true;
-                    const url =
-                        `/api/search?q=${encodeURIComponent(this.searchQuery)}&lang=${this.selectedLanguage}&status=${this.statusFilter}`;
-
-                    fetch(url)
-                        .then(res => res.json())
-                        .then(data => {
-                            let snippets = data.data || data;
-
-                            if (this.sortBy === 'title') {
-                                snippets.sort((a, b) => a.title.localeCompare(b.title));
-                            } else if (this.sortBy === 'files') {
-                                snippets.sort((a, b) => (b.files?.length || 0) - (a.files?.length || 0));
-                            }
-
-                            this.snippets = snippets;
-                            this.loading = false;
-                        })
-                        .catch(err => {
-                            console.error("Fetch Error:", err);
-                            this.loading = false;
-                        });
-                },
-
-                openSnippet(id) {
-                    this.loading = true;
-
-                    fetch(`/api/snippets/${id}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            this.selectedSnippet = data;
-                            this.activeFileTab = 0;
-                            this.showPreview = true;
-                            this.mobileFileListOpen = false;
-                            this.loading = false;
-
-                            this.$nextTick(() => {
-                                if (typeof Prism !== 'undefined') {
-                                    Prism.highlightAll();
-                                }
-                            });
-                        })
-                        .catch(err => {
-                            console.error("Detail Error:", err);
-                            this.loading = false;
-                        });
-                },
-
-                copyCode(text) {
-                    navigator.clipboard.writeText(text).then(() => {
-                        this.copyDone = true;
-                        setTimeout(() => this.copyDone = false, 2000);
-                    }).catch(() => {
-                        // Fallback
-                        const textarea = document.createElement('textarea');
-                        textarea.value = text;
-                        document.body.appendChild(textarea);
-                        textarea.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(textarea);
-
-                        this.copyDone = true;
-                        setTimeout(() => this.copyDone = false, 2000);
-                    });
-                },
-
-                getLangIcon(lang) {
-                    if (!lang) return '📄';
-                    const icons = {
-                        'php': '🐘',
-                        'laravel': '🟠',
-                        'javascript': '🟨',
-                        'js': '🟨',
-                        'python': '🐍',
-                        'html': '🌐',
-                        'css': '🎨',
-                        'react': '⚛️',
-                        'vue': '🖖',
-                        'database': '🗄️',
-                        'sql': '💾'
-                    };
-                    return icons[lang.toLowerCase()] || '📄';
-                },
-
-                getFileIcon(filename) {
-                    if (!filename) return '📄';
-                    const ext = filename.split('.').pop().toLowerCase();
-                    const icons = {
-                        'js': '📘',
-                        'jsx': '⚛️',
-                        'ts': '📘',
-                        'tsx': '⚛️',
-                        'php': '🐘',
-                        'py': '🐍',
-                        'html': '🌐',
-                        'css': '🎨',
-                        'json': '📋',
-                        'md': '📝',
-                        'vue': '💚',
-                        'sql': '🗄️'
-                    };
-                    return icons[ext] || '📄';
-                },
-
-                // Mobile handlers
-                handleResize() {
-                    if (window.innerWidth > 768) {
-                        this.mobileFileListOpen = false;
-                        this.mobileMenuOpen = false;
-                        this.mobileFiltersOpen = false;
-                    }
-                },
-
-                toggleMobileFileList() {
-                    this.mobileFileListOpen = !this.mobileFileListOpen;
-                },
-
-                init() {
-                    // Resize listener
-                    window.addEventListener('resize', () => this.handleResize());
-
-                    // Click outside handler for mobile file list
-                    document.addEventListener('click', (e) => {
-                        if (window.innerWidth <= 768 && this.mobileFileListOpen) {
-                            if (!e.target.closest('aside') && !e.target.closest('button[class*="md:hidden"]')) {
-                                this.mobileFileListOpen = false;
-                            }
-                        }
-                    });
-
-                    // Initial fetch
-                    this.fetchSnippets();
-                }
-            }
-        }
-    </script> --}}
-
-
-
-
-
-    <!-- Prism.js -->
+    <!-- Global Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
