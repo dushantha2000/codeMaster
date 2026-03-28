@@ -140,7 +140,7 @@
                         </div>
                         
                         <div>
-                            <label for="bio" class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Bio</label>
+                            <label for="bio" class="block text-[10px] font-bold text-gray-400 mb-1  tracking-widest ml-1">Bio</label>
                             <textarea id="bio" name="bio" rows="4" 
                                 class="bg-[#050505] border border-white/5 w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none resize-none transition-all"
                                 placeholder="Tell others about yourself and your work...">{{ Auth::user()->bio ?? '' }}</textarea>

@@ -1,6 +1,6 @@
 <!-- Header -->
 <header
-    class="h-20 flex items-center bg-black justify-between px-4 md:px-8 shrink-0  sticky top-0 z-30">
+    class="h-20 flex items-center  justify-between px-4 md:px-8 shrink-0  sticky top-0 z-30">
     <!-- Left side -->
     <div class="flex items-center gap-2 md:gap-2">
         <!-- Mobile menu button  -->
@@ -31,15 +31,15 @@
             <a href="{{ url('/my-snippets') }}" class="px-4 py-2 text-[11px] font-black  tracking-widest text-gray-400 hover:text-white hover:bg-white/5 ">
                 Snippets
             </a>
-            <div class="w-[1px] h-4 bg-white/10 mx-1"></div>
+           
             <a href="{{ url('/categories.index') }}" class="px-4 py-2 text-[11px] font-black  tracking-widest text-gray-400 hover:text-white hover:bg-white/5 rounded-full transition-all">
                 Categories
             </a>
-            <div class="w-[1px] h-4 bg-white/10 mx-1"></div>
+            
             <a href="{{ url('/profile') }}" class="px-4 py-2 text-[11px] font-black  tracking-widest text-gray-400 hover:text-white hover:bg-white/5 rounded-full transition-all">
                 Partnerships
             </a>
-            <div class="w-[1px] h-4 bg-white/10 mx-1"></div>
+        
             <a href="{{ url('/settings') }}" class="px-4 py-2 text-[11px] font-black  tracking-widest text-gray-400 hover:text-white hover:bg-white/5 rounded-full transition-all">
                 Settings
             </a>

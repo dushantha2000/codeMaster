@@ -105,47 +105,7 @@
         }
     </style>
 
-    <script>
-        // Critical: Provide the global snippetBrowser function immediately for Alpine
-        window.snippetBrowser = function() {
-            return {
-                snippets: [],
-                searchQuery: '',
-                selectedLanguage: '',
-                selectedLanguageName: 'All Languages',
-                selectedStatus: 'all',
-                sortBy: 'latest',
-                mobileFiltersOpen: false,
-                loading: false,
-                showPreview: false,
-                selectedSnippet: null,
-                activeFileTab: 0,
-                mobileMenuOpen: false,
-                mobileFileListOpen: false,
-                copyDone: false,
-                total: 0,
-                currentPage: 1,
-                lastPage: 1,
-
-                languageList: [
-                    { id: '', name: 'All Languages', icon: '🌐' },
-                    { id: 'Laravel', name: 'Laravel', icon: '🐘' },
-                    { id: 'React', name: 'React', icon: '⚛️' },
-                    { id: 'Tailwind', name: 'Tailwind', icon: '🍃' },
-                    { id: 'Javascript', name: 'Javascript', icon: '🟨' },
-                    { id: 'Python', name: 'Python', icon: '🐍' },
-                    { id: 'PHP', name: 'PHP', icon: '🐘' }
-                ],
-
-                fetchSnippets() { console.log("Global fallback fetch"); },
-                init() { console.log("Global fallback init"); },
-                openSnippet(id) { console.log("Global fallback open", id); },
-                copyCode(text) { console.log("Global fallback copy"); },
-                formatDate(d) { return d ? new Date(d).toLocaleDateString() : 'N/A'; }
-            };
-        };
-    </script>
-
+    
     @stack('styles')
 </head>
 

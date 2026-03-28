@@ -3,7 +3,7 @@
 @section('title', 'Laravel - Category')
 
 @section('content')
-    <div class="w-full max-w-6xl mx-auto px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div x-data="snippetBrowser()" x-cloak class="w-full max-w-6xl mx-auto px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
         <!-- Breadcrumb -->
         <nav class="flex mb-6" aria-label="Breadcrumb">
@@ -34,14 +34,21 @@
         {{-- Global Page Header --}}
         <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-10">
             <div class="items-center gap-5">
-                {{-- Title & Count --}}
+                
+
                 <div>
-                    <h1 class="text-4xl font-black text-{{ $categories->color_name }}-400 tracking-tight">
-                        {{ $categories->category_name }}</h1>
-                    <p class="text-gray-400 text-sm font-medium">
-                        {{ $categories->category_description }}
-                    </p>
+                    <div class="flex items-center gap-4">
+                        <h1 class="text-4xl font-black text-{{ $categories->color_name }}-400 tracking-tight">{{ $categories->category_name }}</h1>
+                        <span
+                            class="bg-blue-500/10 text-{{ $categories->color_name }}-400 text-sm font-black px-3 py-1 rounded-xl border border-{{ $categories->color_name }}-500/20 shadow-lg shadow-blue-500/5 mt-1"
+                            x-text="total">
+                            {{ $snippets->total() }}
+                        </span>
+                    </div>
+                    <p class="text-gray-400 text-base font-medium mt-2">  {{ $categories->category_description }}</p>
                 </div>
+
+
             </div>
         </div>
 
@@ -100,7 +107,7 @@
 
                 {{-- Unified Discovery Bar --}}
                 <div class="glass-container mb-10">
-                    <div class="glass-card rounded-3xl p-1.5 md:p-2 border border-white/5 shadow-2lx overflow-hidden">
+                    <div class=" p-1.5 md:p-2 shadow-2lx overflow-hidden">
                         <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-2">
                             
                             {{-- Search Input Group --}}
@@ -177,12 +184,12 @@
                 {{-- Snippets Container --}}
                 <div class="grid grid-cols-1 gap-4 mt-2" x-show="!loading" style="display: none;">
                     <template x-for="snippet in snippets" :key="snippet.id">
-                        <div class="glass-card group p-5 hover:border-purple-500/30 transition-all duration-200 cursor-pointer"
+                        <div class="glass-card group p-6 border border-white/5 rounded-[2rem] hover:border-blue-500/30 transition-all duration-500 cursor-pointer relative overflow-hidden shadow-lg"
                             @click="openSnippet(snippet.id)">
                             <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-2 mb-2 flex-wrap">
-                                        <h3 class="text-[#EDEDED] text-lg font-semibold group-hover:text-purple-400 transition-colors" x-text="snippet.title"></h3>
+                                        <h3 class="text-[#EDEDED] text-lg font-semibold group-hover:text-blue-400 transition-colors" x-text="snippet.title"></h3>
                                         <template x-if="snippet.isActive == 1">
                                             <span class="px-2 py-0.5 bg-white/5 border border-white/10 text-[#71717A] text-[10px] rounded-md font-medium uppercase tracking-wider">Active</span>
                                         </template>
@@ -262,6 +269,40 @@
                     </div>
                 </div>
 
+                 {{-- Premium Pagination --}}
+                <div x-show="lastPage > 1 && !loading" x-cloak class="flex flex-col sm:flex-row items-center justify-between mt-12 pt-8 border-t border-white/5 gap-6">
+                    <div class="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-gray-500">
+                        <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-[#030303] border border-white/5 text-white shadow-inner" x-text="currentPage"></span>
+                        <span>of</span>
+                        <span class="text-white" x-text="lastPage"></span>
+                        <span class="ml-1 opacity-40">Pages</span>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button @click="fetchSnippets(currentPage - 1)" 
+                            :disabled="currentPage === 1"
+                            class="group flex items-center gap-2 px-6 py-3 bg-[#030303] border border-white/5 rounded-2xl hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
+                            <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            <span>Previous</span>
+                        </button>
+                        
+                        <button @click="fetchSnippets(currentPage + 1)" 
+                            :disabled="currentPage === lastPage"
+                            class="group flex items-center gap-2 px-6 py-3 bg-[#030303] border border-white/5 rounded-2xl hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
+                            <span>Next</span>
+                            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+
+
+
+
                 {{-- No Results Message --}}
                 <div x-show="initialized && !loading && snippets.length === 0" style="display: none;"
                     class="glass-card rounded-[3rem] p-16 text-center border-dashed border-{{ $categories->color_name }}-500/20 shadow-inner bg-{{ $categories->color_name }}-500/5 transition-all">
@@ -281,6 +322,9 @@
             </div>
         </div>
     </div>
+
+    {{-- Snippet Preview Modal --}}
+    @include('common.preview-modal')
 @endsection
 
 @push('scripts')
@@ -403,11 +447,11 @@
                 this.mobileFileListOpen = !this.mobileFileListOpen;
             },
 
-            copyCode() {
-                if (!this.selectedSnippet || !this.selectedSnippet.files[this.activeFileTab]) return;
+            copyCode(code = null) {
+                const codeToCopy = code || (this.selectedSnippet && this.selectedSnippet.files[this.activeFileTab] ? this.selectedSnippet.files[this.activeFileTab].content : '');
+                if (!codeToCopy) return;
 
-                const code = this.selectedSnippet.files[this.activeFileTab].code;
-                navigator.clipboard.writeText(code).then(() => {
+                navigator.clipboard.writeText(codeToCopy).then(() => {
                     this.copyDone = true;
                     setTimeout(() => this.copyDone = false, 2000);
                 });

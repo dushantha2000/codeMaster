@@ -71,7 +71,7 @@
 
                         {{-- Action Button --}}
                         <div class="mt-6 pt-6 border-t border-white/5">
-                            <a href="{{ url('/settings') }}" class="btn-primary w-full text-sm font-bold py-3 rounded-xl block transition">
+                            <a href="{{ url('/settings') }}" class="btn-primary w-full text-sm font-bold py-2 rounded-xl block transition">
                                 Vault Settings
                             </a>
                         </div>
@@ -96,7 +96,7 @@
                         {{ csrf_field() }}
 
                         <div class="relative">
-                            <label class="block text-xs font-bold text-gray-400 tracking-widest uppercase mb-3 ml-1">Search Verified Partners</label>
+                            <label class="block text-xs font-bold text-gray-400 tracking-widest  mb-3 ml-1">Search Verified Partners</label>
 
                             <div class="flex flex-col md:flex-row items-center gap-4">
                                 <div class="relative group w-full">
@@ -128,7 +128,7 @@
                     {{-- Partners List Section --}}
                     <div class="mt-10 pt-8 border-t border-white/5">
                         <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-xs font-bold text-gray-400 tracking-widest uppercase ml-1">
+                            <h3 class="text-xs font-bold text-gray-400 tracking-widest  ml-1">
                                 Active Vault Collaborators
                             </h3>
                             <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest bg-blue-500/10 text-blue-400 border border-blue-500/20">

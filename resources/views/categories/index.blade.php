@@ -64,7 +64,7 @@
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-12">
             <div>
                 <div class="flex items-center gap-3">
-                    <h1 class="text-4xl font-black text-white tracking-tight">Categories</h1>
+                    <h1 class="text-4xl font-black text-white tracking-tight">Component Groups</h1>
                     <span
                         class="bg-blue-500/20 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-lg border border-blue-500/30 mt-1">
                         {{ $categories->count() }}
@@ -81,6 +81,12 @@
                 New Category
             </button>
         </div>
+
+        
+
+
+
+
 
         {{-- Categories Grid --}}
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
