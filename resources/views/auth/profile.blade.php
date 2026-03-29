@@ -82,7 +82,7 @@
             {{-- Form Section --}}
             <div class="lg:col-span-8 space-y-6">
                 {{-- Vault Partnerships Card --}}
-                <div class="glass-card rounded-3xl p-8 border border-white/10 relative z-20">
+                <div class=" rounded-3xl p-8 border border-white/10 relative z-20">
                     <h3 class="text-xl font-black text-white mb-6 flex items-center gap-3 tracking-tight">
                         <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
                             <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

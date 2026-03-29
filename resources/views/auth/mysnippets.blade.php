@@ -55,7 +55,7 @@
                 <div class="lg:col-span-1">
                     <div class="sticky top-24 space-y-6">
                         <div
-                            class="glass-card rounded-[2.5rem] p-8 border border-white/5 shadow-2xl relative overflow-hidden text-center group">
+                            class="  p-8 relative overflow-hidden text-center group">
 
                             {{-- Profile Image Section --}}
                             <div class="relative inline-block mb-6">

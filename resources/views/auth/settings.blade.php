@@ -73,7 +73,7 @@
             <div class="lg:col-span-2 space-y-6">
                 
                 {{-- Profile Image Section --}}
-                <div class="glass-card rounded-3xl p-8 border border-white/10 shadow-2xl relative overflow-hidden group">
+                <div class=" relative overflow-hidden group">
                     <h3 class="text-lg font-bold text-white mb-6">Profile Photo</h3>
                     <div class="flex items-center gap-8">
                         <div class="relative">
@@ -109,7 +109,7 @@
                 </div>
 
                 {{-- Profile Information --}}
-                <div class="glass-card rounded-3xl p-8 border border-white/10 shadow-2xl relative overflow-hidden group">
+                <div class=" rounded-3xl p-8 border border-white/10 shadow-2xl relative overflow-hidden group">
                     <h3 class="text-lg font-bold text-white mb-6">Profile Information</h3>
                     <form action="{{ url('/setting-profile') }}" method="POST" class="space-y-6">
                         {{ csrf_field() }}
@@ -186,7 +186,7 @@
             {{-- Right Column --}}
             <div class="space-y-6">
                 {{-- Security --}}
-                <div class="glass-card rounded-3xl p-8 border border-white/10 shadow-2xl relative overflow-hidden group">
+                <div class=" rounded-2xl p-8 border border-white/10 shadow-2xl relative overflow-hidden group">
                     <h3 class="text-lg font-bold text-white mb-6">Security</h3>
                     <div class="space-y-3">
                         <button onclick="openModal('passwordModal')"
@@ -273,7 +273,7 @@
                         <button type="button" onclick="closeModal('profileImageModal')"
                             class="flex-1 py-3 text-sm font-bold text-gray-400 hover:text-white transition">Cancel</button>
                         <button type="submit"
-                            class="flex-1 py-3 btn-primary rounded-xl font-bold text-white transition">Upload</button>
+                            class="flex-1 py-3 btn-primary rounded-xl font-bold  transition">Upload</button>
                     </div>
                 </form>
             </div>
