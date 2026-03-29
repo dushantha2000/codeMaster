@@ -4,43 +4,43 @@
 
 @section('content')
     <div x-init="init()" class="w-full">
-        <div id="main-page-content" class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-cloak>
+        <div id="main-page-content" class="w-full max-w-6xl mx-auto px-4" x-cloak>
 
             {{-- Breadcrumb --}}
-            <nav class="flex mb-8" aria-label="Breadcrumb">
-                <ol class="flex items-center space-x-2 text-sm">
-                    <li>
-                        <a href="{{ url('/dashboard') }}"
-                            class="text-gray-500 hover:text-white transition flex items-center gap-1">
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li><span class="text-gray-600">/</span></li>
-                    <li><span class="text-blue-400 font-medium tracking-tight">Vaulted Logic</span></li>
-                </ol>
-            </nav>
+        <nav class="flex mb-6" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2">
+                <li>
+                    <a href="{{ url('/') }}" class="text-gray-500 hover:text-gray-700">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                    </a>
+                </li>
+                <li><span class="text-gray-400">/</span></li>
+                <li><a href="{{ url('/') }}" class="text-gray-500 hover:text-gray-700">Snippets</a></li>
+                <li><span class="text-gray-400">/</span></li>
+                <li><span class="text-blue-400 font-medium">Terminal</span></li>
+            </ol>
+        </nav>
+
 
             {{-- Global Page Header --}}
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                 <div>
                     <div class="flex items-center gap-4">
-                        <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight">My Vault</h1>
+                        <h1 class="text-4xl font-black text-white tracking-tight">Developer Terminal</h1>
                         <span
                             class="bg-blue-500/10 text-blue-400 text-sm font-black px-3 py-1 rounded-xl border border-blue-500/20 shadow-lg shadow-blue-500/5 mt-1"
                             x-text="total">
                             {{ $snippets->total() }}
                         </span>
                     </div>
-                    <p class="text-gray-400 text-base font-medium mt-2">Secure index of your personal archived code
-                        snippets.</p>
+                    <p class="text-gray-400 text-base font-medium mt-2">A secure environment for your reusable architecture.</p>
                 </div>
 
                 <a href="{{ route('snippets-create') }}"
-                    class="inline-flex items-center gap-x-2 py-2 px-6 rounded-xl btn-primary  font-bold">
+                    class="btn-primary px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
                     </svg>
@@ -55,7 +55,7 @@
                 <div class="lg:col-span-1">
                     <div class="sticky top-24 space-y-6">
                         <div
-                            class="glass-card rounded-[2.5rem] p-8 border border-white/5 shadow-2xl relative overflow-hidden text-center group">
+                            class="  p-8 relative overflow-hidden text-center group">
 
                             {{-- Profile Image Section --}}
                             <div class="relative inline-block mb-6">

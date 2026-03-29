@@ -86,7 +86,7 @@
                 <!-- Loading State -->
                 <div x-show="loading" class="space-y-4 py-8">
                     <template x-for="i in 3">
-                        <div class="glass-card p-10 animate-pulse rounded-[2.5rem] border border-white/5">
+                        <div class="glass-card p-10 animate-pulse  border border-white/5">
                             <div class="h-6 bg-white/5 rounded-xl w-1/4 mb-4"></div>
                             <div class="h-3.5 bg-white/5 rounded-xl w-full mb-2"></div>
                             <div class="h-3.5 bg-white/5 rounded-xl w-3/4"></div>
@@ -97,7 +97,7 @@
                 <!-- Snippets Stream -->
                 <div x-show="!loading" class="space-y-4">
                     <template x-for="snippet in snippets" :key="snippet.id">
-                        <div class="glass-card group p-6 border border-white/5 rounded-[2rem] hover:border-blue-500/30 transition-all duration-500 cursor-pointer relative overflow-hidden shadow-lg"
+                        <div class="glass-card group p-6 border border-white/5  hover:border-blue-500/30 transition-all duration-500 cursor-pointer relative overflow-hidden shadow-lg"
                             @click="openSnippet(snippet.id)">
                             
                             <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 relative z-10">
@@ -198,11 +198,11 @@
 
             <!-- Right Sidebar-->
             <aside class="col-span-1 xl:col-span-1 space-y-6">
-                <div class="glass-card rounded-[2.5rem] p-8 border border-white/5 sticky top-24 text-left shadow-2xl overflow-hidden group">
-                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-all duration-500"></div>
+                <div class=" sticky top-24 text-left  overflow-hidden group">
+                   
                     
                     <h2 class="text-xs font-black text-gray-500  tracking-widest mb-8 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                        
                         Recent Changes
                     </h2>
 
@@ -220,6 +220,8 @@
                             <p class="text-[9px] font-black text-blue-500/50 uppercase tracking-tighter mb-1">Update</p>
                             <h3 class="text-xs text-gray-300 font-bold leading-relaxed group-hover/item:text-white transition-colors">Auto-model selection enabled for enterprise vaults.</h3>
                         </div>
+
+                        
 
                         <div class="relative pl-8 group/item">
                             <div class="absolute left-0 top-1.5 w-2.5 h-2.5 rounded-full bg-[#111] border border-white/10 group-hover/item:border-blue-500/50 transition-colors"></div>
@@ -267,6 +269,7 @@
                 activeFileTab: 0,
                 mobileFileListOpen: false,
                 copyDone: false,
+                mobileMenuOpen: false,
                 initialized: false,
 
                 init() {
