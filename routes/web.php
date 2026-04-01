@@ -16,6 +16,7 @@ Route::middleware('guest')->group(function () {
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
         Artisan::call('view:clear');
+        Artisan::call('session:table');
 
         // 2. Drop all tables and re-run migrations
         // '--force' flag එක දාන්නේ production/live server එකකදී මේක run වෙන්න අවසර දෙන්නයි
