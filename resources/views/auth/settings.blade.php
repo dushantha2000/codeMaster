@@ -129,7 +129,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="full_name" class="block text-[10px] font-bold text-gray-400 mb-1  tracking-widest ml-1">Full Name</label>
-                                <input type="text" id="full_name" name="full_name" value="{{ Auth::user()->full_name ?? Auth::user()->name }}"
+                                <input type="text" id="fullName" name="fullName" value="{{ Auth::user()->fullName ?? Auth::user()->name }} "
                                     class="bg-[#050505] border border-white/5 w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-all">
                             </div>
                             <div>

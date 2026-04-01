@@ -134,7 +134,7 @@
                             <!-- Editor Textarea -->
                             <div class="flex-1 relative bg-black/20 overflow-hidden">
                                 <textarea name="contents[]" x-model="file.content" required
-                                    class="absolute inset-0 w-full h-full bg-transparent p-6 md:p-10 pl-16 code-font text-[14px] text-gray-400 focus:text-white outline-none resize-none leading-relaxed transition-colors scrollbar-hide"
+                                    class="absolute inset-0 w-full h-full bg-transparent left-5 p-6 md:p-10 pl-16 code-font text-[14px] text-gray-400 focus:text-white outline-none resize-none leading-relaxed transition-colors scrollbar-hide"
                                     placeholder="// Enter code here..."></textarea>
 
                                 <!-- Line Numbers -->
@@ -156,7 +156,7 @@
             <div>
                 <!-- Initial Setup Modal -->
                 <div x-show="showInitialModal" x-cloak
-                    class="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+                    class="  fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-md p-4">
                     <div class="glass-card rounded-2xl p-8 md:p-10 w-full max-w-xl shadow-2xl border border-white/10 animate-in zoom-in-95 duration-300">
                         <div class="mb-8">
                             <h3 class="text-2xl font-bold text-white mb-2">New Logic Entry</h3>

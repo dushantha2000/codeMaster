@@ -27,10 +27,12 @@ class AuthController extends Controller
 {
     public function UpdateProfile(Request $request)
     {
-        // return $request;
+         //return $request;
         $request->validate([
             "name" => "required|string|max:255",
             "email" => "required|email|unique:users,email," . auth()->id(),
+            "fullName"=>"required|string|max:255",
+            "bio" => "nullable|string|max:255",
         ]);
 
         try {
@@ -38,6 +40,9 @@ class AuthController extends Controller
             $userId = $user->id;
             $user->name = $request->name;
             $user->email = $request->email;
+            $user->fullName = $request->fullName;
+            $user->bio = $request->bio; 
+
             $user->save();
 
             // Invalidate profile cache

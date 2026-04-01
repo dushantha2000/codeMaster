@@ -168,7 +168,7 @@
                     {{-- Loading Indicator --}}
                     <div x-show="loading" class="space-y-4 py-8">
                         <template x-for="i in 2">
-                            <div class="glass-card p-10 animate-pulse rounded-[2.5rem] border border-white/5">
+                            <div class="glass-card p-10 animate-pulse  border border-white/5">
                                 <div class="h-6 bg-white/5 rounded-xl w-1/4 mb-4"></div>
                                 <div class="h-3.5 bg-white/5 rounded-xl w-full mb-2"></div>
                                 <div class="h-3.5 bg-white/5 rounded-xl w-3/4"></div>
@@ -179,7 +179,7 @@
                     {{-- Logic Stream Items --}}
                     <div class="space-y-4" x-show="!loading">
                         <template x-for="snippet in snippets" :key="snippet.id">
-                            <div class="glass-card group p-6 border border-white/5 rounded-[2rem] hover:border-blue-500/30 transition-all duration-500 cursor-pointer relative overflow-hidden shadow-lg"
+                            <div class="glass-card group p-6 hover:border-blue-500/30 transition-all duration-500 cursor-pointer relative overflow-hidden shadow-lg"
                                 @click="openSnippet(snippet.id)">
 
                                 <div

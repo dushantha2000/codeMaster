@@ -61,7 +61,7 @@
             <div class="md:col-span-1">
                 <div class="sticky top-20 space-y-6">
                     <div
-                        class="glass-card bg-[#0A0A0A]/50 backdrop-blur-xl rounded-[2.5rem] p-10 border border-white/5 text-center relative overflow-hidden shadow-2xl group">
+                        class="glass-card bg-[#0A0A0A]/50 rounded-[2.5rem] p-10 border border-white/5 text-center relative overflow-hidden shadow-2xl group">
                         {{-- Decorative Background Glow --}}
                         <div
                             class="absolute -top-24 -left-24 w-48 h-48 bg-{{ $categories->color_name }}-500/10 blur-3xl rounded-full group-hover:bg-{{ $categories->color_name }}-500/20 transition-colors">
@@ -203,7 +203,7 @@
                 {{-- Snippets Container --}}
                 <div class="grid grid-cols-1 gap-4 mt-2" x-show="!loading" style="display: none;">
                     <template x-for="snippet in snippets" :key="snippet.id">
-                        <div class="glass-card group p-6 border border-white/5 rounded-[2rem] hover:border-blue-500/30 transition-all duration-500 cursor-pointer relative overflow-hidden shadow-lg"
+                        <div class="glass-card group p-6 border  hover:border-blue-500/30 transition-all duration-500 cursor-pointer relative overflow-hidden shadow-lg"
                             @click="openSnippet(snippet.id)">
                             <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                                 <div class="flex-1 min-w-0">
