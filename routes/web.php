@@ -11,11 +11,21 @@ Route::middleware('guest')->group(function () {
     Route::get('/', [AuthController::class, 'Login'])->name('login');
 
     Route::get('/fix-cache-now', function () {
+        // 1. Clear all application caches
         Artisan::call('route:clear');
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
+        Artisan::call('view:clear');
+        Artisan::call('session:table');
 
-        return 'All Caches Cleared!';
+        // 2. Drop all tables and re-run migrations
+        // '--force' flag එක දාන්නේ production/live server එකකදී මේක run වෙන්න අවසර දෙන්නයි
+        Artisan::call('migrate:fresh', ['--force' => true]);
+
+        // 3. (Optional) ඔයාට Seeders තියෙනවා නම් මේකත් එකතු කරන්න
+        // Artisan::call('db:seed', ['--force' => true]);
+
+        return '✅ All Caches Cleared and Database Refreshed Successfully!';
     });
 
     Route::post('/user-login', [AuthController::class, 'userLogin']);
