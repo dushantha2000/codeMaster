@@ -201,7 +201,7 @@ class AuthController extends Controller
         $user = User::find($userId);
         $cachedCode = Cache::get("verification_code_{$userId}");
 
-       //return $cachedCode;
+       
 
         // Code check
         if (!$cachedCode || $request->verification_code !== $cachedCode) {

@@ -41,7 +41,7 @@
                 <p class="text-gray-500 text-sm mt-1">Please enter your details to sign in.</p>
             </div>
 
-            <form action="{{ url('/user-login') }}" method="POST" class="space-y-4">
+            <form action="{{ url('/user-login') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
                 {{ csrf_field() }}
 
                 @if (session('error'))
