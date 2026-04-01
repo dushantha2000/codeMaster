@@ -1,4 +1,4 @@
-@extends('auth.master')
+@extends('layout.auth')
 
 @section('title', 'Register')
 
@@ -9,12 +9,11 @@
         <div
             class="hidden md:flex md:w-1/2 relative bg-black/40 items-center justify-center p-12 overflow-hidden border-l border-white/5 image-glow-blue">
             <div class="relative z-10 text-center">
-                <div class="mb-6 inline-block p-4 bg-blue-500/10 rounded-2xl border border-blue-500/20">
-                    <svg class="w-16 h-16 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A10.003 10.003 0 0014 4c-5.523 0-10 4.477-10 10 0 1.253.23 2.452.65 3.558L4 20l3.558-.65a9.963 9.963 0 003.558.65l.054-.09">
-                        </path>
-                    </svg>
+                <div class="mb-6 inline-block p-4 ">
+                    <div class="w-10 h-10 md:w-20 md:h-20 flex items-center justify-center overflow-hidden">
+                        <img src="{{ asset('logo/mainlogo.png') }}" alt="CodeVault Logo"
+                            class="w-full h-full object-contain transform scale-125">
+                    </div>
                 </div>
                 <h2 class="text-3xl font-bold text-white mb-4">Code Storage Redefined.</h2>
                 <p class="text-gray-400 leading-relaxed text-sm">Join thousands of developers keeping their logic safe and
@@ -27,16 +26,14 @@
 
             <div class="mb-6">
                 <div class="flex items-center gap-2 mb-2">
-                     <div class="w-8 h-8 bg-black-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                    </path>
-                </svg>
-            </div>
-            <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile"><a
-                    href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal">v1.1</span>
-            </h1>
+                    <!-- Logo -->
+                    <div class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center overflow-hidden">
+                        <img src="{{ asset('logo/mainlogo.png') }}" alt="CodeVault Logo"
+                            class="w-full h-full object-contain transform scale-125">
+                    </div>
+                    <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile"><a
+                            href="{{ url('/') }}">CodeVault</a> 
+                    </h1>
                 </div>
                 <h1 class="text-2xl font-bold text-white">Create Account</h1>
                 <p class="text-gray-500 text-sm mt-1">Start your journey with us today.</p>
@@ -56,7 +53,7 @@
             <form action="{{ url('user-register') }}" method="POST" class="space-y-3.5">
                 {{ csrf_field() }}
 
-                 <div>
+                <div>
                     <label class="block text-xs font-medium text-gray-400 mb-1 ml-1">Email</label>
                     <input type="email" name="email" required placeholder="name@company.com"
                         class="input-field w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600">
@@ -76,7 +73,7 @@
                     @enderror
                 </div>
 
-               
+
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
@@ -121,4 +118,3 @@
             </div>
         </div>
     </div>
-

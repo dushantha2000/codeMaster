@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\partnershipController;
 use App\Http\Controllers\SnippetController;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,7 @@ Route::middleware('guest')->group(function () {
     Route::get('register', [AuthController::class, 'register']);
     Route::post('user-register', [AuthController::class, 'userRegister']);
     Route::post('/verify-registration', [AuthController::class, 'verifyRegistration']);
-    Route::get('reset', [AuthController::class, 'ResetPassword']);
+    Route::get('/reset', [AuthController::class, 'ResetPassword']);
     Route::post('send-Reset-Code', [AuthController::class, 'sendResetCode']);
 
     // This matches the link: /reset-password/64_character_token
@@ -30,15 +31,16 @@ Route::middleware('guest')->group(function () {
 
 
 });
-
+//searching routes
 Route::get('/api/search', [SnippetController::class, 'search']);
 Route::get('/api/snippets/{id}', [SnippetController::class, 'show']);
+Route::get('/api/search/my-snippets', [SnippetController::class, 'MySnippetSearch']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [SnippetController::class, 'index'])->name('dashboard');
     Route::post('/logout', [AuthController::class, 'Logout']);
-    Route::get('profile', [AuthController::class, 'Profile']);
-    Route::get('/settings', [AuthController::class, 'Settings']);
+    Route::get('/profile', [AuthController::class, 'profile']);
+    Route::get('/settings', [AuthController::class, 'Settings'])->name('settings');
     // Route::get('/api/search', [SnippetController::class,'search']);
     Route::get('/my-snippets', [SnippetController::class, 'mySnippets'])->name('snippets.index');
     Route::delete('snippets/{id}', [SnippetController::class, 'destroy']);
@@ -48,9 +50,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/partners/update', [partnershipController::class, 'PartnerPermission']);
 
-    Route::get('/snippets-create', function () {
-        return view('user.snippetcreate');
-    })->name('snippets-create');
+    // Route::get('/snippets-create', function () {
+    //     return view('user.snippetcreate');
+    // })->name('snippets-create');
+
+    Route::get('/snippets-create', [SnippetController::class, 'snippetCreate'])->name('snippets-create');
+
 
     Route::post('/snippet-store', [SnippetController::class, 'store']);
 
@@ -61,8 +66,30 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-password', [AuthController::class, 'changePassword']);
     Route::post('/setting-profile', [AuthController::class, 'UpdateProfile']);
 
+    Route::post('/update-profile-image', [AuthController::class, 'UpdateProfileImage']);
+
     // delete single snippet
     Route::post('/snippet-delete', [SnippetController::class, 'SnippetDelete']);
+
+
+    
+    //category routes
+    Route::post('/category-create', [CategoriesController::class, 'Create']);
+    Route::get('/create-new', [CategoriesController::class, 'NewCreate']);
+    Route::get('/categories.index', [CategoriesController::class, 'index'])->name('categories.index');
+    Route::post('/category-store', [SnippetController::class, 'CategoryStore']);
+    Route::get('/categories/{categoryId}', [CategoriesController::class, 'Show'])->name('categories.show');
+
+    Route::get('/categories/{categoryId}/edit', [CategoriesController::class, 'EditView'])->name('categories.edit');
+
+    Route::post('/category-update', [CategoriesController::class, 'Update']);
+
+    
+    Route::delete('/categories/{categoryId}', [CategoriesController::class, 'destroy']);
+
+    //marked
+    Route::post('/snippet-marked', [SnippetController::class, 'SnippetMarked']);    
+
 
 });
 
@@ -75,9 +102,15 @@ Route::get('/how-to-use-codevault', function () {
 //     return view('login');
 // })->name('login');
 
-// Route::get('register', function () {
-//     return view('register');
-// })->name('register');
+
+
+Route::get('show', function () {
+    return view('categories.show');
+});
+
+Route::get('partner', function () {
+    return view('partners.index');
+});
 
 Route::get('welcome', function () {
     return view('web.welcome');

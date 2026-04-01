@@ -1,39 +1,39 @@
-@extends('auth.master')
+@extends('layout.auth')
 
-@section('title', 'Check Your Email')
+@section('title', 'Transmission Sent')
 
 @push('styles')
 <style>
-    .success-glow { 
-        background: radial-gradient(circle at center, rgba(34, 197, 94, 0.1) 0%, transparent 70%); 
+    .status-glow { 
+        background: radial-gradient(circle at center, rgba(94, 106, 210, 0.1) 0%, transparent 70%); 
     }
 </style>
 @endpush
 
 @section('content')
-    <div class="w-full max-w-md glass-card rounded-3xl p-8 md:p-12 text-center shadow-2xl relative overflow-hidden">
-        <div class="success-glow absolute inset-0 z-0"></div>
+    <div class="w-full max-w-md glass-card rounded-[3rem] p-12 text-center shadow-2xl relative overflow-hidden">
+        <div class="status-glow absolute inset-0 z-0 opacity-50"></div>
         
         <div class="relative z-10">
-            <div class="mb-6 inline-block p-4 bg-green-500/10 rounded-full border border-green-500/20 animate-bounce">
-                <svg class="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="mb-10 inline-block p-6 bg-purple-500/10 rounded-[2.5rem] border border-purple-500/20 shadow-[0_0_40px_rgba(94,106,210,0.2)] animate-pulse">
+                <svg class="w-14 h-14 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v10a2 2 0 002 2z"></path>
                 </svg>
             </div>
 
-            <h2 class="text-2xl font-bold text-white mb-2 tracking-tight">Check your Inbox</h2>
-            <p class="text-gray-400 mb-8 text-sm leading-relaxed">
-                We've sent a recovery link to your Gmail. Please click the link to verify your identity and reset your vault password.
+            <h2 class="text-3xl font-black text-white mb-3 tracking-tighter">Transmission Secured</h2>
+            <p class="text-[#71717A] mb-12 text-xs font-medium uppercase tracking-[0.2em] leading-relaxed px-4">
+                We've dispatched a recovery node to your terminal. Verify your identity via the secure link to reset your vault access.
             </p>
 
             <div class="space-y-4">
                 <a href="https://mail.google.com" target="_blank" 
-                   class="block w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-900/20">
-                    Open Gmail
+                   class="btn-primary block w-full py-5 rounded-2xl text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl">
+                    Access Terminal
                 </a>
                 
-                <a href="{{ url('/') }}" class="load-btn block text-[11px] text-gray-500 hover:text-white transition-colors">
-                    Back to Login
+                <a href="{{ url('/') }}" class="load-btn block text-[10px] font-black text-[#3F3F46] hover:text-white uppercase tracking-widest transition-all">
+                    Return to Login
                 </a>
             </div>
         </div>

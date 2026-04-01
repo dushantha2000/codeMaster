@@ -13,17 +13,26 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use PhpParser\Node\Stmt\TryCatch;
 use App\Jobs\SendVerificationMailJob;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+
+
+
+
 
 class AuthController extends Controller
 {
     public function UpdateProfile(Request $request)
     {
-        // return $request;
+         //return $request;
         $request->validate([
             "name" => "required|string|max:255",
             "email" => "required|email|unique:users,email," . auth()->id(),
+            "fullName"=>"required|string|max:255",
+            "bio" => "nullable|string|max:255",
         ]);
 
         try {
@@ -31,6 +40,9 @@ class AuthController extends Controller
             $userId = $user->id;
             $user->name = $request->name;
             $user->email = $request->email;
+            $user->fullName = $request->fullName;
+            $user->bio = $request->bio; 
+
             $user->save();
 
             // Invalidate profile cache
@@ -48,6 +60,7 @@ class AuthController extends Controller
 
     public function Login(Request $request)
     {
+         //return $request;   
         try {
             // dd('wdqwdqw');
             return view("auth.login");
@@ -61,7 +74,7 @@ class AuthController extends Controller
 
     public function userLogin(Request $request)
     {
-        // return $request;
+         //return $request;
         try {
             // Validation
             $credentials = $request->validate(
@@ -86,7 +99,7 @@ class AuthController extends Controller
                 session()->put('isActive', $isActive = 1);
 
                 //new user session
-              
+
 
                 return redirect()->intended("/dashboard");
             }
@@ -125,7 +138,7 @@ class AuthController extends Controller
             "password_confirmation" => "required",
         ]);
 
-        try {
+         try {
             DB::beginTransaction();
             // User Create 
             $user = User::create([
@@ -171,11 +184,15 @@ class AuthController extends Controller
 
     public function verifyRegistration(Request $request)
     {
+
+    //return $request;
         $request->validate([
             "verification_code" => "required|string|size:6",
         ]);
 
         $userId = session('pending_user_id');
+
+       // return $userId;
 
         if (!$userId) {
             return redirect()->route('register')->with("error", "Session expired. Please register again.");
@@ -184,9 +201,11 @@ class AuthController extends Controller
         $user = User::find($userId);
         $cachedCode = Cache::get("verification_code_{$userId}");
 
+       //return $cachedCode;
+
         // Code check
         if (!$cachedCode || $request->verification_code !== $cachedCode) {
-            return back()->with("error", "Invalid or expired verification code.");
+            return view('auth.registerverification')->with("error", "Invalid or expired verification code.");
         }
 
         try {
@@ -200,7 +219,7 @@ class AuthController extends Controller
             session()->forget('pending_user_id');
 
             //new user session
-           
+
 
             return redirect()->route('login')->with("success", "Registration successful! Please login.");
 
@@ -245,6 +264,7 @@ class AuthController extends Controller
             ->select(
                 "users.id",
                 "users.name",
+                "users.profile_image",  
                 "users.email",
                 "partnerships.is_read",
                 "partnerships.is_edit",
@@ -495,4 +515,55 @@ class AuthController extends Controller
             );
         }
     }
+
+
+    public function UpdateProfileImage(Request $request)
+    {
+
+          //return $request;
+
+
+        $userId = auth()->id();
+
+        //return $userId;
+
+        $data = DB::table("users")->where("id", $userId)->first();
+
+        if (!$data) {
+            return back()->with(
+                "error",
+                "Failed to update profile image. Please try again.",
+            );
+        }
+        $profileImage = $data->profile_image;
+
+        if ($request->hasFile("profile_image")) {
+            //remove old image
+            if ($profileImage && $profileImage !== 'default.png') {
+                $oldImagePath = public_path('profileImages/') . $profileImage;
+                if (File::exists($oldImagePath)) {
+                    File::delete($oldImagePath);
+                }
+            }
+            $manager = new ImageManager(new Driver());
+
+            // Image Optimize
+            $file = $request->file('profile_image');
+            $profileImage = 'ProfileImage_' . time() . '.webp';
+            $savePath = public_path('profileImages/') . $profileImage;
+
+            // resize  image
+            $image = $manager->read($file);
+            $image->cover(400, 400);
+            $image->toWebp(80)->save($savePath);
+
+            DB::table('users')
+                ->where('id', $userId)
+                ->update(['profile_image' => $profileImage]);
+
+        }
+        return redirect()->route('settings')->with('success', 'Profile image updated successfully!');
+
+    }
+
 }
