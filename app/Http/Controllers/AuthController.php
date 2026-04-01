@@ -184,11 +184,15 @@ class AuthController extends Controller
 
     public function verifyRegistration(Request $request)
     {
+
+    //return $request;
         $request->validate([
             "verification_code" => "required|string|size:6",
         ]);
 
         $userId = session('pending_user_id');
+
+       // return $userId;
 
         if (!$userId) {
             return redirect()->route('register')->with("error", "Session expired. Please register again.");
@@ -197,9 +201,11 @@ class AuthController extends Controller
         $user = User::find($userId);
         $cachedCode = Cache::get("verification_code_{$userId}");
 
+       //return $cachedCode;
+
         // Code check
         if (!$cachedCode || $request->verification_code !== $cachedCode) {
-            return back()->with("error", "Invalid or expired verification code.");
+            return view('auth.registerverification')->with("error", "Invalid or expired verification code.");
         }
 
         try {
