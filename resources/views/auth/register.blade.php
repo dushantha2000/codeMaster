@@ -51,7 +51,7 @@
             @endif --}}
 
             <form action="{{ url('user-register') }}" method="POST" class="space-y-3.5">
-                {{ csrf_field() }}
+                @csrf
 
                 <div>
                     <label class="block text-xs font-medium text-gray-400 mb-1 ml-1">Email</label>
