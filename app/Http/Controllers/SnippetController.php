@@ -47,6 +47,7 @@ class SnippetController extends Controller
                 $this->scanAndDelete($redis, $searchPattern);
 
             } catch (Exception $e) {
+                // TTL worked
                 Log::warning('Redis pattern deletion failed: ' . $e->getMessage());
             }
         }
@@ -163,14 +164,16 @@ class SnippetController extends Controller
                 }
             );
 
-            
+            //return $recentActivity;
 
             // Pass variables to view
             return view('user.dashboard', compact('snippets', 'languages', 'recentActivity'));
 
-        } catch (Exception $e) {
-            Log::error('Dashboard error: ' . $e->getMessage());
 
+        } catch (Exception $e) {
+
+
+            //Log::error('Dashboard error: ' . $e->getMessage());
             // Even on error, pass empty arrays
             return view('user.dashboard', [
                 'snippets' => collect(),
@@ -333,7 +336,7 @@ class SnippetController extends Controller
                         // Assuming you want to use Snippet's status or similar here, but keeping isActive logic based on pattern.
                         // Or maybe snippets table has no isActive column. Let's look up migration... wait, users table had isActive, snippets table has no isActive. 
                         // Wait, did snippets have isActive? No, maybe `status` or just drop it if it doesn't cause error. Wait, I shouldn't guess. Let's just avoid adding isActive if I'm not sure. But `dashboard.blade.php` sends statusFilter... Let's use `where('isActive', $status)` assuming it's valid.
-
+    
                         if (\Illuminate\Support\Facades\Schema::hasColumn('snippets', 'isActive')) {
                             $query->where('isActive', $request->status);
                         }
@@ -483,7 +486,8 @@ class SnippetController extends Controller
             });
 
         } catch (Exception $e) {
-            Log::error('Update error: ' . $e->getMessage());
+
+            //Log::error('Update error: ' . $e->getMessage());
             return redirect()->back()->with([
                 'error' => 'Something went wrong while loading the page.',
             ]);
@@ -521,7 +525,8 @@ class SnippetController extends Controller
 
             return response()->json(['message' => 'Snippet deleted successfully']);
         } catch (Exception $e) {
-            Log::error('Destroy error: ' . $e->getMessage());
+
+            // Log::error('Destroy error: ' . $e->getMessage());
             return response()->json(['message' => 'Something went wrong. Please try again later.'], 500);
         }
     }
@@ -530,7 +535,7 @@ class SnippetController extends Controller
     {
         $currentUserId = auth()->id();
 
-        // FIXED: Use get() instead of rememberForever
+        //Use get() instead of rememberForever
         $version = Cache::get("user:{$currentUserId}:version", 1);
 
         // unique code for the current search 
@@ -538,7 +543,7 @@ class SnippetController extends Controller
 
         $ownersWhoSharedWithMe = Cache::remember(
             $partnershipCacheKey,
-            now()->addDay(), // 1 day TTL
+            now()->addDay(), //  TTL (1 day)
             function () use ($currentUserId) {
                 return DB::table('partnerships')
                     ->where('partner_id', $currentUserId)
@@ -561,13 +566,13 @@ class SnippetController extends Controller
             });
         }
 
-        // Language filter (Multiple Support)
+        // Language filter 
         if ($request->filled('languages')) {
             $langs = is_array($request->input('languages')) ? $request->input('languages') : explode(',', $request->input('languages'));
             $query->whereIn('language', $langs);
         }
 
-        // 5. Sorting
+        //Sorting
         $sortBy = $request->get('sort', 'latest');
         match ($sortBy) {
             'oldest' => $query->orderBy('created_at', 'asc'),
@@ -638,7 +643,8 @@ class SnippetController extends Controller
 
             return response()->json($users);
         } catch (Exception $e) {
-            Log::error('UsersSearch error: ' . $e->getMessage());
+
+            //Log::error('UsersSearch error: ' . $e->getMessage());
             return response()->json([], 500);
         }
     }
@@ -681,8 +687,10 @@ class SnippetController extends Controller
             }
 
             return back()->with('success', 'Vault access updated successfully!');
+
         } catch (Exception $e) {
-            Log::error('updatePartnerships error: ' . $e->getMessage());
+
+            // Log::error('updatePartnerships error: ' . $e->getMessage());
             return redirect()->back()->with(
                 'error',
                 'Failed to update vault access. Please try again later.',
@@ -722,7 +730,8 @@ class SnippetController extends Controller
 
             return back()->with('success', 'Snippet deleted successfully.');
         } catch (Exception $e) {
-            Log::error('SnippetDelete error: ' . $e->getMessage());
+
+            //Log::error('SnippetDelete error: ' . $e->getMessage());
             return redirect()->back()->with(
                 'error',
                 'Failed to delete snippet. Please try again later.',
@@ -765,7 +774,8 @@ class SnippetController extends Controller
             return redirect()->back()->with('success', $message);
 
         } catch (Exception $e) {
-            Log::error('SnippetMarked error: ' . $e->getMessage());
+
+            //Log::error('SnippetMarked error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to update snippet status.');
         }
     }
@@ -798,12 +808,14 @@ class SnippetController extends Controller
             return view('user.snippetcreate', compact('categories'));
 
         } catch (Exception $e) {
+
+            //Log::error('SnippetCreate error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Unable to load categories.');
         }
     }
 
 
-     public function MySnippetSearch(Request $request)
+    public function MySnippetSearch(Request $request)
     {
         // get the ID of the current user
         $currentUserId = auth()->id();
@@ -834,7 +846,7 @@ class SnippetController extends Controller
                         $q->where('user_id', $currentUserId)->orWhereExists(function ($sub) use ($currentUserId) {
                             $sub->select(DB::raw(1))
                                 ->from('partnerships')
-                                
+
                                 ->whereColumn('partnerships.user_id', 'snippets.user_id')
                                 ->where('partnerships.partner_id', $currentUserId);
                         });
@@ -857,12 +869,14 @@ class SnippetController extends Controller
                 }
             );
 
-            
+
 
             return response()->json($results);
 
         } catch (Exception $e) {
-            Log::error('Search error: ' . $e->getMessage());
+
+
+            //Log::error('Search error: ' . $e->getMessage());
             return response()->json(['message' => 'Something went wrong (searching)'], 500);
         }
     }

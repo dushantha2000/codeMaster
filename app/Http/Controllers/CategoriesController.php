@@ -45,7 +45,8 @@ class CategoriesController extends Controller
                 ->with('success', 'Category updated successfully.');
 
         } catch (Exception $e) {
-            // Log::error("Store Error: " . $e->getMessage());
+            
+            // Log::error(" Error: " . $e->getMessage());
             return back()->withInput()->withErrors(['error' => 'Something went wrong while saving.']);
         }
 
@@ -60,34 +61,50 @@ class CategoriesController extends Controller
             return redirect()->route('login');
         }
 
-        $categories = DB::table('categories')
-            ->where('category_id', $category_id)
-            ->where('user_id', $userId)
-            ->where('isActive', 1)
-            ->first();
+        try {
+            //category data
+            $categories = DB::table('categories')
+                ->where('category_id', $category_id)
+                ->where('user_id', $userId)
+                ->where('isActive', 1)
+                ->first();
 
-        if (!$categories) {
-            return redirect()->route('categories.index')->with('error', 'Category not found.');
+            if (!$categories) {
+                return redirect()->route('categories.index')->with('error', 'Category not found.');
+            }
+
+            //count total snippets
+            $totalSnippets = DB::table('snippets')
+                ->where('category_id', $category_id)
+                ->where('user_id', $userId)
+                ->count();
+
+            //language
+            $uniqueLanguages = DB::table('snippets')
+                ->where('category_id', $category_id)
+                ->where('user_id', $userId)
+                ->whereNotNull('language')
+                ->distinct()
+                ->count('language');
+
+            //snippets
+            $snippets = DB::table('snippets')
+                ->where('user_id', $userId)
+                ->where('category_id', $category_id)
+                ->where('isActive', 1)
+                ->orderBy('created_at', 'desc')
+                ->paginate(12);
+
+            return view('categories.show', compact('snippets', 'categories', 'totalSnippets', 'uniqueLanguages'));
+
+
+        } catch (Exception $e) {
+
+            // Log::error(" Error: " . $e->getMessage());
+            return back()->with('error', 'Something went wrong. Please try again later.');
         }
 
-        $totalSnippets = \App\Models\Snippet::where('category_id', $category_id)
-            ->where('user_id', $userId)
-            ->count();
 
-        $uniqueLanguages = \App\Models\Snippet::where('category_id', $category_id)
-            ->where('user_id', $userId)
-            ->whereNotNull('language')
-            ->distinct('language')
-            ->count('language');
-
-        $snippets = \App\Models\Snippet::with('files')
-            ->where('user_id', $userId)
-            ->where('category_id', $category_id)
-            ->where('isActive', 1)
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
-
-        return view('categories.show', compact('snippets', 'categories', 'totalSnippets', 'uniqueLanguages'));
     }
 
     public function EditView($categoryId)
@@ -120,6 +137,8 @@ class CategoriesController extends Controller
             return view('categories.edit', compact('category'));
 
         } catch (Exception $e) {
+
+            //Log::error(" Error: " . $e->getMessage());
             return back()->with('error', 'Something went wrong. Please try again later.');
         }
     }
@@ -129,8 +148,14 @@ class CategoriesController extends Controller
         try {
             $userId = auth()->id();
 
+            if (!$userId) {
+                return redirect()->route('login');
+            }
+
             return view('categories.create');
         } catch (Exception $e) {
+
+            // Log::error(" Error: " . $e->getMessage());
             return back()->with('error', 'Something went wrong. Please try again later.');
         }
     }
@@ -160,18 +185,24 @@ class CategoriesController extends Controller
                     });
                 }
 
-                return $query->withCount(['snippets' => function($q) use ($userId) {
+                return $query->withCount([
+                    'snippets' => function ($q) use ($userId) {
                         $q->where('user_id', $userId)->where('isActive', 1);
-                    }])
-                    ->orderBy('category_name', 'asc') // Sort A-Z by default for consistency
+                    }
+                ])
+                    ->orderBy('category_name', 'asc') //  default A-Z for consistency
                     ->paginate(12)
+
                     ->appends(['q' => $search]); // Ensure search persists across pages
+
             });
 
             return view('categories.index', compact('categories', 'search'));
 
         } catch (Exception $e) {
-            return back()->withErrors(['error' => 'Unable to load categories.']);
+
+            //Log::error("Store Error: " . $e->getMessage());
+            return back()->with(['error' => 'Unable to load categories.']);
         }
     }
     public function create(StoreCategoryRequest $request)
@@ -200,28 +231,43 @@ class CategoriesController extends Controller
                 ->with('success', 'Category created successfully.');
 
         } catch (Exception $e) {
-            // Log::error("Store Error: " . $e->getMessage());
-            return back()->withInput()->withErrors(['error' => 'Something went wrong while saving.']);
+
+
+            // Log::error(" Error: " . $e->getMessage());
+            return back()->withInput()->with(['error', 'Something went wrong while saving.']);
         }
     }
 
     public function destroy($categoryId)
     {
+
         $userId = auth()->id();
 
-        $updated = DB::table('categories')
-            ->where('user_id', $userId)
-            ->where('category_id', $categoryId)
-            ->update(['isActive' => 0]);
-
-        if ($updated) {
-
-            Cache::forget("user:{$userId}:categories_version");
-
-            return redirect()->route('categories.index')->with('success', 'Deleted successfully.');
+        if (!$userId) {
+            return redirect()->route('login');
         }
 
-        return redirect()->route('categories.index')->with('error', 'Category not found or already deleted.');
+        try {
+            $updated = DB::table('categories')
+                ->where('user_id', $userId)
+                ->where('category_id', $categoryId)
+                ->update(['isActive' => 0]);
+
+            if ($updated) {
+
+                //  Forget categories_version
+                Cache::forget("user:{$userId}:categories_version");
+
+                return redirect()->route('categories.index')->with('success', 'Deleted successfully.');
+            }
+
+            return redirect()->route('categories.index')->with('error', 'Category not found or already deleted.');
+
+        } catch (Exception $e) {
+
+            // Log::error(" Error: " . $e->getMessage());
+            return back()->with('error', 'Something went wrong. Please try again later.');
+        }
     }
 
 }

@@ -236,7 +236,7 @@ class AuthController extends Controller
             session()->invalidate();
             session()->regenerateToken();
 
-            // Always redirect to the login page (don't use view())
+            // redirect to the login page
             return view("auth.login")->with(
                 "message",
                 "You have been safely logged out.",
@@ -250,7 +250,7 @@ class AuthController extends Controller
 
     public function Profile()
     {
-        //  try {
+          try {
         $currentUserId = auth()->id();
 
         $partners = DB::table("users")
@@ -277,11 +277,11 @@ class AuthController extends Controller
             "user" => auth()->user(),
             "partners" => $partners,
         ]);
-        //   } catch (Exception $e) {
-        //       return back()->with([
-        //         "error" => "Something went wrong while loading the page.",
-        //     ]);
-        //  }
+          } catch (Exception $e) {
+              return back()->with([
+                "error" => "Something went wrong while loading the page.",
+            ]);
+         }
     }
 
     public function Settings()
@@ -494,7 +494,7 @@ class AuthController extends Controller
                         $redis->del($keys);
                     }
                 } catch (Exception $e) {
-                    // If Redis pattern matching fails, cache will expire naturally via TTL
+                    // 
                 }
             }
 
@@ -538,6 +538,7 @@ class AuthController extends Controller
         $profileImage = $data->profile_image;
 
         if ($request->hasFile("profile_image")) {
+
             //remove old image
             if ($profileImage && $profileImage !== 'default.png') {
                 $oldImagePath = public_path('profileImages/') . $profileImage;
@@ -551,6 +552,7 @@ class AuthController extends Controller
             $file = $request->file('profile_image');
             $profileImage = 'ProfileImage_' . time() . '.webp';
             $savePath = public_path('profileImages/') . $profileImage;
+            
 
             // resize  image
             $image = $manager->read($file);

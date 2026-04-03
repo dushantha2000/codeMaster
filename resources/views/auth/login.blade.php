@@ -42,7 +42,7 @@
             </div>
 
             <form action="{{ url('/user-login') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
-                @csrf
+                {{ csrf_field() }}
 
                 @if (session('error'))
                     <div

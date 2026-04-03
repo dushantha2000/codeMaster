@@ -15,7 +15,7 @@ class partnershipController extends Controller
         Cache::forget("languages:user:{$userId}:list");
         Cache::forget("partnerships:user:{$userId}:shared_with_me");
 
-        // Try to delete snippet and search caches by pattern if Redis is available
+        // Try to delete snippet and search caches by pattern 
         $store = Cache::getStore();
         if (method_exists($store, 'getRedis')) {
             try {
@@ -25,19 +25,18 @@ class partnershipController extends Controller
                 // Delete snippet caches
                 $pattern = $prefix . "snippets:user:{$userId}:*";
                 $keys = $redis->keys($pattern);
-                if (! empty($keys)) {
+                if (!empty($keys)) {
                     $redis->del($keys);
                 }
 
                 // Delete search caches
                 $pattern = $prefix . "search:user:{$userId}:*";
                 $keys = $redis->keys($pattern);
-                if (! empty($keys)) {
+                if (!empty($keys)) {
                     $redis->del($keys);
                 }
             } catch (Exception $e) {
-                // If Redis pattern matching fails, just continue
-                // Cache will expire naturally via TTL
+                // TTL worked
             }
         }
     }
@@ -64,12 +63,14 @@ class partnershipController extends Controller
                     'is_edit' => $request->input('is_edit'),
                 ]);
 
-            // නව part එක - Invalidate caches for both users
+            // Invalidate caches for both users
             $this->invalidateUserSnippetCaches($currentUserId);
             $this->invalidateUserSnippetCaches($request->input('partner_id'));
 
             return back()->with('success', 'Permission updated successfully');
         } catch (Exception $e) {
+
+            //Log::error("Store Error: " . $e->getMessage());
             return back()->with(
                 'error',
                 'An error occurred while updating permission.',
@@ -82,7 +83,7 @@ class partnershipController extends Controller
         // return $id;
 
         try {
-            // Find the partnership record while ensuring
+            // Find the partnership record 
             $partnership = DB::table('partnerships')
                 ->where('partner_id', $id)
                 ->where('user_id', auth()->id())
@@ -90,7 +91,7 @@ class partnershipController extends Controller
 
             // return $partnership;
 
-            if (! $partnership) {
+            if (!$partnership) {
                 return back()->with(
                     'error',
                     'Partner not found or you are not authorized to perform this action.',
@@ -105,10 +106,14 @@ class partnershipController extends Controller
                 ->where('user_id', $userId)
                 ->delete();
 
+
+
             // Invalidate partnership caches for both users
             Cache::forget("partnerships:user:{$userId}:shared_with_me");
             Cache::forget("partnerships:user:{$id}:shared_with_me");
-            
+
+
+
             //Invalidate all snippet caches for both users
             $this->invalidateUserSnippetCaches($userId);
             $this->invalidateUserSnippetCaches($id);
@@ -119,6 +124,8 @@ class partnershipController extends Controller
                 'Partner has been removed successfully.',
             );
         } catch (Exception $e) {
+
+            // Log::error(" Error: " . $e->getMessage());
             return back()->with(
                 'error',
                 'Something went wrong while removing the partner. Please try again.',
