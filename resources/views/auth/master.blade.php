@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Roboto+Mono:wght@400;500;700&display=swap"
         rel="stylesheet">
 
@@ -97,13 +98,12 @@
 
     <script>
         $(document).ready(function() {
-            // 1. Handle Form Submits
+            //Handle Form Submits
             $(document).on('submit', 'form', function() {
                 $('#custom-loader').css('display', 'flex').fadeIn(200);
             });
 
-            // 2. Handle Link Clicks (Event Delegation)
-            // This catches clicks on the <a>, the <svg>, or the <path>
+            // Handle Link Clicks 
             $(document).on('click', '.load-btn', function() {
                 $('#custom-loader').css('display', 'flex').show();
             });
