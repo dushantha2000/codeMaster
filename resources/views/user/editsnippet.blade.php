@@ -98,7 +98,7 @@
                 <div class="sidebar-backdrop md:hidden" :class="{ 'active': mobileMenuOpen }" @click="mobileMenuOpen = false"></div>
 
                 <!-- Sidebar: Files -->
-                <aside class="sidebar-container md:w-72 glass-card rounded-xl flex flex-col overflow-hidden shadow-2xl border border-white/5 md:relative z-20"
+                <aside class="sidebar-container md:w-72 glass-card rounded-xl flex flex-col overflow-hidden shadow-2xl border border-white/5 md:relative"
                     :class="{ 'mobile-open': mobileMenuOpen }">
                     <div class="p-4 md:p-6 border-b border-white/5 bg-white/[0.01]">
                         <div class="flex justify-between items-center mb-6">
