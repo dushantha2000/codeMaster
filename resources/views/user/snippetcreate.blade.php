@@ -51,11 +51,12 @@
 
                 <div class="flex items-center gap-4 shrink-0">
                     <div class="flex items-center gap-2">
-                        <button type="submit" class="btn-primary px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-blue-900/10">
+                        <button type="submit" class="btn-primary px-3 md:px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-blue-900/10">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            <span>Save Snippet</span>
+                            <span class="hidden md:inline">Save Snippet</span>
+                            <span class="md:hidden">Save</span>
                         </button>
 
                         <a href="{{ url('/dashboard') }}" class="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-500 hover:text-white transition-all">
@@ -68,15 +69,26 @@
             </header>
 
             <!-- Main Workspace -->
-            <div class="flex-1 flex overflow-hidden p-4 md:p-6 gap-4">
+            <div class="flex-1 flex overflow-hidden p-2 md:p-6 gap-2 md:gap-4">
+                
+                <!-- Sidebar Backdrop (Mobile) -->
+                <div class="sidebar-backdrop md:hidden" :class="{ 'active': mobileMenuOpen }" @click="mobileMenuOpen = false"></div>
 
                 <!-- Sidebar: Files -->
-                <aside class="sidebar-container w-full md:w-72 glass-card rounded-xl flex flex-col overflow-hidden shadow-2xl border border-white/5 relative z-20"
+                <aside class="sidebar-container md:w-72 glass-card rounded-xl flex flex-col overflow-hidden shadow-2xl border border-white/5 md:relative z-20"
                     :class="{ 'mobile-open': mobileMenuOpen }">
-                    <div class="p-6 border-b border-white/5 bg-white/[0.01]">
+                    <div class="p-4 md:p-6 border-b border-white/5 bg-white/[0.01]">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-xs font-bold uppercase tracking-widest text-gray-500">File Logic</h2>
-                            <span class="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-bold border border-blue-500/20" x-text="files.length"></span>
+                            
+                            <!-- Close Button (Mobile) -->
+                            <button type="button" @click="mobileMenuOpen = false" class="md:hidden p-1 -mr-2 text-gray-500 hover:text-white">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                            
+                            <span class="hidden md:inline-block text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-bold border border-blue-500/20" x-text="files.length"></span>
                         </div>
 
                         <button type="button" @click="showAddFileModal = true; mobileMenuOpen = false"
@@ -116,8 +128,8 @@
                     <template x-for="(file, index) in files" :key="index">
                         <div x-show="activeTab === index" class="h-full flex flex-col">
                             <!-- File Meta -->
-                            <div class="p-6 border-b border-white/5 bg-white/[0.01]">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="p-3 md:p-6 border-b border-white/5 bg-white/[0.01]">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
                                     <div>
                                         <label class="text-xs font-bold text-gray-500 mb-2 block ml-1">File Identity</label>
                                         <input type="text" x-model="file.name" name="file_names[]" required placeholder="e.g. index.php"
@@ -134,12 +146,12 @@
                             <!-- Editor Textarea -->
                             <div class="flex-1 relative bg-black/20 overflow-hidden">
                                 <textarea name="contents[]" x-model="file.content" required
-                                    class="absolute inset-0 w-full h-full bg-transparent left-5 p-6 md:p-10 pl-16 code-font text-[14px] text-gray-400 focus:text-white outline-none resize-none leading-relaxed transition-colors scrollbar-hide"
+                                    class="absolute inset-0 w-full h-full bg-transparent left-2 md:left-5 p-4 md:p-10 pl-10 md:pl-16 code-font text-[13px] md:text-[14px] text-gray-400 focus:text-white outline-none resize-none leading-relaxed transition-colors scrollbar-hide"
                                     placeholder="// Enter code here..."></textarea>
 
                                 <!-- Line Numbers -->
                                 <div x-show="showLineNumbers"
-                                    class="absolute left-0 top-0 bottom-0 w-12 bg-white/[0.02] border-r border-white/5 text-gray-700 text-[11px] code-font pt-10 pr-3 pointer-events-none text-right">
+                                    class="absolute left-0 top-0 bottom-0 w-8 md:w-12 bg-white/[0.02] border-r border-white/5 text-gray-700 text-[10px] md:text-[11px] code-font pt-4 md:pt-10 pr-2 md:pr-3 pointer-events-none text-right">
                                     <template x-for="(line, i) in (file.content || '').split('\n')" :key="i">
                                         <div class="leading-relaxed h-[1.5em]" x-text="i + 1"></div>
                                     </template>
