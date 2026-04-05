@@ -98,18 +98,37 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar-container {
-                position: fixed;
+                position: fixed !important;
                 left: 0;
                 top: 0;
                 bottom: 0;
-                z-index: 40;
-                width: 20rem;
+                z-index: 50;
+                width: 85% !important;
+                max-width: 300px;
                 transform: translateX(-100%);
-                transition: transform 0.3s ease;
+                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
+                border-right: 1px solid rgba(255, 255, 255, 0.05);
             }
 
             .sidebar-container.mobile-open {
                 transform: translateX(0);
+            }
+
+            .sidebar-backdrop {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(4px);
+                z-index: 45;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.4s ease;
+            }
+
+            .sidebar-backdrop.active {
+                opacity: 1;
+                pointer-events: auto;
             }
 
             .hide-on-mobile {
