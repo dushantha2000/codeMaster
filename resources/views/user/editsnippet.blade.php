@@ -42,17 +42,13 @@
                     </button>
 
                     <div class="flex items-center gap-2">
-                        <div
-                            class="w-8 h-8 bg-black border border-white/10 rounded-lg flex items-center justify-center shadow-lg shadow-blue-600/20">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                                </path>
-                            </svg>
+                        <!-- Logo -->
+                        <div class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center overflow-hidden">
+                            <img src="{{ asset('logo/mainlogo.png') }}" alt="CodeVault Logo"
+                                class="w-full h-full object-contain transform scale-125">
                         </div>
                         <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile">
-                            <a href="{{ url('/') }}">CodeVault</a> <span
-                                class="text-blue-500 text-xs font-normal">v1.1</span>
+                            <a href="{{ url('/') }}">CodeVault</a> <span class="text-blue-500 text-xs font-normal"></span>
                         </h1>
                     </div>
                 </div>
@@ -72,9 +68,11 @@
 
                 <div class="flex items-center gap-4 shrink-0">
                     <div class="flex items-center gap-2">
-                        <button type="submit" class="btn-primary px-3 md:px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-blue-900/10">
+                        <button type="submit"
+                            class="btn-primary px-3 md:px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-blue-900/10">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                                </path>
                             </svg>
                             <span class="hidden md:inline">Save Changes</span>
                             <span class="md:hidden">Save</span>
@@ -93,31 +91,38 @@
 
             <!-- Main Workspace -->
             <div class="flex-1 flex overflow-hidden p-2 md:p-6 gap-2 md:gap-4">
-                
+
                 <!-- Sidebar Backdrop (Mobile) -->
-                <div class="sidebar-backdrop md:hidden" :class="{ 'active': mobileMenuOpen }" @click="mobileMenuOpen = false"></div>
+                <div class="sidebar-backdrop md:hidden" :class="{ 'active': mobileMenuOpen }"
+                    @click="mobileMenuOpen = false"></div>
 
                 <!-- Sidebar: Files -->
-                <aside class="sidebar-container md:w-72 glass-card rounded-xl flex flex-col overflow-hidden shadow-2xl border border-white/5 md:relative"
+                <aside
+                    class="sidebar-container md:w-72 glass-card rounded-xl flex flex-col overflow-hidden shadow-2xl border border-white/5 md:relative"
                     :class="{ 'mobile-open': mobileMenuOpen }">
                     <div class="p-4 md:p-6 border-b border-white/5 bg-white/[0.01]">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-xs font-bold uppercase tracking-widest text-gray-500">File Logic</h2>
-                            
+
                             <!-- Close Button (Mobile) -->
-                            <button type="button" @click="mobileMenuOpen = false" class="md:hidden p-1 -mr-2 text-gray-500 hover:text-white">
+                            <button type="button" @click="mobileMenuOpen = false"
+                                class="md:hidden p-1 -mr-2 text-gray-500 hover:text-white">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
                             </button>
-                            
-                            <span class="hidden md:inline-block text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-bold border border-blue-500/20" x-text="files.length"></span>
+
+                            <span
+                                class="hidden md:inline-block text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-bold border border-blue-500/20"
+                                x-text="files.length"></span>
                         </div>
 
                         <button type="button" @click="showAddFileModal = true; mobileMenuOpen = false"
                             class="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 py-3 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-2">
                             <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4">
+                                </path>
                             </svg>
                             Add New File
                         </button>
@@ -152,17 +157,20 @@
                     class="flex-1 glass-card rounded-xl flex flex-col overflow-hidden shadow-2xl border border-white/5 relative z-10">
                     <template x-for="(file, index) in files" :key="index">
                         <div x-show="activeTab === index" class="h-full flex flex-col">
-                             <!-- File Meta -->
+                            <!-- File Meta -->
                             <div class="p-3 md:p-6 border-b border-white/5 bg-white/[0.01]">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
                                     <div>
                                         <label class="text-xs font-bold text-gray-500 mb-2 block ml-1">File Identity</label>
-                                        <input type="text" x-model="file.name" name="file_names[]" required placeholder="e.g. index.php"
+                                        <input type="text" x-model="file.name" name="file_names[]" required
+                                            placeholder="e.g. index.php"
                                             class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all placeholder-gray-700">
                                     </div>
                                     <div>
-                                        <label class="text-xs font-bold text-gray-500 mb-2 block ml-1">Target Directory</label>
-                                        <input type="text" x-model="file.path" name="file_paths[]" placeholder="e.g. src/app" required
+                                        <label class="text-xs font-bold text-gray-500 mb-2 block ml-1">Target
+                                            Directory</label>
+                                        <input type="text" x-model="file.path" name="file_paths[]"
+                                            placeholder="e.g. src/app" required
                                             class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all placeholder-gray-700">
                                     </div>
                                 </div>
