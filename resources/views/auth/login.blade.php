@@ -11,11 +11,9 @@
         <div
             class="hidden md:flex md:w-1/2 relative bg-black/40 items-center justify-center p-12 overflow-hidden border-r border-white/5 image-glow-blue">
             <div class="relative z-10 text-center">
-                <div class="mb-6 inline-block p-4 bg-blue-500/10 rounded-2xl border border-blue-500/20">
-                    <svg class="w-16 h-16 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
+                <div class="mb-6 inline-block p-4 ">
+                    <img src="{{ asset('logo/mainlogo.png') }}" alt="CodeVault Logo"
+                            class="w-20 h-20 object-contain transform scale-125">
                 </div>
                 <h2 class="text-3xl font-bold text-white mb-4">Secure Your Code.</h2>
                 <p class="text-gray-400 leading-relaxed">The ultimate vault for your snippets and architectural patterns.
@@ -87,7 +85,7 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-900/20 mt-2">
+                    class="w-full btn-primary  py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-900/20 mt-2">
                     Sign In
                 </button>
             </form>

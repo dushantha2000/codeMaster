@@ -82,7 +82,7 @@
             </button>
         </div>
 
-        
+
 
 
 
@@ -167,8 +167,8 @@
                     @else
                         <a href="{{ $categories->previousPageUrl() }}"
                             class="group flex items-center gap-2 px-6 py-3 bg-[#030303] border border-white/5 rounded-2xl hover:bg-white/5 transition-all text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
-                            <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
                             </svg>
                             <span>Previous</span>
@@ -179,8 +179,8 @@
                         <a href="{{ $categories->nextPageUrl() }}"
                             class="group flex items-center gap-2 px-6 py-3 bg-[#030303] border border-white/5 rounded-2xl hover:bg-white/5 transition-all text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
                             <span>Next</span>
-                            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
                             </svg>
                         </a>
@@ -256,8 +256,7 @@
     </div>
 
     {{-- Update Category Modal --}}
-    <div id="update-category-modal"
-        class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
+    <div id="update-category-modal" class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
         <div onclick="event.stopPropagation()"
             class="relative w-full max-w-2xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
             <button onclick="closeUpdateModal()" class="absolute top-5 right-5 z-50 text-gray-400 hover:text-white">
@@ -281,8 +280,8 @@
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-widest ml-1">Name
                             *</label>
-                        <input type="text" name="name" id="updateCategoryName" placeholder="e.g. JavaScript"
-                            required class="input-field w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+                        <input type="text" name="name" id="updateCategoryName" placeholder="e.g. JavaScript" required
+                            class="input-field w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
                     </div>
 
                     <div>
@@ -483,10 +482,10 @@
         }
 
         // Color Selection for Create Modal
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Create modal color selection
             document.querySelectorAll('.color-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const color = this.dataset.color;
                     document.getElementById('selectedColor').value = color;
 
@@ -501,7 +500,7 @@
 
             // Update modal color selection
             document.querySelectorAll('.update-color-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const color = this.dataset.updateColor;
                     document.getElementById('updateSelectedColor').value = color;
 
@@ -516,7 +515,7 @@
         });
 
         // Close modals on Escape
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeCreateModal();
                 closeActionMenu();

@@ -151,16 +151,58 @@ class SnippetController extends Controller
             );
 
             // Get recent activity
-            $activityCacheKey = "snippets:user:{$currentUserId}:activity:v{$version}";
+            $activityCacheKey = "snippets:user:{$currentUserId}:activity_log_5:v{$version}";
             $recentActivity = Cache::remember(
                 $activityCacheKey,
                 now()->addHours(6),
                 function () use ($currentUserId) {
-                    return Snippet::where('user_id', $currentUserId)
+                    $recentSnippets = Snippet::where('user_id', $currentUserId)
                         ->select(['id', 'title', 'created_at', 'updated_at'])
                         ->orderBy('updated_at', 'desc')
-                        ->take(10)
-                        ->get();
+                        ->take(5)
+                        ->get()
+                        ->map(function ($item) {
+                            $item->type = 'Snippet';
+                            $item->action_time = $item->updated_at ?: ($item->created_at ?: now());
+                            $item->is_new = false;
+                            if ($item->created_at) {
+                                $item->is_new = !$item->updated_at ? true : $item->created_at->eq($item->updated_at);
+                            }
+                            return $item;
+                        });
+
+                    $recentCategories = \App\Models\Category::where('user_id', $currentUserId)
+                        ->select(['id', 'category_name as title', 'created_at', 'updated_at'])
+                        ->orderBy('updated_at', 'desc')
+                        ->take(5)
+                        ->get()
+                        ->map(function ($item) {
+                            $item->type = 'Category';
+                            $item->action_time = $item->updated_at ?: ($item->created_at ?: now());
+                            $item->is_new = false;
+                            if ($item->created_at) {
+                                $item->is_new = !$item->updated_at ? true : $item->created_at->eq($item->updated_at);
+                            }
+                            return $item;
+                        });
+
+                    $userUpdates = \App\Models\User::where('id', $currentUserId)
+                        ->select(['id', 'name as title', 'created_at', 'updated_at'])
+                        ->get()
+                        ->map(function ($item) {
+                            $item->type = 'Profile';
+                            $item->action_time = $item->updated_at ?: ($item->created_at ?: now());
+                            $item->is_new = false;
+                            if ($item->created_at) {
+                                $item->is_new = !$item->updated_at ? true : $item->created_at->eq($item->updated_at);
+                            }
+                            return $item;
+                        });
+
+                    return $recentSnippets->concat($recentCategories)->concat($userUpdates)
+                        ->sortByDesc('action_time')
+                        ->take(5)
+                        ->values();
                 }
             );
 
@@ -182,6 +224,8 @@ class SnippetController extends Controller
             ]);
         }
     }
+
+
 
     public function store(Request $request)
     {

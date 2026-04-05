@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\partnershipController;
 use App\Http\Controllers\SnippetController;
+use App\Http\Controllers\LogsController;
 use Illuminate\Support\Facades\Route;
 
 // Not login request Management
@@ -50,6 +51,7 @@ Route::get('/api/search/my-snippets', [SnippetController::class, 'MySnippetSearc
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [SnippetController::class, 'index'])->name('dashboard');
+    Route::get('/logs', [LogsController::class, 'index'])->name('logs');
     Route::post('/logout', [AuthController::class, 'Logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::get('/settings', [AuthController::class, 'Settings'])->name('settings');
