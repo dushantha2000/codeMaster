@@ -206,32 +206,36 @@
                         Recent Changes
                     </h2>
 
-                    <div class="relative space-y-8">
-                        <div class="absolute left-[5px] top-2 bottom-2 w-px bg-white/5"></div>
+                    <div class="relative space-y-6">
+                        <div class="absolute left-[2.5px] top-2 bottom-0 w-px bg-white/5 z-0"></div>
 
-                        <div class="relative pl-8 group/item">
-                            <div class="absolute left-0 top-1.5 w-2.5 h-2.5 rounded-full bg-[#111] border border-white/10 group-hover/item:border-blue-500/50 transition-colors"></div>
-                            <p class="text-[9px] font-black text-blue-500/50 uppercase tracking-tighter mb-1">New API Release</p>
-                            <h3 class="text-xs text-gray-300 font-bold leading-relaxed group-hover/item:text-white transition-colors">REST API v2026.03 is now production ready for all clusters.</h3>
-                        </div>
-
-                        <div class="relative pl-8 group/item">
-                            <div class="absolute left-0 top-1.5 w-2.5 h-2.5 rounded-full bg-[#111] border border-white/10 group-hover/item:border-blue-500/50 transition-colors"></div>
-                            <p class="text-[9px] font-black text-blue-500/50 uppercase tracking-tighter mb-1">Update</p>
-                            <h3 class="text-xs text-gray-300 font-bold leading-relaxed group-hover/item:text-white transition-colors">Auto-model selection enabled for enterprise vaults.</h3>
-                        </div>
-
-                        
-
-                        <div class="relative pl-8 group/item">
-                            <div class="absolute left-0 top-1.5 w-2.5 h-2.5 rounded-full bg-[#111] border border-white/10 group-hover/item:border-blue-500/50 transition-colors"></div>
-                            <p class="text-[9px] font-black text-blue-500/50 uppercase tracking-tighter mb-1">System Notice</p>
-                            <h3 class="text-xs text-gray-300 font-bold leading-relaxed group-hover/item:text-white transition-colors">Metadata structure update successfully deployed.</h3>
-                        </div>
+                        @forelse($recentActivity as $activity)
+                            <div class="relative pl-6 group/item cursor-pointer">
+                                <!-- Simple Dot -->
+                                <div class="absolute left-0 top-2 w-1.5 h-1.5 rounded-full bg-blue-500/40 group-hover/item:bg-blue-400 transition-colors z-10"></div>
+                                
+                                <!-- Title -->
+                                <h3 class="text-sm text-gray-200 font-medium group-hover/item:text-white transition-colors line-clamp-1">
+                                    {{ $activity->title }}
+                                </h3>
+                                
+                                <!-- Action & Time Subtext -->
+                                <p class="text-[11px] text-gray-500 mt-1 font-medium flex items-center gap-1.5">
+                                    <span>{{ $activity->is_new ? 'Created a new' : 'Updated' }} {{ strtolower($activity->type) }}</span>
+                                    <span class="w-1 h-1 rounded-full bg-gray-600"></span>
+                                    <span>{{ \Carbon\Carbon::parse($activity->action_time)->diffForHumans() }}</span>
+                                </p>
+                            </div>
+                        @empty
+                            <div class="relative pl-6 group/item">
+                                <div class="absolute left-0 top-2 w-1.5 h-1.5 rounded-full bg-gray-700 z-10"></div>
+                                <p class="text-xs text-gray-500 font-medium">No recent changes.</p>
+                            </div>
+                        @endforelse
                     </div>
 
                     <div class="mt-10 pt-6 border-t border-white/5">
-                        <a href="#" class="text-[10px] font-black text-gray-500 hover:text-blue-400 uppercase tracking-widest flex items-center gap-2 transition-colors group/link">
+                        <a href="{{ route('logs') }}" class="text-[10px] font-black text-gray-500 hover:text-blue-400 uppercase tracking-widest flex items-center gap-2 transition-colors group/link">
                             View Logs
                             <svg class="w-3 h-3 transform group-hover/link:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6" />

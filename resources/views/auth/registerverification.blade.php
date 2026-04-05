@@ -72,7 +72,7 @@
                     </div>
 
                     <button type="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-900/20">
+                        class="w-full btn-primary py-3 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-900/20">
                         Verify Identity
                     </button>
                 </div>
