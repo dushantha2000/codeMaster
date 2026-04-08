@@ -5,9 +5,9 @@ namespace App\Jobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\VerificationMail;
+use App\Mail\ResetPasswordMail;
 
-class SendVerificationMailJob implements ShouldQueue
+class SendPasswordResetMailJob implements ShouldQueue
 {
     use Queueable;
 
@@ -27,6 +27,6 @@ class SendVerificationMailJob implements ShouldQueue
     public function handle(): void
     {
         //
-        Mail::to($this->details["email"])->send(new VerificationMail($this->details["code"]));
+        Mail::to($this->details["email"])->send(new ResetPasswordMail($this->details["code"]));
     }
 }
