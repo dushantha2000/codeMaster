@@ -608,30 +608,36 @@ class AuthController extends Controller
     {
         $userEmail = $request->input('email');
 
-        $user = User::where('email', $userEmail)->first();
-        if (!$user) {
-            return back()->with('error', 'Your Email is not registered with us!');
-        } else {
+        try {
+            $user = User::where('email', $userEmail)->first();
+            if (!$user) {
+                return back()->with('error', 'Your Email is not registered with us!');
+            } else {
 
-            //send the code  to that email 
-            $verificationCode = Str::upper(Str::random(6));
+                //send the code  to that email 
+                $verificationCode = Str::upper(Str::random(6));
 
-            // store verification code in cache
-            Cache::put("verification_code_{$user->id}", $verificationCode, now()->addMinutes(10));
+                // store verification code in cache
+                Cache::put("verification_code_{$user->id}", $verificationCode, now()->addMinutes(10));
 
-            $details = [
-                'email' => $user->email,
-                'code' => $verificationCode,
-                'user' => $user
-            ];
-            SendPasswordResetMailJob::dispatch($details);
+                $details = [
+                    'email' => $user->email,
+                    'code' => $verificationCode,
+                    'user' => $user
+                ];
+                SendPasswordResetMailJob::dispatch($details);
 
-            // Store email in session for the verification page
-            session(['userEmail' => $userEmail]);
-            session(['pending_reset_user_id' => $user->id]);
+                // Store email in session for the verification page
+                session(['userEmail' => $userEmail]);
+                session(['pending_reset_user_id' => $user->id]);
 
-            return view("auth.resetpasswordCode");
+                return view("auth.resetpasswordCode");
+            }
+        } catch (Exception $e) {
+            return back()->with("error", $e->getMessage());
         }
+
+
     }
 
     public function verifyResetPassword(Request $request)
@@ -640,23 +646,27 @@ class AuthController extends Controller
             "verification_code" => "required|string|size:6",
         ]);
 
-        $userId = session('pending_reset_user_id');
+        try {
+            $userId = session('pending_reset_user_id');
 
-        if (!$userId) {
-            return redirect()->route('ResetPassword')->with("error", "Session expired. Please request a new code.");
+            if (!$userId) {
+                return redirect()->route('ResetPassword')->with("error", "Session expired. Please request a new code.");
+            }
+
+            $user = User::find($userId);
+            $cachedCode = Cache::get("verification_code_{$userId}");
+
+            if (!$cachedCode || $request->verification_code !== $cachedCode) {
+                return view('auth.resetpasswordCode')->with("error", "Invalid or expired verification code.");
+            }
+
+            // Verification successful, 
+            return view('auth.changepassword', [
+                'token' => $cachedCode,
+                'email' => $user->email
+            ]);
+        } catch (Exception $e) {
+            return back()->with('error', $e->getMessage());
         }
-
-        $user = User::find($userId);
-        $cachedCode = Cache::get("verification_code_{$userId}");
-
-        if (!$cachedCode || $request->verification_code !== $cachedCode) {
-            return view('auth.resetpasswordCode')->with("error", "Invalid or expired verification code.");
-        }
-
-        // Verification successful, 
-        return view('auth.changepassword', [
-            'token' => $cachedCode,
-            'email' => $user->email
-        ]);
     }
 }
