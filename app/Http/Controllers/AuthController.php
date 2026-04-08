@@ -631,7 +631,7 @@ class AuthController extends Controller
                 session(['userEmail' => $userEmail]);
                 session(['pending_reset_user_id' => $user->id]);
 
-                return view("auth.resetpasswordCode");
+                return view("auth.resetpasswordcode");
             }
         } catch (Exception $e) {
             return back()->with("error", $e->getMessage());
@@ -657,7 +657,7 @@ class AuthController extends Controller
             $cachedCode = Cache::get("verification_code_{$userId}");
 
             if (!$cachedCode || $request->verification_code !== $cachedCode) {
-                return view('auth.resetpasswordCode')->with("error", "Invalid or expired verification code.");
+                return view('auth.resetpasswordcode')->with("error", "Invalid or expired verification code.");
             }
 
             // Verification successful, 

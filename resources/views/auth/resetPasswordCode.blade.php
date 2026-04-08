@@ -1,6 +1,6 @@
 @extends('layout.auth')
 
-@section('title', 'Verify Account')
+@section('title', 'Reset Password')
 
 @section('content')
     <div class="flex flex-col md:flex-row w-full max-w-4xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10"
