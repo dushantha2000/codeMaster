@@ -78,8 +78,34 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-medium text-gray-400 mb-1 ml-1">Password</label>
-                        <input type="password" name="password" required placeholder="••••••••"
+                        <input type="password" name="password" x-model="password" required placeholder="••••••••"
                             class="input-field w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600">
+                        
+                        <!-- Modern Password Strength Meter -->
+                        <div class="mt-3 space-y-2 px-0.5" x-show="password.length > 0" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-[10px] font-bold uppercase tracking-wider transition-colors duration-300" 
+                                    :class="strengthLvl <= 1 ? 'text-red-400' : (strengthLvl <= 3 ? 'text-amber-400' : 'text-emerald-400')"
+                                    x-text="strengthLvl <= 1 ? 'Vulnerable' : (strengthLvl <= 3 ? 'Protecting' : 'Secure Vault')">
+                                </span>
+                                <span class="text-[10px] text-gray-500 font-medium" x-text="`${Math.min(strengthLvl * 25, 100)}%`"></span>
+                            </div>
+                            <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden flex gap-0.5">
+                                <div class="h-full transition-all duration-500 rounded-full" 
+                                    :style="`width: ${Math.min(strengthLvl * 25, 100)}%`"
+                                    :class="strengthLvl <= 1 ? 'bg-red-500/60' : (strengthLvl <= 3 ? 'bg-amber-500/60' : 'bg-emerald-500/60')">
+                                </div>
+                            </div>
+                            
+                            <!-- Hidden requirement indicators (tooltips or subtle icons could go here) -->
+                            <div class="flex gap-2 mt-2">
+                                <template x-for="rule in [{met: password.length>=8, label: '8+'}, {met: hasLetters, label: 'Aa'}, {met: hasNumbers, label: '123'}, {met: hasSymbols, label: '#@!'}]">
+                                    <div class="h-0.5 flex-1 rounded-full transition-colors duration-300" 
+                                        :class="rule.met ? 'bg-emerald-500/40' : 'bg-white/5'">
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-400 mb-1 ml-1">Confirm</label>
@@ -104,6 +130,8 @@
                 </div>
 
                 <button type="submit"
+                    :disabled="!isComplex"
+                    :class="!isComplex ? 'opacity-50 cursor-not-allowed text-gray-500' : 'btn-primary'"
                     class="w-full btn-primary py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-900/20 mt-2">
                     Create Account
                 </button>
@@ -118,3 +146,34 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+            function registerForm() {
+                return {
+                    password: '',
+                    get hasLetters() {
+                        return /[a-zA-Z]/.test(this.password)
+                    },
+                    get hasNumbers() {
+                        return /[0-9]/.test(this.password)
+                    },
+                    get hasSymbols() {
+                        return /[^a-zA-Z0-9]/.test(this.password)
+                    },
+                    get isComplex() {
+                        return this.hasLetters && this.hasNumbers && this.hasSymbols && this.password.length >= 8
+                    },
+                    get strengthLvl() {
+                        let score = 0;
+                        if (this.password.length >= 8) score++;
+                        if (this.hasLetters) score++;
+                        if (this.hasNumbers) score++;
+                        if (this.hasSymbols) score++;
+                        return score;
+                    }
+                }
+            }
+        </script>
+    @endpush
+@endsection

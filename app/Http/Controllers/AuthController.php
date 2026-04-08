@@ -12,12 +12,15 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use App\Jobs\SendVerificationMailJob;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use App\Jobs\SendPasswordResetMailJob;
+use Illuminate\Validation\Rules\Password;
 
 
 
@@ -27,11 +30,11 @@ class AuthController extends Controller
 {
     public function UpdateProfile(Request $request)
     {
-         //return $request;
+        //return $request;
         $request->validate([
             "name" => "required|string|max:255",
             "email" => "required|email|unique:users,email," . auth()->id(),
-            "fullName"=>"required|string|max:255",
+            "fullName" => "required|string|max:255",
             "bio" => "nullable|string|max:255",
         ]);
 
@@ -41,7 +44,7 @@ class AuthController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->fullName = $request->fullName;
-            $user->bio = $request->bio; 
+            $user->bio = $request->bio;
 
             $user->save();
 
@@ -60,7 +63,7 @@ class AuthController extends Controller
 
     public function Login(Request $request)
     {
-         //return $request;   
+        //return $request;   
         try {
             // dd('wdqwdqw');
             return view("auth.login");
@@ -74,7 +77,7 @@ class AuthController extends Controller
 
     public function userLogin(Request $request)
     {
-         //return $request;
+        //return $request;
         try {
             // Validation
             $credentials = $request->validate(
@@ -134,11 +137,20 @@ class AuthController extends Controller
         $request->validate([
             "userName" => "required|string|max:255",
             "email" => "required|email|unique:users,email",
-            "password" => "required|min:8|confirmed",
+            "password" => [
+                'required',
+                'min:8',
+                'confirmed',
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],
             "password_confirmation" => "required",
         ]);
 
-         try {
+        try {
             DB::beginTransaction();
             // User Create 
             $user = User::create([
@@ -185,14 +197,14 @@ class AuthController extends Controller
     public function verifyRegistration(Request $request)
     {
 
-    //return $request;
+        //return $request;
         $request->validate([
             "verification_code" => "required|string|size:6",
         ]);
 
         $userId = session('pending_user_id');
 
-       // return $userId;
+        // return $userId;
 
         if (!$userId) {
             return redirect()->route('register')->with("error", "Session expired. Please register again.");
@@ -201,7 +213,7 @@ class AuthController extends Controller
         $user = User::find($userId);
         $cachedCode = Cache::get("verification_code_{$userId}");
 
-       
+
 
         // Code check
         if (!$cachedCode || $request->verification_code !== $cachedCode) {
@@ -250,38 +262,38 @@ class AuthController extends Controller
 
     public function Profile()
     {
-          try {
-        $currentUserId = auth()->id();
+        try {
+            $currentUserId = auth()->id();
 
-        $partners = DB::table("users")
-            ->join(
-                "partnerships",
-                "users.id",
-                "=",
-                "partnerships.partner_id",
-            )
-            ->where("partnerships.user_id", $currentUserId)
-            ->select(
-                "users.id",
-                "users.name",
-                "users.profile_image",  
-                "users.email",
-                "partnerships.is_read",
-                "partnerships.is_edit",
-            )
-            ->get();
+            $partners = DB::table("users")
+                ->join(
+                    "partnerships",
+                    "users.id",
+                    "=",
+                    "partnerships.partner_id",
+                )
+                ->where("partnerships.user_id", $currentUserId)
+                ->select(
+                    "users.id",
+                    "users.name",
+                    "users.profile_image",
+                    "users.email",
+                    "partnerships.is_read",
+                    "partnerships.is_edit",
+                )
+                ->get();
 
-        // return $partners;
+            // return $partners;
 
-        return view("auth.profile", [
-            "user" => auth()->user(),
-            "partners" => $partners,
-        ]);
-          } catch (Exception $e) {
-              return back()->with([
+            return view("auth.profile", [
+                "user" => auth()->user(),
+                "partners" => $partners,
+            ]);
+        } catch (Exception $e) {
+            return back()->with([
                 "error" => "Something went wrong while loading the page.",
             ]);
-         }
+        }
     }
 
     public function Settings()
@@ -385,7 +397,16 @@ class AuthController extends Controller
         $request->validate([
             "token" => "required",
             "email" => "required|email|exists:users,email",
-            "password" => "required|min:8|confirmed",
+            "password" => [
+                'required',
+                'min:8',
+                'confirmed',
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],
         ]);
 
         // token exists for this email
@@ -395,10 +416,16 @@ class AuthController extends Controller
             ->first();
 
         if (!$resetRecord) {
-            return back()->with(
-                "error",
-                "Invalid token or email. Please try again.",
-            );
+            // Check if it's a code-based reset from Cache
+            $user = User::where('email', $request->email)->first();
+            $cachedCode = Cache::get("verification_code_{$user->id}");
+
+            if (!$cachedCode || $request->token !== $cachedCode) {
+                return back()->with(
+                    "error",
+                    "Invalid token or email. Please try again.",
+                );
+            }
         }
 
         // Check if token is expired (e.g., 60 minutes)
@@ -431,7 +458,16 @@ class AuthController extends Controller
         // return $request;
         $request->validate([
             "current_password" => "required",
-            "password" => "required|min:8|confirmed",
+            "password" => [
+                'required',
+                'min:8',
+                'confirmed',
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],
         ]);
 
         $user = auth()->user();
@@ -520,7 +556,7 @@ class AuthController extends Controller
     public function UpdateProfileImage(Request $request)
     {
 
-          //return $request;
+        //return $request;
 
 
         $userId = auth()->id();
@@ -552,7 +588,7 @@ class AuthController extends Controller
             $file = $request->file('profile_image');
             $profileImage = 'ProfileImage_' . time() . '.webp';
             $savePath = public_path('profileImages/') . $profileImage;
-            
+
 
             // resize  image
             $image = $manager->read($file);
@@ -568,4 +604,59 @@ class AuthController extends Controller
 
     }
 
+    public function forgotPassword(Request $request)
+    {
+        $userEmail = $request->input('email');
+
+        $user = User::where('email', $userEmail)->first();
+        if (!$user) {
+            return back()->with('error', 'Your Email is not registered with us!');
+        } else {
+
+            //send the code  to that email 
+            $verificationCode = Str::upper(Str::random(6));
+
+            // store verification code in cache
+            Cache::put("verification_code_{$user->id}", $verificationCode, now()->addMinutes(10));
+
+            $details = [
+                'email' => $user->email,
+                'code' => $verificationCode,
+                'user' => $user
+            ];
+            SendPasswordResetMailJob::dispatch($details);
+
+            // Store email in session for the verification page
+            session(['userEmail' => $userEmail]);
+            session(['pending_reset_user_id' => $user->id]);
+
+            return view("auth.resetpasswordCode");
+        }
+    }
+
+    public function verifyResetPassword(Request $request)
+    {
+        $request->validate([
+            "verification_code" => "required|string|size:6",
+        ]);
+
+        $userId = session('pending_reset_user_id');
+
+        if (!$userId) {
+            return redirect()->route('ResetPassword')->with("error", "Session expired. Please request a new code.");
+        }
+
+        $user = User::find($userId);
+        $cachedCode = Cache::get("verification_code_{$userId}");
+
+        if (!$cachedCode || $request->verification_code !== $cachedCode) {
+            return view('auth.resetpasswordCode')->with("error", "Invalid or expired verification code.");
+        }
+
+        // Verification successful, 
+        return view('auth.changepassword', [
+            'token' => $cachedCode,
+            'email' => $user->email
+        ]);
+    }
 }

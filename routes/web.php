@@ -41,6 +41,8 @@ Route::middleware('guest')->group(function () {
     // This matches the link: /reset-password/64_character_token
     Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
     Route::post('/reset-password', [AuthController::class, 'UpdatePassword']);
+    Route::post('/password/email', [AuthController::class,'forgotPassword']);
+    Route::post('/verify-reset-password', [AuthController::class, 'verifyResetPassword']);
 
 
 });
