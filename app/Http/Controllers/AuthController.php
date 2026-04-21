@@ -33,10 +33,11 @@ class AuthController extends Controller
         //return $request;
         $request->validate([
             "name" => "required|string|max:255",
-            "email" => "required|email|unique:users,email," . auth()->id(),
+            "email" => "required",
             "fullName" => "required|string|max:255",
             "bio" => "nullable|string|max:255",
         ]);
+
 
         try {
             $user = auth()->user();
@@ -63,7 +64,7 @@ class AuthController extends Controller
 
     public function Login(Request $request)
     {
-        //return $request;   
+        //return $request;
         try {
             // dd('wdqwdqw');
             return view("auth.login");
@@ -136,7 +137,7 @@ class AuthController extends Controller
         // return $request;
         $request->validate([
             "userName" => "required|string|max:255",
-            "email" => "required|email|unique:users,email",
+            "email" => "required",
             "password" => [
                 'required',
                 'min:8',
@@ -150,9 +151,14 @@ class AuthController extends Controller
             "password_confirmation" => "required",
         ]);
 
+        if ($request->email) {
+            DB::table('users')->where('email', $request->email)->exists();
+            return back()->with("error", "Email already exists");
+        }
+
         try {
             DB::beginTransaction();
-            // User Create 
+            // User Create
             $user = User::create([
                 'user_id' => Str::uuid(),
                 'name' => $request->userName,
@@ -161,7 +167,7 @@ class AuthController extends Controller
                 'is_verified' => 0,
             ]);
 
-            // create verification Code 
+            // create verification Code
             $verificationCode = Str::upper(Str::random(6));
 
             // store verification code in cache
@@ -221,7 +227,7 @@ class AuthController extends Controller
         }
 
         try {
-            // User verify 
+            // User verify
             $user->is_verified = 1;
             $user->email_verified_at = now();
             $user->save();
@@ -530,7 +536,7 @@ class AuthController extends Controller
                         $redis->del($keys);
                     }
                 } catch (Exception $e) {
-                    // 
+                    //
                 }
             }
 
@@ -614,7 +620,7 @@ class AuthController extends Controller
                 return back()->with('error', 'Your Email is not registered with us!');
             } else {
 
-                //send the code  to that email 
+                //send the code  to that email
                 $verificationCode = Str::upper(Str::random(6));
 
                 // store verification code in cache
@@ -660,7 +666,7 @@ class AuthController extends Controller
                 return view('auth.resetpasswordcode')->with("error", "Invalid or expired verification code.");
             }
 
-            // Verification successful, 
+            // Verification successful,
             return view('auth.changepassword', [
                 'token' => $cachedCode,
                 'email' => $user->email
