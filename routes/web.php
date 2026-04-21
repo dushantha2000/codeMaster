@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\partnershipController;
 use App\Http\Controllers\SnippetController;
 use App\Http\Controllers\LogsController;
+use App\Http\Controllers\AIController;
 use Illuminate\Support\Facades\Route;
 
 // Not login request Management
@@ -62,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('snippets/{id}', [SnippetController::class, 'destroy']);
     Route::get('snippets/{id}/edit', [SnippetController::class, 'edit']);
     Route::post('/snippets/update/{id}', [SnippetController::class, 'Update']);
+    Route::post('/api/optimize-code', [AIController::class, 'optimize']);
     Route::post('/partners/destroy/{id}', [partnershipController::class, 'destroyPartner']);
 
     Route::post('/partners/update', [partnershipController::class, 'PartnerPermission']);

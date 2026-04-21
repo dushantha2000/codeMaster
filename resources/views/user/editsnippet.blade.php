@@ -159,19 +159,32 @@
                         <div x-show="activeTab === index" class="h-full flex flex-col">
                             <!-- File Meta -->
                             <div class="p-3 md:p-6 border-b border-white/5 bg-white/[0.01]">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
-                                    <div>
+                                <div class="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6 items-end">
+                                    <div class="md:col-span-5">
                                         <label class="text-xs font-bold text-gray-500 mb-2 block ml-1">File Identity</label>
                                         <input type="text" x-model="file.name" name="file_names[]" required
                                             placeholder="e.g. index.php"
                                             class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all placeholder-gray-700">
                                     </div>
-                                    <div>
+                                    <div class="md:col-span-5">
                                         <label class="text-xs font-bold text-gray-500 mb-2 block ml-1">Target
                                             Directory</label>
                                         <input type="text" x-model="file.path" name="file_paths[]"
                                             placeholder="e.g. src/app" required
                                             class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all placeholder-gray-700">
+                                    </div>
+                                    <div class="md:col-span-2 relative group" x-show="file.content && file.content.trim() !== ''" x-transition.opacity>
+                                        <!-- Animated glowing background -->
+                                        <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-500"></div>
+                                        
+                                        <!-- Button -->
+                                        <button type="button" @click="openAiOptimizer()"
+                                            class="relative w-full flex items-center justify-center gap-2 bg-[#030303] hover:bg-black/50 px-4 py-2.5 rounded-lg border border-white/10 leading-none transition-all duration-300 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                                            <span class="text-base group-hover:scale-110 transition-transform duration-300"></span>
+                                            <span class="text-sm font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent group-hover:from-white group-hover:via-white group-hover:to-white transition-all duration-500 tracking-wide">
+                                                AI Optimize
+                                            </span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -317,6 +330,8 @@
                         </div>
                     </div>
                 </div>
+
+                @include('components.aiOptimizer')
             </div>
         </template>
     </div>
@@ -345,6 +360,14 @@
                     content: ''
                 },
                 files: [],
+                
+                // AI Optimizer State
+                showAiModal: false,
+                aiOriginalCode: '',
+                aiOptimizedCode: '',
+                aiInstruction: '',
+                isOptimizing: false,
+                aiError: null,
 
                 init() {
                     // Load existing snippet data
@@ -415,6 +438,63 @@
 
                 updateStats() {
                     // Update any stats if needed
+                },
+
+                // AI Optimizer Methods
+                openAiOptimizer() {
+                    if (!this.files || this.files.length === 0 || this.activeTab < 0) return;
+                    this.aiOriginalCode = this.files[this.activeTab].content || '';
+                    this.aiOptimizedCode = '';
+                    this.aiInstruction = '';
+                    this.aiError = null;
+                    this.showAiModal = true;
+                },
+
+                closeAiOptimizer() {
+                    this.showAiModal = false;
+                },
+
+                async runAiOptimization() {
+                    if (!this.aiOriginalCode || this.isOptimizing) return;
+                    
+                    this.isOptimizing = true;
+                    this.aiError = null;
+                    this.aiOptimizedCode = '';
+
+                    try {
+                        const response = await fetch('/api/optimize-code', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                            },
+                            body: JSON.stringify({
+                                code: this.aiOriginalCode,
+                                instruction: this.aiInstruction,
+                                language: this.projectInfo.language
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.optimized_code) {
+                            this.aiOptimizedCode = data.optimized_code;
+                        } else {
+                            this.aiError = data.error || 'An error occurred during optimization.';
+                        }
+                    } catch (err) {
+                        console.error('AI Opt Error:', err);
+                        this.aiError = 'Network error. Please try again.';
+                    } finally {
+                        this.isOptimizing = false;
+                    }
+                },
+
+                applyOptimizedCode() {
+                    if (this.aiOptimizedCode && this.files[this.activeTab]) {
+                        this.files[this.activeTab].content = this.aiOptimizedCode;
+                        this.showAiModal = false;
+                    }
                 }
             }
         }
