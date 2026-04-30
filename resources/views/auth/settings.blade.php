@@ -202,7 +202,7 @@
                         <button onclick="openModal('twoFactorModal')"
                             class="w-full flex items-center justify-between p-4 input-field hover:bg-white/5 rounded-2xl transition text-sm">
                             <span class="font-bold text-white">Two-Factor Auth</span>
-                            <span class="text-[10px] font-bold px-2 py-1 bg-blue-500/20 text-blue-400 rounded uppercase tracking-widest border border-blue-500/30">Secure</span>
+                            <span class="text-[10px] font-bold px-2 py-1  text-blue-400 rounded uppercase tracking-widest ">Secure</span>
                         </button>
                     </div>
                 </div>
@@ -300,9 +300,9 @@
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[10px] font-bold text-white uppercase tracking-widest">Status</span>
                             @if(Auth::user()->two_factor_enabled)
-                                <span class="text-[9px] px-2 py-1 bg-green-500/10 text-green-400 rounded uppercase tracking-widest border border-green-500/20 font-bold">Enabled</span>
+                                <span class="text-[9px] px-2 py-1  text-green-400 rounded uppercase tracking-widest  font-bold">Enabled</span>
                             @else
-                                <span class="text-[9px] px-2 py-1 bg-yellow-500/10 text-yellow-400 rounded uppercase tracking-widest border border-yellow-500/20 font-bold">Not Enabled</span>
+                                <span class="text-[9px] px-2 py-1  text-yellow-400 rounded uppercase tracking-widest font-bold">Not Enabled</span>
                             @endif
                         </div>
                         <p class="text-xs text-gray-400">Secure your account with 2FA authentication</p>
