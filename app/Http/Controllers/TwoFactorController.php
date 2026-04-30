@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FALaravel\Support\Authenticator;
 use App\Models\User;
@@ -16,32 +17,38 @@ class TwoFactorController extends Controller
     public function enable2fa()
     {
         $user = auth()->user();
-        $google2fa = app('pragmarx.google2fa');
 
-        // Generate a new secret if the user does not have one
-        if (!$user->two_factor_secret) {
-            $user->two_factor_secret = $google2fa->generateSecretKey();
-            $user->save();
+        try {
+            $google2fa = app('pragmarx.google2fa');
+
+            // Generate a new secret if the user does not have one
+            if (!$user->two_factor_secret) {
+                $user->two_factor_secret = $google2fa->generateSecretKey();
+                $user->save();
+            }
+
+            // Generate QR code for Google Authenticator
+            $qrCodeUrl = $google2fa->getQRCodeUrl(
+                config('app.name'),
+                $user->email,
+                $user->two_factor_secret
+            );
+
+            $renderer = new ImageRenderer(
+                new RendererStyle(200),
+                new SvgImageBackEnd()
+            );
+            $writer = new Writer($renderer);
+            $qrCodeImage = $writer->writeString($qrCodeUrl);
+
+            return view('auth.2fa_enable', [
+                'qrCodeImage' => $qrCodeImage,
+                'secret' => $user->two_factor_secret
+            ]);
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Failed to enable Two-Factor Authentication. Please try again.');
         }
 
-        // Generate QR code for Google Authenticator
-        $qrCodeUrl = $google2fa->getQRCodeUrl(
-            config('app.name'),
-            $user->email,
-            $user->two_factor_secret
-        );
-
-        $renderer = new ImageRenderer(
-            new RendererStyle(200),
-            new SvgImageBackEnd()
-        );
-        $writer = new Writer($renderer);
-        $qrCodeImage = $writer->writeString($qrCodeUrl);
-
-        return view('auth.2fa_enable', [
-            'qrCodeImage' => $qrCodeImage,
-            'secret' => $user->two_factor_secret
-        ]);
     }
 
     public function verify2fa(Request $request)
@@ -67,22 +74,31 @@ class TwoFactorController extends Controller
 
     public function disable2fa()
     {
-        $user = auth()->user();
-        
-        $user->two_factor_enabled = 0;
-        $user->two_factor_secret = null;
-        $user->save();
+        try {
+            $user = auth()->user();
 
-        return redirect()->route('settings')->with('success', 'Two-Factor Authentication disabled successfully.');
+            $user->two_factor_enabled = 0;
+            $user->two_factor_secret = null;
+            $user->save();
+
+            return redirect()->route('settings')->with('success', 'Two-Factor Authentication disabled successfully.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Failed to disable Two-Factor Authentication. Please try again.');
+        }
+
     }
 
     public function challenge()
     {
-        if (!session()->has('2fa:user:id')) {
-            return redirect()->route('login');
-        }
+        try {
+            if (!session()->has('2fa:user:id')) {
+                return redirect()->route('login');
+            }
 
-        return view('auth.2fa_challenge');
+            return view('auth.2fa_challenge');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Failed to verify Two-Factor Authentication. Please try again.');
+        }
     }
 
     public function verifyChallenge(Request $request)
@@ -107,7 +123,7 @@ class TwoFactorController extends Controller
         if ($valid) {
             session()->forget('2fa:user:id');
             Auth::login($user);
-            
+
             $request->session()->regenerate();
             session()->put('isActive', 1);
 
