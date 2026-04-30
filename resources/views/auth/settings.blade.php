@@ -299,16 +299,29 @@
                     <div class="p-5 bg-gray-800/30 rounded-2xl border border-white/5">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[10px] font-bold text-white uppercase tracking-widest">Status</span>
-                            <span class="text-[9px] px-2 py-1 bg-yellow-500/10 text-yellow-400 rounded uppercase tracking-widest border border-yellow-500/20 font-bold">Not Enabled</span>
+                            @if(Auth::user()->two_factor_enabled)
+                                <span class="text-[9px] px-2 py-1 bg-green-500/10 text-green-400 rounded uppercase tracking-widest border border-green-500/20 font-bold">Enabled</span>
+                            @else
+                                <span class="text-[9px] px-2 py-1 bg-yellow-500/10 text-yellow-400 rounded uppercase tracking-widest border border-yellow-500/20 font-bold">Not Enabled</span>
+                            @endif
                         </div>
                         <p class="text-xs text-gray-400">Secure your account with 2FA authentication</p>
                     </div>
 
-                    {{-- <button class="w-full py-3 btn-primary rounded-xl font-bold  transition text-sm">
-                        Enable Two-Factor
-                    </button> --}}
+                    @if(Auth::user()->two_factor_enabled)
+                        <form action="{{ route('2fa.disable') }}" method="POST">
+                            {{ csrf_field() }}
+                            <button type="submit" class="w-full py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-xl font-bold transition text-sm mb-3">
+                                Disable Two-Factor
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('2fa.enable') }}" class="block text-center w-full py-3 btn-primary rounded-xl font-bold transition text-sm mb-3">
+                            Enable Two-Factor
+                        </a>
+                    @endif
                     <button onclick="closeModal('twoFactorModal')"
-                        class="w-full py-3 text-sm font-bold text-gray-400 hover:text-white transition">Later</button>
+                        class="w-full py-3 text-sm font-bold text-gray-400 hover:text-white transition">Cancel</button>
                 </div>
             </div>
         </div>

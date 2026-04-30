@@ -94,16 +94,17 @@ class AuthController extends Controller
             );
 
             // Attempt login
-            if (Auth::attempt($credentials)) {
-                $id = Auth::user()->id;
-                $name = Auth::user()->name;
-                $email = Auth::user()->email;
+            $user = User::where('email', $request->email)->first();
 
+            if ($user && Hash::check($request->password, $user->password)) {
+                if ($user->two_factor_enabled) {
+                    $request->session()->put('2fa:user:id', $user->id);
+                    return redirect('/2fa/challenge');
+                }
+
+                Auth::login($user);
                 $request->session()->regenerate();
-                session()->put('isActive', $isActive = 1);
-
-                //new user session
-
+                session()->put('isActive', 1);
 
                 return redirect()->intended("/dashboard");
             }
