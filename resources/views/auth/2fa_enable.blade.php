@@ -3,7 +3,7 @@
 @section('title', 'Enable Two-Factor Authentication')
 
 @section('content')
-    <div class="flex flex-col md:flex-row w-full max-w-4xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10"
+    <div class="flex flex-col md:flex-row w-full max-w-4xl   overflow-hidden shadow-2xl"
         >
 
         <div class="w-full p-8 md:p-12 flex flex-col justify-center">
