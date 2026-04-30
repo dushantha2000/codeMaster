@@ -130,6 +130,6 @@ Route::get('partner', function () {
     return view('partners.index');
 });
 
-Route::get('welcome', function () {
+Route::get('website', function () {
     return view('web.welcome');
 })->name('register');
