@@ -192,8 +192,6 @@ class AuthController extends Controller
 
             DB::commit();
 
-
-
             // user id add to session
             session(['pending_user_id' => $user->id]);
 
@@ -204,6 +202,45 @@ class AuthController extends Controller
             //all data reset
             DB::rollBack();
             return back()->with("error", "Registration failed. Please try again.");
+        }
+    }
+
+    public function resendVerification(Request $request)
+    {
+        try {
+            $userId = session('pending_user_id');
+
+            if (!$userId) {
+                return redirect('/register')->with("error", "Session expired. Please register again.");
+            }
+
+            $user = User::find($userId);
+
+            if (!$user) {
+                return redirect('/register')->with("error", "User not found.");
+            }
+
+            if ($user->is_verified) {
+                return redirect('/')->with("success", "Account already verified. Please login.");
+            }
+
+            // create new verification Code
+            $verificationCode = Str::upper(Str::random(6));
+
+            // store verification code in cache
+            Cache::put("verification_code_{$user->id}", $verificationCode, now()->addMinutes(5));
+
+            $details = [
+                'email' => $user->email,
+                'code' => $verificationCode,
+                'user' => $user
+            ];
+            SendVerificationMailJob::dispatch($details);
+
+            return view("auth.registerverification")->with("success", "A new verification code has been sent to your email.");
+
+        } catch (Exception $e) {
+            return view("auth.registerverification")->with("error", "Failed to resend verification code. Please try again.");
         }
     }
 
