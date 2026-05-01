@@ -78,12 +78,12 @@
                 </div>
             </form>
 
-            <div class="mt-8 text-center">
+            {{-- <div class="mt-8 text-center">
                 <p class="text-gray-500 text-xs">
                     Didn't receive a code?
                     <a href="#" class="text-blue-400 hover:text-blue-300 font-semibold ml-1">Resend Token</a>
                 </p>
-            </div>
+            </div> --}}
         </div>
     </div>
 

@@ -1,0 +1,78 @@
+@extends('layout.auth')
+
+@section('title', 'Two-Factor Authentication')
+
+@section('content')
+    <div class="flex flex-col md:flex-row w-full max-w-4xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10"
+        >
+
+        <div
+            class="hidden md:flex md:w-1/2 relative bg-black/40 items-center justify-center p-12 overflow-hidden border-r border-white/5 image-glow-blue">
+            <div class="relative z-10 text-center">
+                <div class="mb-6 inline-block p-4 ">
+                    <img src="{{ asset('logo/mainlogo.png') }}" alt="CodeVault Logo"
+                            class="w-20 h-20 object-contain transform scale-125">
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-4">Secure Access.</h2>
+                <p class="text-gray-400 leading-relaxed">Protecting your digital assets with advanced security measures.
+                </p>
+            </div>
+            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+
+            <div class="mb-8">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center overflow-hidden">
+                        <img src="{{ asset('logo/mainlogo.png') }}" alt="CodeVault Logo"
+                            class="w-full h-full object-contain transform scale-125">
+                    </div>
+                    <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile"><a
+                            href="{{ url('/') }}">CodeVault</a> 
+                    </h1>
+                </div>
+                <h1 class="text-2xl font-bold text-white">Two-Factor Auth</h1>
+                <p class="text-gray-500 text-sm mt-1">Please enter the 6-digit code from your authenticator app.</p>
+            </div>
+
+            <form action="{{ url('/2fa/challenge') }}" method="POST" class="space-y-4">
+                {{ csrf_field() }}
+
+                @if (session('error'))
+                    <div
+                        class="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 animate-pulse">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1">Authenticator Code</label>
+                    <input type="text" name="code" required placeholder="123456"
+                        class="input-field w-full rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 tracking-[0.5em] text-center font-mono">
+                    @error('code')
+                        <p class="mt-1 ml-1 text-[10px] text-red-400 ">{{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <button type="submit"
+                    class="w-full btn-primary  py-2.5 rounded-xl font-bold text-sm transition-all shadow-lg shadow-blue-900/20 mt-4">
+                    Verify Code
+                </button>
+            </form>
+            
+            <div class="mt-8 text-center">
+                <p class="text-gray-500 text-xs">
+                    Return to 
+                    <a href="{{ url('/') }}"
+                        class=" load-btn text-blue-400 hover:text-blue-300 font-semibold ml-1">Login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+@endsection

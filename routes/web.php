@@ -6,12 +6,17 @@ use App\Http\Controllers\partnershipController;
 use App\Http\Controllers\SnippetController;
 use App\Http\Controllers\LogsController;
 use App\Http\Controllers\AIController;
+use App\Http\Controllers\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 
 // Not login request Management
 Route::middleware('guest')->group(function () {
 
     Route::get('/', [AuthController::class, 'Login'])->name('login');
+    
+    // 2FA Challenge Routes
+    Route::get('/2fa/challenge', [TwoFactorController::class, 'challenge'])->name('2fa.challenge');
+    Route::post('/2fa/challenge', [TwoFactorController::class, 'verifyChallenge']);
 
     
     Route::get('/fix-cache-now', function () {
@@ -58,6 +63,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'Logout']);
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::get('/settings', [AuthController::class, 'Settings'])->name('settings');
+    
+    // 2FA Management Routes
+    Route::get('/user/2fa/enable', [TwoFactorController::class, 'enable2fa'])->name('2fa.enable');
+    Route::post('/user/2fa/verify', [TwoFactorController::class, 'verify2fa'])->name('2fa.verify');
+    Route::post('/user/2fa/disable', [TwoFactorController::class, 'disable2fa'])->name('2fa.disable');
     // Route::get('/api/search', [SnippetController::class,'search']);
     Route::get('/my-snippets', [SnippetController::class, 'mySnippets'])->name('snippets.index');
     Route::delete('snippets/{id}', [SnippetController::class, 'destroy']);
@@ -130,6 +140,6 @@ Route::get('partner', function () {
     return view('partners.index');
 });
 
-Route::get('welcome', function () {
+Route::get('website', function () {
     return view('web.welcome');
 })->name('register');
