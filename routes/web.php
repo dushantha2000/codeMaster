@@ -19,6 +19,9 @@ Route::middleware('guest')->group(function () {
     Route::post('/2fa/challenge', [TwoFactorController::class, 'verifyChallenge']);
 
     
+
+
+
     Route::get('/fix-cache-now', function () {
         // 1. Clear all application caches
         Artisan::call('route:clear');
@@ -37,10 +40,21 @@ Route::middleware('guest')->group(function () {
         return '✅ All Caches Cleared and Database Refreshed Successfully!';
     });
 
+
+
+
+
+
+
+
+
+    
+
     Route::post('/user-login', [AuthController::class, 'userLogin']);
     Route::get('register', [AuthController::class, 'register']);
     Route::post('user-register', [AuthController::class, 'userRegister']);
     Route::post('/verify-registration', [AuthController::class, 'verifyRegistration']);
+    Route::get('/resend-verification', [AuthController::class, 'resendVerification'])->name('resend.verification');
     Route::get('/reset', [AuthController::class, 'ResetPassword']);
     Route::post('send-Reset-Code', [AuthController::class, 'sendResetCode']);
 

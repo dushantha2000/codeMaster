@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Snippet;
 use App\Models\User;
+use App\Models\Category;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,6 +57,9 @@ class SnippetController extends Controller
     /**
      * Helper method to scan and delete Redis keys
      */
+
+
+
     private function scanAndDelete($redis, $pattern)
     {
         $iterator = null;
@@ -80,8 +84,13 @@ class SnippetController extends Controller
         }
     }
 
+
+
+
     public function index(Request $request)
     {
+
+   // return "wdwd";
         $currentUserId = auth()->id();
 
         try {
@@ -171,7 +180,7 @@ class SnippetController extends Controller
                             return $item;
                         });
 
-                    $recentCategories = \App\Models\Category::where('user_id', $currentUserId)
+                    $recentCategories = Category::where('user_id', $currentUserId)
                         ->select(['id', 'category_name as title', 'created_at', 'updated_at'])
                         ->orderBy('updated_at', 'desc')
                         ->take(5)
@@ -186,7 +195,7 @@ class SnippetController extends Controller
                             return $item;
                         });
 
-                    $userUpdates = \App\Models\User::where('id', $currentUserId)
+                    $userUpdates = User::where('id', $currentUserId)
                         ->select(['id', 'name as title', 'created_at', 'updated_at'])
                         ->get()
                         ->map(function ($item) {
@@ -206,7 +215,8 @@ class SnippetController extends Controller
                 }
             );
 
-            //return $recentActivity;
+           // return $recentActivity;
+           //return languages;
 
             // Pass variables to view
             return view('user.dashboard', compact('snippets', 'languages', 'recentActivity'));
@@ -924,4 +934,6 @@ class SnippetController extends Controller
             return response()->json(['message' => 'Something went wrong (searching)'], 500);
         }
     }
+
+
 }

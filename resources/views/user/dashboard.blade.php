@@ -120,8 +120,17 @@
                                         </div>
                                         
                                         <div class="flex items-center gap-2">
-                                            <div class="w-4 h-4 rounded-lg overflow-hidden bg-blue-500/10 flex items-center justify-center text-[8px] border border-blue-500/20">
-                                                <span x-text="snippet.user_id == {{ Auth::id() }} ? 'ME' : (snippet.user ? snippet.user.name.charAt(0).toUpperCase() : 'P')"></span>
+                                            <div class="w-4 h-4 rounded-lg overflow-hidden bg-blue-500/10 flex items-center justify-center text-[7px] border border-blue-500/20">
+                                                <!-- Dynamic Profile Image -->
+                                                <template x-if="(snippet.user_id == {{ Auth::id() }} && '{{ Auth::user()->profile_image }}') || (snippet.user && snippet.user.profile_image)">
+                                                    <img :src="'{{ asset('profileImages') }}/' + (snippet.user_id == {{ Auth::id() }} ? '{{ Auth::user()->profile_image }}' : snippet.user.profile_image)" 
+                                                         class="w-full h-full object-cover">
+                                                </template>
+
+                                                <!-- Fallback Initials -->
+                                                <template x-if="!(snippet.user_id == {{ Auth::id() }} && '{{ Auth::user()->profile_image }}') && !(snippet.user && snippet.user.profile_image)">
+                                                    <span x-text="snippet.user_id == {{ Auth::id() }} ? 'ME' : (snippet.user ? snippet.user.name.charAt(0).toUpperCase() : 'P')"></span>
+                                                </template>
                                             </div>
                                             <span x-text="snippet.user_id == {{ Auth::id() }} ? 'Personal Vault' : (snippet.user ? snippet.user.name : 'Partner Logic')"></span>
                                         </div>

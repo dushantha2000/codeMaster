@@ -42,16 +42,7 @@
             <form method="POST" action="{{ url('/verify-registration') }}" class="space-y-6" id="otp-form">
                 {{ csrf_field() }}
 
-                @if (session('error'))
-                    <div
-                        class="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 animate-pulse">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                        {{ session('error') }}
-                    </div>
-                @endif
+                
 
                 <div class="space-y-6">
                     <div>
@@ -78,12 +69,12 @@
                 </div>
             </form>
 
-            {{-- <div class="mt-8 text-center">
+            <div class="mt-8 text-center">
                 <p class="text-gray-500 text-xs">
                     Didn't receive a code?
-                    <a href="#" class="text-blue-400 hover:text-blue-300 font-semibold ml-1">Resend Token</a>
+                    <a href="{{ route('resend.verification') }}" class="text-blue-400 hover:text-blue-300 font-semibold ml-1">Resend Token</a>
                 </p>
-            </div> --}}
+            </div> 
         </div>
     </div>
 
