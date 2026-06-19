@@ -26,6 +26,8 @@ use Illuminate\Validation\Rules\Password;
 
 
 
+
+
 class AuthController extends Controller
 {
     public function UpdateProfile(Request $request)
@@ -333,6 +335,8 @@ class AuthController extends Controller
                 )
                 ->get();
 
+
+
             // return $partners;
 
             return view("auth.profile", [
@@ -632,6 +636,10 @@ class AuthController extends Controller
                     File::delete($oldImagePath);
                 }
             }
+
+            //return "fdwd";
+
+
             $manager = new ImageManager(new Driver());
 
             // Image Optimize
