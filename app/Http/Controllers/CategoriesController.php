@@ -197,7 +197,14 @@ class CategoriesController extends Controller
 
             });
 
-            return view('categories.index', compact('categories', 'search'));
+            // Aggregate stat for the page header strip
+            $totalSnippets = DB::table('snippets')
+                ->where('user_id', $userId)
+                ->where('isActive', 1)
+                ->whereNotNull('category_id')
+                ->count();
+
+            return view('categories.index', compact('categories', 'search', 'totalSnippets'));
 
         } catch (Exception $e) {
 

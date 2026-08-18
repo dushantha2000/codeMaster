@@ -313,6 +313,19 @@ class SnippetController extends Controller
         $currentUserId = auth()->id();
 
         try {
+            $snippet = Snippet::with(['user:id,name', 'files'])->findOrFail($id);
+
+            // Only the owner or a partner with access may view a snippet.
+            $isOwner = $snippet->user_id === $currentUserId;
+            $isPartner = DB::table('partnerships')
+                ->where('user_id', $snippet->user_id)
+                ->where('partner_id', $currentUserId)
+                ->exists();
+
+            if (!$isOwner && !$isPartner) {
+                return response()->json(['error' => 'Snippet not found'], 404);
+            }
+
             $version = Cache::get("user:{$currentUserId}:version", 1);
             $cacheKey = "snippet:user:{$currentUserId}:v{$version}:{$id}";
 

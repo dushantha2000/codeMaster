@@ -32,6 +32,11 @@ class Snippet extends Model
         return $this->hasMany(SnippetFile::class);
     }
 
+    public function shareLinks()
+    {
+        return $this->hasMany(ShareLink::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

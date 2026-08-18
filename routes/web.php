@@ -7,6 +7,7 @@ use App\Http\Controllers\SnippetController;
 use App\Http\Controllers\LogsController;
 use App\Http\Controllers\AIController;
 use App\Http\Controllers\TwoFactorController;
+use App\Http\Controllers\ShareLinkController;
 use Illuminate\Support\Facades\Route;
 
 // Not login request Management
@@ -66,12 +67,21 @@ Route::middleware('guest')->group(function () {
 
 
 });
-//searching routes
-Route::get('/api/search', [SnippetController::class, 'search']);
-Route::get('/api/snippets/{id}', [SnippetController::class, 'show']);
-Route::get('/api/search/my-snippets', [SnippetController::class, 'MySnippetSearch']);
+// Public share links – the token is the credential, no auth required
+Route::get('/s/{token}', [ShareLinkController::class, 'show'])->name('share.show');
+Route::post('/s/{token}', [ShareLinkController::class, 'unlock'])->middleware('throttle:5,1')->name('share.unlock');
 
 Route::middleware('auth:sanctum')->group(function () {
+    // Searching routes – operate on the authenticated user's vault
+    Route::get('/api/search', [SnippetController::class, 'search']);
+    Route::get('/api/snippets/{id}', [SnippetController::class, 'show']);
+    Route::get('/api/search/my-snippets', [SnippetController::class, 'MySnippetSearch']);
+
+    // Public share links management (owner only)
+    Route::post('/snippets/{id}/share-links', [ShareLinkController::class, 'create']);
+    Route::get('/snippets/{id}/share-links', [ShareLinkController::class, 'index']);
+    Route::delete('/share-links/{id}', [ShareLinkController::class, 'destroy']);
+
     Route::get('/dashboard', [SnippetController::class, 'index'])->name('dashboard');
     Route::get('/logs', [LogsController::class, 'index'])->name('logs');
     Route::post('/logout', [AuthController::class, 'Logout']);
