@@ -3,24 +3,26 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>CodeVault | The Intelligent Snippet Engine</title>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+
+    <!-- Shared Design System -->
+    <link rel="stylesheet" href="{{ asset('css/design-system.css') }}">
+
+    <!-- CDN Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
-
 
     <style>
+        /* ---- Welcome Page-Specific Styles ---- */
+
         body {
             background-color: #0a0a0a;
             color: #ffffff;
             overflow-x: hidden;
-             font-family: 'Space Grotesk', sans-serif;
         }
 
         /* The Google / Gemini Aurora Background */
@@ -71,17 +73,9 @@
         }
 
         @keyframes aurora-move {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            50% {
-                transform: translate(5%, 5%) scale(1.1);
-            }
-
-            100% {
-                transform: translate(-5%, -5%) scale(0.95);
-            }
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(5%, 5%) scale(1.1); }
+            100% { transform: translate(-5%, -5%) scale(0.95); }
         }
 
         /* Typography Mastery */
@@ -109,6 +103,7 @@
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
+        /* Welcome Glass Card (different from shared — uses gradient) */
         .glass-card {
             background: linear-gradient(145deg, rgba(20, 20, 20, 0.6) 0%, rgba(5, 5, 5, 0.8) 100%);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -121,7 +116,7 @@
             box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 40px rgba(59, 130, 246, 0.1);
         }
 
-        /* Premium Buttons */
+        /* Premium Buttons (welcome-specific, these are different from shared btn-primary) */
         .btn-super {
             position: relative;
             background: #ffffff;
@@ -213,9 +208,7 @@
         }
 
         @keyframes blink {
-            50% {
-                opacity: 0;
-            }
+            50% { opacity: 0; }
         }
     </style>
 </head>
@@ -240,9 +233,8 @@
                         class="w-full h-full object-contain transform scale-125">
                 </div>
 
-                <h1 class="text-base md:text-xl font-bold text-white tracking-tight ">
+                <h1 class="text-base md:text-xl font-bold text-white tracking-tight">
                     CodeVault
-
                 </h1>
             </a>
 
@@ -652,10 +644,8 @@
             <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded bg-white flex items-center justify-center shadow-lg">
-                        <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                        </svg>
+                        <img src="{{ asset('logo/mainlogo.png') }}" alt="CodeVault Logo"
+                            class="w-5 h-5 object-contain">
                     </div>
                     <span class="text-xl font-bold tracking-tight text-white">CodeVault</span>
                 </div>
@@ -720,7 +710,6 @@
 
             // General section reveal
             gsap.utils.toArray('.gs-reveal').forEach(elem => {
-                // skip if already animated by hero
                 if (elem.closest('#hero')) return;
 
                 gsap.fromTo(elem,
