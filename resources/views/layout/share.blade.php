@@ -39,6 +39,19 @@
             border-color: rgba(59, 130, 246, 0.3);
         }
 
+        .btn-primary {
+            background: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s;
+        }
+
+        .btn-primary:hover {
+            background: rgb(0, 0, 0);
+            transform: translateY(-1px);
+            color: rgb(255, 255, 255);
+        }
+
         .input-field {
             background: #050505;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -119,7 +132,7 @@
 
     <footer class="py-6 text-center">
         <a href="{{ url('/') }}"
-            class="text-[10px] font-bold uppercase tracking-widest text-gray-600 hover:text-blue-400 transition-colors">
+            class="text-[10px] font-bold  tracking-widest text-gray-600 hover:text-blue-400 transition-colors">
             🔗 Shared via CodeVault
         </a>
     </footer>
