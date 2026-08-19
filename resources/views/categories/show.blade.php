@@ -190,78 +190,60 @@
                 </div>
 
                 {{-- Loading Skeleton --}}
-                <div x-show="loading" class="space-y-4" style="display: none;">
+                <div x-show="loading" class="space-y-3 py-4" style="display: none;">
                     <template x-for="i in 3">
-                        <div class="border border-[#30363d] bg-[#161b22] rounded-md p-5 animate-pulse mb-3">
-                            <div class="h-4 bg-[#30363d] rounded w-1/3 mb-3"></div>
-                            <div class="h-3 bg-[#30363d]/50 rounded w-full mb-2"></div>
-                            <div class="h-3 bg-[#30363d]/30 rounded w-2/3"></div>
+                        <div class="glass-card px-5 py-4 animate-pulse border border-white/5">
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    <div class="h-4 bg-white/5 rounded w-1/3 mb-2"></div>
+                                    <div class="h-3 bg-white/5 rounded w-2/3"></div>
+                                </div>
+                                <div class="h-3 bg-white/5 rounded w-16"></div>
+                            </div>
                         </div>
                     </template>
                 </div>
 
                 {{-- Snippets Container --}}
-                <div class="grid grid-cols-1 gap-4 mt-2" x-show="!loading" style="display: none;">
+                <div class="grid grid-cols-1 gap-3 mt-2" x-show="!loading" style="display: none;">
                     <template x-for="snippet in snippets" :key="snippet.id">
-                        <div class="glass-card group p-6 border  hover:border-blue-500/30 transition-all duration-500 cursor-pointer relative overflow-hidden shadow-lg"
+                        <div class="glass-card group px-5 py-4 border border-white/5 hover:border-blue-500/30 transition-all duration-300 cursor-pointer relative overflow-hidden"
                             @click="openSnippet(snippet.id)">
-                            <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3">
                                 <div class="flex-1 min-w-0">
-                                    <div class="flex items-center gap-2 mb-2 flex-wrap">
-                                        <h3 class="text-[#EDEDED] text-lg font-semibold group-hover:text-blue-400 transition-colors"
+                                    {{-- Title + Language inline --}}
+                                    <div class="flex items-center gap-2.5 mb-1">
+                                        <h3 class="text-white text-base font-bold group-hover:text-blue-400 transition-colors truncate"
                                             x-text="snippet.title"></h3>
-                                        <template x-if="snippet.isActive == 1">
-                                            <span
-                                                class="px-2 py-0.5 bg-white/5 border border-white/10 text-[#71717A] text-[10px] rounded-md font-medium uppercase tracking-wider">Active</span>
-                                        </template>
-                                    </div>
-
-                                    <p class="text-[#A1A1AA] text-sm leading-relaxed mb-4 line-clamp-2"
-                                        x-text="snippet.description || 'No description provided.'"></p>
-
-                                    <div
-                                        class="flex flex-wrap items-center gap-x-4 gap-y-2 text-[#71717A] text-xs font-medium">
                                         <template x-if="snippet.language">
-                                            <span class="flex items-center gap-1.5">
-                                                <span class="w-2 h-2 rounded-full" :class="{
-                                                        'bg-[#4F5D95]': snippet.language.toLowerCase() === 'php',
-                                                        'bg-[#f1e05a]': snippet.language.toLowerCase() === 'javascript' || snippet.language.toLowerCase() === 'js',
-                                                        'bg-[#9b4F96]': snippet.language.toLowerCase() === 'css',
-                                                        'bg-[#e34c26]': snippet.language.toLowerCase() === 'html',
-                                                        'bg-[#41b883]': snippet.language.toLowerCase() === 'vue',
-                                                        'bg-[#61dafb]': snippet.language.toLowerCase() === 'react',
-                                                        'bg-[#3178c6]': snippet.language.toLowerCase() === 'typescript',
-                                                        'bg-[#A1A1AA]': !['php', 'javascript', 'js', 'html', 'css', 'vue', 'react', 'typescript'].includes(snippet.language?.toLowerCase())
-                                                    }"></span>
-                                                <span x-text="snippet.language"></span>
-                                            </span>
+                                            <span class="shrink-0 px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[11px] rounded-md font-medium capitalize"
+                                                x-text="snippet.language"></span>
                                         </template>
-
-                                        <span
-                                            x-text="'Updated ' + new Date(snippet.updated_at || snippet.created_at).toLocaleDateString()"></span>
-                                        <span class="flex items-center gap-1">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-width="2"
-                                                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
-                                                </path>
-                                            </svg>
-                                            <span
-                                                x-text="snippet.files ? snippet.files.length + ' files' : '0 files'"></span>
-                                        </span>
+                                        <template x-if="snippet.isMark == 1">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.4)] shrink-0"></span>
+                                        </template>
                                     </div>
+
+                                    {{-- Description (single line) --}}
+                                    <p class="text-gray-500 text-sm truncate"
+                                        x-text="snippet.description"></p>
                                 </div>
 
-                                <div
-                                    class="flex items-center gap-2 mt-2 md:mt-0 self-end md:self-start opacity-0 group-hover:opacity-100 transition-opacity">
+                                {{-- Metadata row --}}
+                                <div class="flex items-center gap-4 shrink-0">
+                                    <span class="text-gray-600 text-xs hidden md:inline"
+                                        x-text="'Updated ' + new Date(snippet.updated_at || snippet.created_at).toLocaleDateString()"></span>
+                                    <span class="text-gray-600 text-xs hidden md:flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
+                                        <span x-text="snippet.files ? snippet.files.length + ' files' : '0 files'"></span>
+                                    </span>
+                                    {{-- Star toggle (always visible) --}}
                                     <button @click.stop="toggleStar(snippet.id)"
-                                        class="p-2 bg-white/5 border border-white/10 rounded-lg transition-all focus:outline-none"
-                                        :class="snippet.isMark == 1 ? 'hover:bg-yellow-500/10 text-yellow-500 border-yellow-500/20 bg-yellow-500/5' : 'hover:bg-white/10 text-[#A1A1AA] hover:text-yellow-500'"
+                                        class="p-2 rounded-lg transition-all focus:outline-none"
+                                        :class="snippet.isMark == 1 ? 'text-yellow-500 hover:bg-yellow-500/10' : 'text-gray-600 hover:text-yellow-500 hover:bg-yellow-500/10'"
                                         title="Star">
-                                        <svg class="w-4 h-4" :fill="snippet.isMark == 1 ? 'currentColor' : 'none'"
-                                            stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.921-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z">
-                                            </path>
+                                        <svg class="w-4 h-4" :fill="snippet.isMark == 1 ? 'currentColor' : 'none'" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.921-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.197-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                                         </svg>
                                     </button>
                                 </div>
@@ -269,74 +251,31 @@
                         </div>
                     </template>
 
-                    {{-- Unified Vault-Style Pagination --}}
+                    {{-- Pagination --}}
                     <div x-show="lastPage > 1 && !loading" x-cloak
-                        class="flex flex-col sm:flex-row items-center justify-between mt-12 pt-8 border-t border-white/5 gap-6">
-                        <div class="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-gray-500">
-                            <span
-                                class="flex items-center justify-center w-10 h-10 rounded-xl bg-[#030303] border border-white/5 text-white shadow-inner"
-                                x-text="currentPage"></span>
+                        class="flex flex-col sm:flex-row items-center justify-between mt-8 pt-6 border-t border-white/5 gap-4">
+                        <div class="flex items-center gap-3 text-sm text-gray-500">
+                            <span class="font-semibold text-white" x-text="currentPage"></span>
                             <span>of</span>
-                            <span class="text-white" x-text="lastPage"></span>
-                            <span class="ml-1 opacity-40">Pages</span>
+                            <span x-text="lastPage"></span>
+                            <span class="opacity-50">pages</span>
                         </div>
-
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2">
                             <button @click="fetchSnippets(currentPage - 1)" :disabled="currentPage === 1"
-                                class="group flex items-center gap-2 px-6 py-3 bg-[#030303] border border-white/5 rounded-2xl hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
-                                <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                        d="M15 19l-7-7 7-7" />
-                                </svg>
-                                <span>Previous</span>
+                                class="group flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/5 rounded-xl hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-sm font-medium text-gray-300">
+                                <svg class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                                <span>Prev</span>
                             </button>
-
                             <button @click="fetchSnippets(currentPage + 1)" :disabled="currentPage === lastPage"
-                                class="group flex items-center gap-2 px-6 py-3 bg-[#030303] border border-white/5 rounded-2xl hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
+                                class="group flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/5 rounded-xl hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-sm font-medium text-gray-300">
                                 <span>Next</span>
-                                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                        d="M9 5l7 7-7 7" />
-                                </svg>
+                                <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {{-- Premium Pagination --}}
-                <div x-show="lastPage > 1 && !loading" x-cloak
-                    class="flex flex-col sm:flex-row items-center justify-between mt-12 pt-8 border-t border-white/5 gap-6">
-                    <div class="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-gray-500">
-                        <span
-                            class="flex items-center justify-center w-10 h-10 rounded-xl bg-[#030303] border border-white/5 text-white shadow-inner"
-                            x-text="currentPage"></span>
-                        <span>of</span>
-                        <span class="text-white" x-text="lastPage"></span>
-                        <span class="ml-1 opacity-40">Pages</span>
-                    </div>
 
-                    <div class="flex items-center gap-3">
-                        <button @click="fetchSnippets(currentPage - 1)" :disabled="currentPage === 1"
-                            class="group flex items-center gap-2 px-6 py-3 bg-[#030303] border border-white/5 rounded-2xl hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
-                            <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
-                            </svg>
-                            <span>Previous</span>
-                        </button>
-
-                        <button @click="fetchSnippets(currentPage + 1)" :disabled="currentPage === lastPage"
-                            class="group flex items-center gap-2 px-6 py-3 bg-[#030303] border border-white/5 rounded-2xl hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
-                            <span>Next</span>
-                            <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
 
 
 
