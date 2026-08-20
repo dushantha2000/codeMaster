@@ -181,10 +181,52 @@
                         </button>
                     </div>
                 </div>
-            </div>
+            </div>            <!-- Right Sidebar -->
 
-            <!-- Right Sidebar-->
+            {{-- Sponsored Ad Banner --}}
             <aside class="col-span-1 xl:col-span-1 space-y-6">
+                <div class="glass-card border border-white/5 overflow-hidden group hover:border-blue-500/20 transition-all duration-300">
+                    {{-- Ad Label --}}
+                    <div class="flex items-center justify-between px-4 pt-3 pb-0">
+                        <span class="text-[9px] font-bold text-gray-600 uppercase tracking-widest">Sponsored</span>
+                        <svg class="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+
+                    {{-- Ad Image --}}
+                    <div class="px-4 pt-3 pb-2">
+                        <div class="w-full h-32 rounded-xl bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 border border-white/5 flex items-center justify-center overflow-hidden">
+                            <div class="text-center">
+                                <div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-white text-sm font-bold">TurboCode Pro</h3>
+                                <p class="text-gray-500 text-[10px] mt-0.5">Ship code 10x faster</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Ad Content --}}
+                    <div class="px-4 pb-4">
+                        <p class="text-gray-400 text-xs leading-relaxed mt-2">
+                            Boost your development workflow with AI-powered code completion, instant debugging, and seamless team collaboration.
+                        </p>
+
+                        {{-- CTA Button --}}
+                        <a href="#" target="_blank" rel="noopener noreferrer"
+                            class="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-xs font-bold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/10 hover:shadow-blue-500/25">
+                            Try Free for 14 Days
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+            {{-- Recent Changes Sidebar --}}
                 <div class=" sticky top-24 text-left  overflow-hidden group">
                    
                     

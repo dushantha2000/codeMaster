@@ -80,9 +80,8 @@
 
                 <!-- Desktop Header -->
                 <div class="hidden md:flex items-center justify-between mb-4">
-                    <div class="text-[10px] font-bold text-gray-600 uppercase tracking-tighter">PROJECT FILES</div>
-                    <span class="text-xs px-2 py-1 rounded-full bg-white/10 text-gray-300"
-                        x-text="selectedSnippet?.files?.length + ' files'"></span>
+                    
+                    <span class="text-xs px-4 py-1 rounded-full bg-white/10 text-gray-300">Files</span>
                 </div>
 
                 <!-- Files List -->
