@@ -85,7 +85,7 @@
 
                 <!-- Loading State -->
                 <div x-show="loading" class="space-y-3 py-4">
-                    <template x-for="i in 3">
+                    <template x-for="i in 10">
                         <div class="glass-card px-5 py-4 animate-pulse border border-white/5">
                             <div class="flex items-center justify-between">
                                 <div class="flex-1">

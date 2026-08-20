@@ -4,6 +4,39 @@
 
 @section('content')
     <div x-init="init()" class="w-full">
+        {{-- Right-Click Context Menu --}}
+        <div x-show="contextMenuVisible"
+            x-cloak
+            @click.away="closeContextMenu()"
+            x-transition:enter="transition ease-out duration-100"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="fixed z-[200] w-48 glass-card border border-white/10 rounded-xl shadow-2xl shadow-black/50 py-1.5 overflow-hidden"
+            :style="`left: ${contextMenuX}px; top: ${contextMenuY}px;`">
+            
+            <a :href="contextMenuSnippet ? `/snippets/${contextMenuSnippet.id}/edit` : '#'
+                @click="closeContextMenu()"
+                class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-blue-400 hover:bg-blue-500/10 transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                <span class="font-medium">Edit</span>
+            </a>
+
+            <div class="mx-3 my-1 border-t border-white/5"></div>
+
+            <button @click="openEraseModal(contextMenuSnippet.id); closeContextMenu()"
+                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-red-400 hover:bg-red-500/10 transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span class="font-medium">Delete</span>
+            </button>
+        </div>
+
         <div id="main-page-content" class="w-full max-w-6xl mx-auto px-4" x-cloak>
 
             {{-- Breadcrumb --}}
@@ -167,7 +200,7 @@
 
                     {{-- Loading Indicator --}}
                     <div x-show="loading" class="space-y-3 py-4">
-                        <template x-for="i in 2">
+                        <template x-for="i in 10">
                             <div class="glass-card px-5 py-4 animate-pulse border border-white/5">
                                 <div class="flex items-center justify-between">
                                     <div class="flex-1">
@@ -184,7 +217,8 @@
                     <div class="space-y-3" x-show="!loading">
                         <template x-for="snippet in snippets" :key="snippet.id">
                             <div class="glass-card group px-5 py-4 border border-white/5 hover:border-blue-500/30 transition-all duration-300 cursor-pointer relative overflow-hidden"
-                                @click="openSnippet(snippet.id)">
+                                @click="openSnippet(snippet.id)"
+                                @contextmenu.prevent="openContextMenu($event, snippet)"
 
                                 <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 relative z-10">
                                     <div class="flex-1 min-w-0">
@@ -213,17 +247,6 @@
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
                                             <span x-text="(snippet.files ? snippet.files.length : 0) + ' files'"></span>
                                         </span>
-                                        {{-- Action buttons --}}
-                                        <div class="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all">
-                                            <a :href="`/snippets/${snippet.id}/edit`" @click.stop
-                                                class="p-2 rounded-lg text-gray-500 hover:text-blue-400 hover:bg-blue-500/10 transition-all">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-                                            </a>
-                                            <button @click.stop="openEraseModal(snippet.id)"
-                                                class="p-2 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-all">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                            </button>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -341,6 +364,12 @@
                 selectedSort: 'latest',
                 loading: false,
 
+                // Context Menu state
+                contextMenuVisible: false,
+                contextMenuX: 0,
+                contextMenuY: 0,
+                contextMenuSnippet: null,
+
                 // Preview Modal state
                 showPreview: false,
                 selectedSnippet: null,
@@ -456,6 +485,24 @@
                         modal.classList.add('hidden');
                         modal.classList.remove('flex');
                     }
+                },
+
+                openContextMenu(event, snippet) {
+                    this.contextMenuSnippet = snippet;
+                    this.contextMenuX = event.clientX;
+                    this.contextMenuY = event.clientY;
+                    this.contextMenuVisible = true;
+
+                    // Close on next click anywhere
+                    this.$nextTick(() => {
+                        document.addEventListener('click', this.closeContextMenu, { once: true });
+                        document.addEventListener('contextmenu', this.closeContextMenu, { once: true });
+                    });
+                },
+
+                closeContextMenu() {
+                    this.contextMenuVisible = false;
+                    this.contextMenuSnippet = null;
                 },
 
                 formatDate(dateStr) {
