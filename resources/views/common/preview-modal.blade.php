@@ -1,10 +1,17 @@
-<!-- Preview Modal with Mobile Support -->
+{{-- ============================================================
+     Snippet Preview Modal — Slide-in Panel
+     ============================================================
+     Full-screen slide-in panel for viewing snippet files with
+     syntax highlighting. Includes mobile file list toggle,
+     copy-to-clipboard, and share link integration.
+     Uses Alpine.js for all interactive state.
+     ============================================================ --}}
 <div x-show="showPreview" class="fixed inset-0 z-50 overflow-hidden flex items-center justify-end p-0 md:p-4" x-cloak>
-    <!-- Backdrop -->
+    {{-- Backdrop overlay — click to close --}}
     <div class="absolute inset-0 bg-black/80 backdrop-blur-md transition-opacity" x-show="showPreview"
         x-transition:enter="duration-500" x-transition:leave="duration-300" @click="showPreview = false"></div>
 
-    <!-- Modal -->
+    {{-- Main modal panel --}}
     <div class="relative w-full md:max-w-5xl h-full md:h-[90vh] md:rounded-3xl flex flex-col overflow-hidden"
         x-show="showPreview" x-transition:enter="transform transition duration-500 ease-out"
         x-transition:enter-start="translate-x-full opacity-0 scale-95"
@@ -12,11 +19,11 @@
         x-transition:leave="transform transition duration-300 ease-in"
         x-transition:leave-start="translate-x-0 opacity-100" x-transition:leave-end="translate-x-full opacity-0">
 
-        <!-- Header -->
+        {{-- Modal header — title, file toggle, share, close --}}
         <div
             class="h-16 md:h-20 flex items-center justify-between px-4 md:px-8 bg-white/[0.02] border-b border-white/5">
             <div class="flex items-center gap-2 md:gap-4">
-                <!-- Mobile File Toggle Button -->
+                {{-- Mobile file list toggle (hamburger icon) --}}
                 <button @click="mobileFileListOpen = !mobileFileListOpen"
                     class="md:hidden p-2 bg-white/5 rounded-lg border border-white/10">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -50,7 +57,7 @@
                 </button>
 
                 <button @click="showPreview = false"
-                    class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-white/5 text-gray-400 hover:text-white hover:bg-red-500/20 transition-all border border-white/10">
+                    class="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
                     <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
@@ -59,15 +66,15 @@
             </div>
         </div>
 
-        <!-- Content -->
+        {{-- Modal body — file sidebar + code display --}}
         <div class="flex-1 flex overflow-hidden relative">
-            <!-- File List Sidebar -->
+            {{-- File list sidebar — file navigation panel --}}
             <aside
                 :class="mobileFileListOpen ? 'absolute left-0 top-0 bottom-0 w-64 bg-black/95 z-10' :
                     'hidden md:block md:relative md:w-64 md:bg-black/40'"
                 class="border-r border-white/5 p-4 md:p-6 overflow-y-auto custom-mini-scrollbar">
 
-                <!-- Mobile Header -->
+                {{-- Mobile file list header with close button --}}
                 <div x-show="mobileFileListOpen" class="flex items-center justify-between mb-4 md:hidden">
                     <div class="text-[10px] font-bold text-gray-600 uppercase tracking-tighter">PROJECT FILES</div>
                     <button @click="mobileFileListOpen = false" class="p-1 bg-white/5 rounded-lg">
@@ -78,13 +85,13 @@
                     </button>
                 </div>
 
-                <!-- Desktop Header -->
+                {{-- Desktop file list header --}}
                 <div class="hidden md:flex items-center justify-between mb-4">
                     
                     <span class="text-xs px-4 py-1 rounded-full bg-white/10 text-gray-300">Files</span>
                 </div>
 
-                <!-- Files List -->
+                {{-- Files list — clickable file tabs --}}
                 <nav class="space-y-1.5">
                     <template x-for="(file, index) in selectedSnippet?.files || []" :key="index">
                         <button
@@ -101,11 +108,11 @@
                 </nav>
             </aside>
 
-            <!-- Code Display -->
+            {{-- Code display area — shows active file with syntax highlighting --}}
             <div class="flex-1 flex flex-col bg-[#050505]/60">
                 <template x-for="(file, index) in selectedSnippet?.files || []" :key="index">
                     <div x-show="activeFileTab === index" class="h-full flex flex-col p-3 md:p-6">
-                        <!-- File Info Bar -->
+                        {{-- File info bar — shows current filename --}}
                         <div
                             class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3 md:mb-4 bg-white/5 px-3 md:px-4 py-2 rounded-lg border border-white/5">
                             <div class="flex items-center gap-2 text-xs">
@@ -116,9 +123,9 @@
                             </div>
                         </div>
 
-                        <!-- Code Container -->
+                        {{-- Code container — Prism.js highlighted code block --}}
                         <div class="flex-1 bg-black/40 rounded-xl border border-white/5 overflow-hidden relative">
-                            <!-- Copy Button -->
+                            {{-- Copy button — clipboard copy with feedback --}}
                             <button @click="copyCode(file.content)"
                                 class="absolute right-2 md:right-4 top-2 md:top-4 z-10 px-2 md:px-3 py-1 md:py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-all flex items-center gap-1 md:gap-2 text-[10px] md:text-xs">
                                 <span x-show="!copyDone">📋</span>
@@ -127,7 +134,7 @@
                                 <span x-show="copyDone" class="hidden md:inline">Copied!</span>
                             </button>
 
-                            <!-- Code -->
+                            {{-- Highlighted code output --}}
                             <pre class="h-full overflow-auto p-3 md:p-6 !m-0 !bg-transparent text-[11px] md:text-sm"><code :class="'language-' + ((selectedSnippet?.language || 'javascript').toLowerCase())" 
                                   class="!whitespace-pre-wrap !break-words !font-mono"
                                   x-text="file.content || '// No content'"></code></pre>
@@ -135,7 +142,7 @@
                     </div>
                 </template>
 
-                <!-- Empty State -->
+                {{-- Empty state — shown when snippet has no files --}}
                 <div x-show="!selectedSnippet?.files?.length" class="flex-1 flex items-center justify-center p-6">
                     <div class="text-center">
                         <div class="text-4xl mb-3">📁</div>
@@ -160,8 +167,8 @@
                 
             </div>
             <button @click="closeModal()"
-                class="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 text-gray-400 hover:text-white hover:bg-red-500/20 transition-all border border-white/10">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>

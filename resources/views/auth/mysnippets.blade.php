@@ -17,8 +17,7 @@
             class="fixed z-[200] w-48 glass-card border border-white/10 rounded-xl shadow-2xl shadow-black/50 py-1.5 overflow-hidden"
             :style="`left: ${contextMenuX}px; top: ${contextMenuY}px;`">
             
-            <a :href="contextMenuSnippet ? `/snippets/${contextMenuSnippet.id}/edit` : '#'
-                @click="closeContextMenu()"
+            <a :href="contextMenuSnippet ? `/snippets/${contextMenuSnippet.id}/edit` : '#'"
                 class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-blue-400 hover:bg-blue-500/10 transition-all">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -310,10 +309,9 @@
             <div
                 class="relative w-full max-w-md glass-card rounded-[3rem] p-10 border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.8)] animate-in zoom-in-95 duration-300">
                 <button @click="closeEraseModal()"
-                    class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12">
-                        </path>
+                    class="absolute top-5 right-5 z-50 w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
 
@@ -351,8 +349,14 @@
 
     </div>
 
+    {{-- ============================================================
+         My Snippets — Alpine.js Snippet Manager
+         ============================================================
+         Manages personal snippet list with search, filtering,
+         context menu (right-click), delete modal, and preview.
+         Uses server-side Blade data for initial hydration.
+         ============================================================ --}}
     <script>
-        // Define snippetBrowser globally
         window.snippetBrowser = function() {
             return {
                 snippets: [],

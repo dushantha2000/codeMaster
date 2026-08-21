@@ -3,6 +3,21 @@
    ============================================================
    Import this file in every layout to guarantee consistent
    tokens, buttons, inputs, cards, and background treatment.
+
+   CSS file structure:
+   - design-system.css  (THIS FILE) — global tokens, base reset,
+       shared components (.btn-primary, .glass-card, .input-field)
+   - common.css         — layout-level glass effects, mesh animation
+   - loader.css         — full-screen loading spinner
+   - notifications.css  — toast notification slide/scan animations
+   - dashboard.css      — dashboard page-specific overrides
+   - auth.css           — auth page-specific overrides
+   - share.css          — shared snippet page overrides
+   - snippet-editor.css — snippet editor overrides
+   - categories.css     — category page animations
+
+   Page-specific CSS files are linked via @push('styles') in
+   each Blade view or via the layout's <link> tags.
    ============================================================ */
 
 /* ---------- Google Fonts (loaded once per page) ---------- */
@@ -207,4 +222,50 @@ select option {
 ::selection {
     background: rgba(59, 130, 246, 0.3);
     color: white;
+}
+
+/* ---------- Creative Black & White Button ---------- */
+.creative-btn {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.creative-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #fff 0%, #e0e0e0 50%, #fff 100%);
+    transition: all 0.4s ease;
+    z-index: 1;
+}
+
+.creative-btn:hover::before {
+    left: 0;
+}
+
+.creative-btn:hover {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.creative-btn::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.1) 50%, transparent 60%);
+    z-index: 0;
+    animation: btnShine 3s infinite;
+    border-radius: inherit;
+}
+
+@keyframes btnShine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }

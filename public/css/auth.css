@@ -1,0 +1,21 @@
+/* ============================================================
+   Auth Pages — Login, Register, Password Reset, etc.
+   ============================================================
+   Extracted from layout/auth.blade.php inline <style> block.
+   These styles apply only to authentication-related views.
+   ============================================================ */
+
+/* Allow vertical scrolling on auth pages (they use min-h-screen flex centering) */
+body {
+    overflow-y: auto;
+}
+
+/* Blue radial glow behind hero images (login/register panels) */
+.image-glow-blue {
+    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+}
+
+/* Red radial glow behind secondary images */
+.image-glow-red {
+    background: radial-gradient(circle at center, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
+}

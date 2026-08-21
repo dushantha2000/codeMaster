@@ -1,0 +1,44 @@
+/* ============================================================
+   Categories Page — Animation Keyframes
+   ============================================================
+   Extracted from resources/views/categories/index.blade.php.
+   Used for modal pop-in, slide-in, and fade animations on
+   category cards and modals.
+   ============================================================ */
+
+/* Modal/card pop-in — scale + fade entrance */
+@keyframes menuPopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Slide from left — used for list item entrance */
+@keyframes slideInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Simple opacity fade — generic entrance */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

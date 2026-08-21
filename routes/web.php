@@ -123,6 +123,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // delete single snippet
     Route::post('/snippet-delete', [SnippetController::class, 'SnippetDelete']);
 
+    // Welcome modal dismiss
+    Route::post('/api/welcome/dismiss', [AuthController::class, 'dismissWelcome']);
 
     
     //category routes

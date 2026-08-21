@@ -2,7 +2,7 @@
 
 @section('title', 'Dashboard')
 
-{{-- This will show the search bar in header --}}
+{{-- Expose search bar in the header partial --}}
 @section('show-search')
     true
 @endsection
@@ -181,10 +181,10 @@
                         </button>
                     </div>
                 </div>
-            </div>            <!-- Right Sidebar -->
-
-            {{-- Sponsored Ad Banner --}}
-            <aside class="col-span-1 xl:col-span-1 space-y-6">
+            </div>            <!-- Right Sidebar -->                {{-- ============================================================
+                     Right Sidebar — Sponsored Ad + Recent Changes
+                     ============================================================ --}}
+                <aside class="col-span-1 xl:col-span-1 space-y-6">
                 <div class="glass-card border border-white/5 overflow-hidden group hover:border-blue-500/20 transition-all duration-300">
                     {{-- Ad Label --}}
                     <div class="flex items-center justify-between px-4 pt-3 pb-0">
@@ -198,10 +198,8 @@
                     <div class="px-4 pt-3 pb-2">
                         <div class="w-full h-32 rounded-xl bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 border border-white/5 flex items-center justify-center overflow-hidden">
                             <div class="text-center">
-                                <div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                    </svg>
+                                <div class="w-12 h-12 mx-auto items-center justify-center s">
+                                    <img src="{{ asset('logo/mainlogo.png') }}" alt="Logo" class="w-12 h-12 object-contain">
                                 </div>
                                 <h3 class="text-white text-sm font-bold">TurboCode Pro</h3>
                                 <p class="text-gray-500 text-[10px] mt-0.5">Ship code 10x faster</p>
@@ -217,16 +215,19 @@
 
                         {{-- CTA Button --}}
                         <a href="#" target="_blank" rel="noopener noreferrer"
-                            class="mt-3 w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-xs font-bold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/10 hover:shadow-blue-500/25">
-                            Try Free for 14 Days
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
+                            class="creative-btn mt-3 w-full flex items-center justify-center gap-2 px-4 py-2.5 relative overflow-hidden text-xs font-bold rounded-xl transition-all duration-300 border border-white/20 text-white/90 hover:text-black active:scale-95">
+                            <span class="relative z-10 flex items-center gap-2">
+                                Up Coming Soon
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </span>
                         </a>
+
                     </div>
                 </div>
 
-            {{-- Recent Changes Sidebar --}}
+            {{-- Recent Changes — Timeline-style activity feed --}}
                 <div class=" sticky top-24 text-left  overflow-hidden group">
                    
                     
@@ -236,8 +237,10 @@
                     </h2>
 
                     <div class="relative space-y-6">
+                        {{-- Vertical timeline line behind activity dots --}}
                         <div class="absolute left-[2.5px] top-2 bottom-0 w-px bg-white/5 z-0"></div>
 
+                        {{-- Loop through recent activity items (created/updated snippets) --}}
                         @forelse($recentActivity as $activity)
                             <div class="relative pl-6 group/item cursor-pointer">
                                 <!-- Simple Dot -->
@@ -275,11 +278,20 @@
             </aside>
         </div>
 
-        {{-- Global Preview Modal --}}
+        {{-- Global snippet preview modal (shared across dashboard + my-snippets) --}}
         @include('common.preview-modal')
+
+        {{-- Welcome onboarding modal — shown once per user on first login --}}
+        @component('components.welcome-modal', ['show' => !$hasSeenWelcome])
+        @endcomponent
     </div>
 
-    <!-- Alpine.js Script  -->
+    {{-- ============================================================
+         Dashboard Alpine.js — Snippet Browser Logic
+         ============================================================
+         Manages search, filtering, pagination, and snippet preview
+         for the main dashboard discovery interface.
+         ============================================================ --}}
     <script>
         window.snippetBrowser = function() {
             return {
@@ -289,14 +301,14 @@
                 loading: false,
                 initialized: false,
 
-                // Discovery state
+                /* --- Discovery / Filter State --- */
                 searchQuery: '',
                 selectedLanguage: 'all',
                 selectedStatus: 'all',
                 sortBy: 'latest',
                 snippets: [],
 
-                // Preview Modal state
+                /* --- Preview Modal State --- */
                 showPreview: false,
                 selectedSnippet: null,
                 activeFileTab: 0,

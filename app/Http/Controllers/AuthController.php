@@ -316,6 +316,7 @@ class AuthController extends Controller
     {
         try {
             $currentUserId = auth()->id();
+            $user = auth()->user();
 
             $partners = DB::table("users")
                 ->join(
@@ -335,13 +336,31 @@ class AuthController extends Controller
                 )
                 ->get();
 
+            // ── Profile stats ──────────────────────────────────────
+            $snippetCount = DB::table("snippets")
+                ->where("user_id", $currentUserId)
+                ->count();
 
+            $categoryCount = DB::table("categories")
+                ->where("user_id", $currentUserId)
+                ->where("isActive", 1)
+                ->count();
 
-            // return $partners;
+            $partnerCount = DB::table("partnerships")
+                ->where("user_id", $currentUserId)
+                ->count();
+
+            $memberSince = $user->created_at
+                ? $user->created_at->diffForHumans()
+                : "Unknown";
 
             return view("auth.profile", [
-                "user" => auth()->user(),
-                "partners" => $partners,
+                "user"         => $user,
+                "partners"      => $partners,
+                "snippetCount"  => $snippetCount,
+                "categoryCount" => $categoryCount,
+                "partnerCount"  => $partnerCount,
+                "memberSince"   => $memberSince,
             ]);
         } catch (Exception $e) {
             return back()->with([
@@ -358,6 +377,21 @@ class AuthController extends Controller
             return back()->with([
                 "error" => "Something went wrong while loading the page.",
             ]);
+        }
+    }
+
+    public function dismissWelcome(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            if ($user) {
+                DB::table('users')
+                    ->where('id', $user->id)
+                    ->update(['has_seen_welcome' => 1]);
+            }
+            return response()->json(['message' => 'Welcome dismissed']);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Failed'], 500);
         }
     }
 

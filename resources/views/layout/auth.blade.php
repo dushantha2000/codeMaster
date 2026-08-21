@@ -10,25 +10,13 @@
     <!-- Shared Design System -->
     <link rel="stylesheet" href="{{ asset('css/design-system.css') }}">
 
+    <!-- Auth Page Styles (overflow, glow effects) -->
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+
     <!-- CDN Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <style>
-        /* ---- Auth-Specific Overrides ---- */
-
-        body {
-            overflow-y: auto;
-        }
-
-        .image-glow-blue {
-            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-        }
-
-        .image-glow-red {
-            background: radial-gradient(circle at center, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
-        }
-    </style>
     @stack('styles')
 </head>
 
@@ -44,18 +32,18 @@
 
     <script>
         $(document).ready(function() {
-            // 1. Handle Form Submits
+            // Show loader on form submissions
             $(document).on('submit', 'form', function() {
                 $('#custom-loader').css('display', 'flex').fadeIn(200);
             });
 
-            // 2. Handle Link Clicks (Event Delegation)
+            // Show loader on load-button clicks (event delegation for dynamic content)
             $(document).on('click', '.load-btn', function() {
                 $('#custom-loader').css('display', 'flex').show();
             });
         });
 
-        // 3. Robust Hide logic
+        // Robust loader hide — fires on page restore from bfcache
         window.addEventListener('pageshow', function() {
             $('#custom-loader').fadeOut(300);
         });
