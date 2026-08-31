@@ -74,25 +74,7 @@
                             @endif
                         </div>
 
-                        {{-- Profile Stats --}}
-                        <div class="grid grid-cols-2 gap-3 mb-6">
-                            <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center">
-                                <span class="block text-xl font-black text-blue-400">{{ $snippetCount }}</span>
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Snippets</span>
-                            </div>
-                            <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center">
-                                <span class="block text-xl font-black text-blue-400">{{ $categoryCount }}</span>
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Categories</span>
-                            </div>
-                            <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center">
-                                <span class="block text-xl font-black text-blue-400">{{ $partnerCount }}</span>
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Partners</span>
-                            </div>
-                            <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center">
-                                <span class="block text-[11px] font-bold text-blue-400">{{ $memberSince }}</span>
-                                <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Member</span>
-                            </div>
-                        </div>
+                       
 
                         {{-- Action Button --}}
                         <div class="mt-6 pt-6 border-t border-white/5">

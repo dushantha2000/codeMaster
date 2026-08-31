@@ -62,118 +62,49 @@
 
             {{-- Right Side: Steps Content --}}
             <div class="lg:w-3/5 p-8 flex flex-col">
-                {{-- Step 1: What is CodeVault --}}
+                {{--What is CodeVault --}}
                 <div x-show="currentStep === 0" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="flex-1 flex flex-col">
-                    <div class="flex items-center gap-3 mb-6">
-                        
-                        <h3 class="text-2xl font-bold" style="color: var(--color-text-primary);">What is CodeVault ?</h3>
-                    </div>
+                    <h3 class="text-2xl font-bold mb-6" style="color: var(--color-text-primary);">What is CodeVault ?</h3>
 
                     <p class="text-sm leading-relaxed mb-6" style="color: var(--color-text-secondary);">
                         CodeVault is a <span class="font-semibold" style="color: var(--color-accent);">smart code snippet manager</span> that helps developers organize, store, and share their code securely.
                     </p>
 
-                    {{-- Quick Stats --}}
-                    <div class="grid grid-cols-3 gap-3 mb-6">
-                        <div class="text-center p-3 rounded-xl" style="background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle);">
-                            <div class="text-xl font-black" style="color: var(--color-accent);">∞</div>
-                            <div class="text-[10px] font-medium mt-1" style="color: var(--color-text-muted);">Unlimited Snippets</div>
-                        </div>
-                        <div class="text-center p-3 rounded-xl" style="background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle);">
-                            <div class="text-xl font-black" style="color: var(--color-accent);">🔒</div>
-                            <div class="text-[10px] font-medium mt-1" style="color: var(--color-text-muted);">Encrypted Storage</div>
-                        </div>
-                        <div class="text-center p-3 rounded-xl" style="background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle);">
-                            <div class="text-xl font-black" style="color: var(--color-accent);">⚡</div>
-                            <div class="text-[10px] font-medium mt-1" style="color: var(--color-text-muted);">Instant Search</div>
-                        </div>
-                    </div>
+                    
 
-                    <div class="mt-auto">
-                        <button @click="currentStep = 1" class="btn-primary w-full py-3.5 px-6 text-sm rounded-xl">
+                    
+
+                   
+
+                    <div class="mt-auto flex justify-end">
+                        <button @click="currentStep = 1" class="btn-primary w-1/2 py-3.5 px-6 text-sm rounded-xl">
                             Next →
                         </button>
                     </div>
                 </div>
 
-                {{-- Step 2: Key Features --}}
+                {{--Key Features --}}
                 <div x-show="currentStep === 1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="flex-1 flex flex-col">
-                    <div class="flex items-center gap-3 mb-6">
+                    <h3 class="text-lg font-bold mb-6" style="color: var(--color-text-primary);">Key Features</h3>
+
+                    <ul class="list-disc list-inside space-y-1 mb-6 text-sm" style="color: var(--color-text-secondary);">
+                        <li>Multi-file snippets with categories & language tags</li>
+                        <li><span class="font-semibold" style="color: var(--color-accent);">AI-powered code</span> optimization & suggestions</li>
+                        <li>Password-protected <span class="font-semibold" style="color: var(--color-accent);">share links</span> with expiration</li>
+                        <li>Invite <span class="font-semibold" style="color: var(--color-accent);">team members to collaborate</span></li>
+
+                       
+
+                        <li>CodeVault is <span class="font-semibold" style="color: var(--color-accent);">free open-source</span> open-source a with a focus on security and privacy</li>
+
                         
-                        <h3 class="text-lg font-bold" style="color: var(--color-text-primary);">Key Features</h3>
-                    </div>
 
-                    <div class="space-y-3 mb-6">
-                        {{-- Feature 1 --}}
-                        <div class="flex items-center gap-4 p-3.5 rounded-xl transition-all hover:translate-x-1" style="background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle);">
-                            <div class="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center" style="background: var(--color-accent-subtle); border: 1px solid var(--color-accent-border);">
-                                <svg class="w-5 h-5" style="color: var(--color-accent);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="text-sm font-bold" style="color: var(--color-text-primary);">Create & Organize</h4>
-                                <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">Multi-file snippets with categories & language tags</p>
-                            </div>
-                            <svg class="w-4 h-4 shrink-0" style="color: var(--color-text-faint);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </div>
+    
 
-                        {{-- Feature 2 --}}
-                        <div class="flex items-center gap-4 p-3.5 rounded-xl transition-all hover:translate-x-1" style="background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle);">
-                            <div class="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center" style="background: var(--color-accent-subtle); border: 1px solid var(--color-accent-border);">
-                                <svg class="w-5 h-5" style="color: var(--color-accent);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="text-sm font-bold" style="color: var(--color-text-primary);">AI-Powered Optimization</h4>
-                                <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">Improve code quality with smart AI suggestions</p>
-                            </div>
-                            <svg class="w-4 h-4 shrink-0" style="color: var(--color-text-faint);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </div>
+                    </ul>
 
-                        {{-- Feature 3 --}}
-                        <div class="flex items-center gap-4 p-3.5 rounded-xl transition-all hover:translate-x-1" style="background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle);">
-                            <div class="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center" style="background: var(--color-accent-subtle); border: 1px solid var(--color-accent-border);">
-                                <svg class="w-5 h-5" style="color: var(--color-accent);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                                </svg>
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="text-sm font-bold" style="color: var(--color-text-primary);">Secure Share Links</h4>
-                                <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">Password-protected links with expiration dates</p>
-                            </div>
-                            <svg class="w-4 h-4 shrink-0" style="color: var(--color-text-faint);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </div>
-
-                        {{-- Feature 4 --}}
-                        <div class="flex items-center gap-4 p-3.5 rounded-xl transition-all hover:translate-x-1" style="background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle);">
-                            <div class="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center" style="background: var(--color-accent-subtle); border: 1px solid var(--color-accent-border);">
-                                <svg class="w-5 h-5" style="color: var(--color-accent);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="text-sm font-bold" style="color: var(--color-text-primary);">Partner Collaboration</h4>
-                                <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">Invite team members to access your vault</p>
-                            </div>
-                            <svg class="w-4 h-4 shrink-0" style="color: var(--color-text-faint);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-3 mt-auto">
-                        <button @click="currentStep = 0" class="flex-1 py-3.5 px-6 text-sm font-bold rounded-xl transition-all" style="background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle); color: var(--color-text-secondary);">
-                            ← Back
-                        </button>
-                        <button @click="currentStep = 2" class="btn-primary flex-[2] py-3.5 px-6 text-sm rounded-xl">
+                    <div class="mt-auto flex justify-end">
+                        <button @click="currentStep = 2" class="btn-primary w-1/2 py-3.5 px-6 text-sm rounded-xl">
                             Next →
                         </button>
                     </div>
@@ -182,50 +113,29 @@
                 {{-- Step 3: Get Started --}}
                 <div x-show="currentStep === 2" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="flex-1 flex flex-col">
                     <div class="flex items-center gap-3 mb-6">
-                        
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
                         <h3 class="text-lg font-bold" style="color: var(--color-text-primary);">You're All Set..!</h3>
                     </div>
 
                     <div class="flex-1 flex flex-col justify-center">
-                        {{-- Quick Action Cards --}}
-                        <div class="space-y-3 mb-6">
-                            <a href="{{ route('snippets-create') }}" class="flex items-center gap-4 p-4 rounded-xl transition-all hover:translate-x-1 no-underline" style="background: var(--color-bg-elevated); border: 1px solid var(--color-accent-border);">
-                                <div class="w-12 h-12 shrink-0 rounded-xl flex items-center justify-center" style="background: var(--color-accent-subtle);">
-                                    <svg class="w-6 h-6" style="color: var(--color-accent);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                    </svg>
-                                </div>
-                                <div class="flex-1">
-                                    <h4 class="text-sm font-bold" style="color: var(--color-text-primary);">Create Your First Snippet</h4>
-                                    <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">Start saving your code snippets</p>
-                                </div>
-                                <svg class="w-5 h-5 shrink-0" style="color: var(--color-accent);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
+                        <div class="space-y-2 mb-6">
+                            <a href="{{ route('snippets-create') }}" class="block p-3 rounded-lg no-underline transition-all" style="color: var(--color-text-primary); background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle);">
+                                <span class="text-sm font-bold">Create Your First Snippet</span>
+                                <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">Start saving your code snippets</p>
                             </a>
-
-                            <a href="{{ route('howto') }}" class="flex items-center gap-4 p-4 rounded-xl transition-all hover:translate-x-1 no-underline" style="background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle);">
-                                <div class="w-12 h-12 shrink-0 rounded-xl flex items-center justify-center" style="background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle);">
-                                    <svg class="w-6 h-6" style="color: var(--color-text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <div class="flex-1">
-                                    <h4 class="text-sm font-bold" style="color: var(--color-text-primary);">How to Use CodeVault</h4>
-                                    <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">Read the quick start guide</p>
-                                </div>
-                                <svg class="w-5 h-5 shrink-0" style="color: var(--color-text-faint);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
+                            <a href="{{ route('howto') }}" class="block p-3 rounded-lg no-underline transition-all" style="color: var(--color-text-primary); background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle);">
+                                <span class="text-sm font-bold">How to Use CodeVault</span>
+                                <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">Read the quick start guide</p>
                             </a>
                         </div>
                     </div>
 
-                    <div class="flex gap-3 mt-auto">
-                        <button @click="currentStep = 1" class="flex-1 py-3.5 px-6 text-sm font-bold rounded-xl transition-all" style="background: var(--color-bg-elevated); border: 1px solid var(--color-border-subtle); color: var(--color-text-secondary);">
-                            ← Back
-                        </button>
-                        <button @click="dismiss()" class="btn-primary flex-[2] py-3.5 px-6 text-sm rounded-xl">
+                    <div class="mt-auto flex justify-end">
+                        <button @click="dismiss()" class="btn-primary w-1/2 py-3.5 px-6 text-sm rounded-xl">
                             Get Started 
                         </button>
                     </div>

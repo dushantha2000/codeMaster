@@ -217,7 +217,7 @@
                         <a href="#" target="_blank" rel="noopener noreferrer"
                             class="creative-btn mt-3 w-full flex items-center justify-center gap-2 px-4 py-2.5 relative overflow-hidden text-xs font-bold rounded-xl transition-all duration-300 border border-white/20 text-white/90 hover:text-black active:scale-95">
                             <span class="relative z-10 flex items-center gap-2">
-                                Up Coming Soon
+                                 Coming Soon
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>

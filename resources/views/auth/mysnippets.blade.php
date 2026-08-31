@@ -102,10 +102,7 @@
                                             class="text-5xl font-black text-blue-500/40">{{ substr(Auth::user()->name, 0, 1) }}</span>
                                     @endif
                                 </div>
-                                <div
-                                    class="absolute -bottom-2 -right-2 bg-blue-600 text-white text-[10px] font-black px-3 py-1.5 rounded-xl border-4 border-[#0a0a0a] shadow-xl uppercase tracking-widest">
-                                    lvl 1
-                                </div>
+                                
                             </div>
 
                             <h2 class="text-2xl font-black text-white tracking-tight mb-1">{{ Auth::user()->name }}</h2>

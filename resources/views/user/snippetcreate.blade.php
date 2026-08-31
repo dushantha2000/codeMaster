@@ -33,8 +33,7 @@
                                 class="w-full h-full object-contain transform scale-125">
                         </div>
                         <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile">
-                            <a href="{{ url('/') }}">CodeVault</a> <span
-                                class="text-blue-500 text-xs font-normal">v1.1</span>
+                            <a href="{{ url('/') }}">CodeVault</a> 
                         </h1>
                     </div>
                 </div>
