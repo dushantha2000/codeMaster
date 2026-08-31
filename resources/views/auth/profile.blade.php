@@ -74,6 +74,8 @@
                             @endif
                         </div>
 
+                       
+
                         {{-- Action Button --}}
                         <div class="mt-6 pt-6 border-t border-white/5">
                             <a href="{{ url('/settings') }}"
@@ -218,8 +220,8 @@
                 class="relative w-full max-w-lg glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
 
                 <button id="closeModal"
-                    class="absolute top-5 right-5 z-50 text-gray-400 hover:text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="absolute top-5 right-5 z-50 w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
                     </svg>
@@ -294,6 +296,13 @@
         </div>
     </div>
 
+    {{-- ============================================================
+         Profile / Partnerships — Partner Management Script
+         ============================================================
+         Handles user search autocomplete, partner tag creation,
+         permission modal (read-only / editor toggles), and
+         partner removal. Uses vanilla JS for DOM manipulation.
+         ============================================================ --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const userSearch = document.getElementById('user-search');

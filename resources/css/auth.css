@@ -1,27 +1,13 @@
+/* ============================================================
+   Auth CSS — Legacy file. Now delegates to the shared design system.
+   ============================================================ */
+
+/* Import shared design system */
+@import url('/css/design-system.css');
+
+/* Auth-specific overrides (if any) */
 body {
-    font-family: 'Space Grotesk', sans-serif;
-    background: #0a0a0a;
     overflow-y: auto;
-}
-
-[x-cloak] { display: none !important; }
-
-.glass-card {
-    background: rgba(20, 20, 20, 0.6);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.input-field {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.2s ease;
-}
-
-.input-field:focus {
-    border-color: rgba(59, 130, 246, 0.5);
-    background: rgba(255, 255, 255, 0.07);
-    outline: none;
 }
 
 .image-glow-blue {

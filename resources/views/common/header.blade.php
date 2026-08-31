@@ -1,11 +1,17 @@
-<!-- Header -->
+{{-- ============================================================
+     Site Header — Sticky Top Navigation Bar
+     ============================================================
+     Contains logo, desktop nav, mobile menu, notifications,
+     new snippet button, and user dropdown menu.
+     Uses Alpine.js for interactive state (menu toggles, dropdowns).
+     ============================================================ --}}
 <header
     class="h-16 md:h-20 flex items-center bg-[#050505]/80 backdrop-blur-xl justify-between px-3 md:px-8 py-2 shrink-0 sticky top-0 z-30 border-b border-white/10 shadow-2xl">
 
-    <!-- Left side -->
+    {{-- Left side — Logo + Desktop Nav --}}
     <div class="flex items-center gap-2 md:gap-2">
 
-        <!-- Mobile menu button -->
+        {{-- Mobile hamburger menu toggle --}}
         <button @click="mobileMenuOpen = !mobileMenuOpen"
             class="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white active:scale-90 transition-all">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -16,7 +22,7 @@
             </svg>
         </button>
 
-        <!-- Logo -->
+        {{-- Site logo + name --}}
         <div class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center overflow-hidden">
             <img src="{{ asset('logo/mainlogo.png') }}" alt="CodeVault Logo" class="w-full h-full object-contain transform scale-125">
         </div>
@@ -27,7 +33,7 @@
         </h1>
         <div class="flex-grow"></div>
 
-        <!-- Desktop Nav -->
+        {{-- Desktop navigation — horizontal pill-style nav links --}}
         <nav class="hidden lg:flex  self-stretch ">
             <div class="flex items-center px-1 py-1 bg-white/5 border border-white/10 rounded-2xl  ">
                 <a href="{{ url('/') }}"
@@ -56,10 +62,10 @@
 
 
 
-    <!-- Right side -->
+    {{-- Right side — Actions, Notifications, User Menu --}}
     <div class="flex items-center gap-1.5 md:gap-4">
 
-        <!-- New Snippet button -->
+        {{-- New Snippet quick-action button --}}
         <a href="{{ url('snippets-create') }}"
             class="btn-primary px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-bold text-xs md:text-sm flex items-center gap-1.5 active:scale-95 transition-all">
             <svg class="w-3.5 h-3.5 md:w-4 md:h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,7 +74,7 @@
             <span class="hidden sm:inline">New</span>
         </a>
 
-        <!-- Notifications desktop -->
+        {{-- Desktop notifications dropdown + help tooltip --}}
         <div class="hidden md:flex items-center gap-1 mr-2" x-data="{ notificationsOpen: false, helpTooltip: false }">
             <div class="relative">
                 <button @click="notificationsOpen = !notificationsOpen" @click.outside="notificationsOpen = false"
@@ -118,7 +124,7 @@
             </div>
         </div>
 
-        <!-- Mobile notifications -->
+        {{-- Mobile notifications dropdown --}}
         <div class="md:hidden relative" x-data="{ mobileNotifOpen: false }">
             <button @click="mobileNotifOpen = !mobileNotifOpen" @click.outside="mobileNotifOpen = false"
                 class="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white active:scale-90 transition-all relative">
@@ -153,7 +159,7 @@
             </div>
         </div>
 
-        <!-- User menu -->
+        {{-- User avatar menu — profile, settings, logout --}}
         <div class="relative ml-1" x-data="{ userMenuOpen: false }">
             <button @click="userMenuOpen = !userMenuOpen"
                 class="flex items-center gap-1.5 md:gap-2 p-1 md:pr-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 active:scale-95 transition-all">
@@ -174,7 +180,7 @@
                 </svg>
             </button>
 
-            <!-- User dropdown -->
+            {{-- User dropdown menu — shown on avatar click --}}
             <div x-show="userMenuOpen" @click.outside="userMenuOpen = false"
                 x-transition:enter="transition ease-out duration-150"
                 x-transition:enter-start="transform opacity-0 scale-95 -translate-y-1"

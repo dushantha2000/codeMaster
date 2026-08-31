@@ -5,140 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') | CodeVault</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
-     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- Shared Design System -->
+    <link rel="stylesheet" href="{{ asset('css/design-system.css') }}">
+
+    <!-- Snippet Editor Styles (tabs, file list, responsive sidebar) -->
+    <link rel="stylesheet" href="{{ asset('css/snippet-editor.css') }}">
+
+    <!-- CDN Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
 
-    <style>
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background: #0a0a0a;
-        }
-
-        .code-font {
-            font-family: 'Fira Code', monospace;
-        }
-
-        [x-cloak] {
-            display: none !important;
-        }
-
-        .glass-card {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .btn-primary {
-            background: rgb(255, 255, 255);
-            color: rgb(0, 0, 0);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.4s;
-            
-        }
-
-        .btn-primary:hover {
-            background: rgb(0, 0, 0);
-            transform: translateY(-1px);
-            color: rgb(255, 255, 255);
-        }
-
-        .input-field {
-            background: #050505;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: white;
-            transition: all 0.2s;
-        }
-
-        .input-field:focus {
-            border-color: #0969da;
-            box-shadow: 0 0 0 1px #0969da;
-        }
-
-        .tab-active {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
-        }
-
-        .file-item {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .file-item:hover {
-            background: rgba(255, 255, 255, 0.04);
-            transform: translateX(2px);
-        }
-
-        .modal-backdrop {
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(24px);
-        }
-
-        /* Custom Scrollbar */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.01);
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .sidebar-container {
-                position: fixed !important;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                z-index: 50;
-                width: 85% !important;
-                max-width: 300px;
-                transform: translateX(-100%);
-                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-                box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
-                border-right: 1px solid rgba(255, 255, 255, 0.05);
-            }
-
-            .sidebar-container.mobile-open {
-                transform: translateX(0);
-            }
-
-            .sidebar-backdrop {
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.6);
-                backdrop-filter: blur(4px);
-                z-index: 45;
-                opacity: 0;
-                pointer-events: none;
-                transition: opacity 0.4s ease;
-            }
-
-            .sidebar-backdrop.active {
-                opacity: 1;
-                pointer-events: auto;
-            }
-
-            .hide-on-mobile {
-                display: none !important;
-            }
-        }
-    </style>
 </head>
 
-<body class="text-gray-100 bg-[#0a0a0a] min-h-screen Selection:bg-blue-500/30 overflow-hidden" x-data="snippetEditor()" x-cloak>
+<body class="text-gray-100 bg-[#0a0a0a] min-h-screen selection:bg-blue-500/30 overflow-hidden" x-data="snippetEditor()" x-cloak>
 
     @include('common.loading')
     
@@ -150,15 +31,18 @@
 
     <script>
         $(document).ready(function() {
+            // Show loader on form submissions
             $(document).on('submit', 'form', function() {
                 $('#custom-loader').css('display', 'flex').fadeIn(200);
             });
 
+            // Show loader on load-button clicks (event delegation for dynamic content)
             $(document).on('click', '.load-btn', function() {
                 $('#custom-loader').css('display', 'flex').show();
             });
         });
 
+        // Robust loader hide — fires on page restore from bfcache
         window.addEventListener('pageshow', function() {
             $('#custom-loader').fadeOut(300);
         });

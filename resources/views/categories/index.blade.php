@@ -2,42 +2,10 @@
 
 @section('title', 'Categories')
 
-<style>
-    /* Your existing animations */
-    @keyframes menuPopIn {
-        0% {
-            opacity: 0;
-            transform: scale(0.8);
-        }
-
-        100% {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    @keyframes slideInLeft {
-        0% {
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-
-        100% {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-
-        to {
-            opacity: 1;
-        }
-    }
-</style>
+{{-- Categories page styles (modal pop-in, slide-in, fade animations) --}}
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/categories.css') }}">
+@endpush
 
 @section('content')
     <div id="main-page-content" class="w-full max-w-6xl mx-auto px-4">
@@ -88,7 +56,13 @@
 
 
 
-        {{-- Categories Grid --}}
+        {{-- ============================================================
+             Categories Grid — Responsive Card Layout
+             ============================================================
+             Each category is a clickable card with color-themed icon,
+             snippet count badge, and hover micro-interactions.
+             Uses dynamic Tailwind color classes via $colorClass.
+             ============================================================ --}}
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             @forelse($categories as $category)
                 @php
@@ -144,7 +118,7 @@
             @endforelse
         </div>
 
-        {{-- Blade-Side Pagination --}}
+        {{-- Server-side pagination — page navigation with prev/next --}}
         @if ($categories->hasPages())
             <div class="flex flex-col sm:flex-row items-center justify-between mt-12 pt-8 border-t border-white/5 gap-6">
                 <div class="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-gray-500">
@@ -198,12 +172,18 @@
         @endif
     </div>
 
-    {{-- Create Category Modal --}}
+    {{-- ============================================================
+         Create Category Modal
+         ============================================================
+         Pop-up form for creating new categories with name,
+         description, and color theme selection.
+         Uses CSS animation menuPopIn for entrance effect.
+         ============================================================ --}}
     <div id="create-category-modal" class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
         <div onclick="event.stopPropagation()"
             class="relative w-full max-w-2xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
-            <button onclick="closeCreateModal()" class="absolute top-5 right-5 z-50 text-gray-400 hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button onclick="closeCreateModal()" class="absolute top-5 right-5 z-50 w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                     </path>
                 </svg>
@@ -259,8 +239,8 @@
     <div id="update-category-modal" class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
         <div onclick="event.stopPropagation()"
             class="relative w-full max-w-2xl glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
-            <button onclick="closeUpdateModal()" class="absolute top-5 right-5 z-50 text-gray-400 hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button onclick="closeUpdateModal()" class="absolute top-5 right-5 z-50 w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                     </path>
                 </svg>

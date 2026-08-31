@@ -7,13 +7,36 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Snippet;
-use Illuminate\Support\Str;
-use Exception;
+use Illuminate\Support\Str;use Exception;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\StoreCategoryRequest;
-
 
 class CategoriesController extends Controller
 {
+    /**
+     * Safely scan and delete Redis keys matching a pattern.
+     * Uses SCAN instead of KEYS to avoid blocking Redis.
+     */
+    private function scanAndDelete($redis, $pattern)
+    {
+        $iterator = null;
+        $keys = [];
+
+        do {
+            $result = $redis->scan($iterator, $pattern, 100);
+            if ($result !== false) {
+                $keys = array_merge($keys, $result);
+                if (count($keys) >= 100) {
+                    $redis->del($keys);
+                    $keys = [];
+                }
+            }
+        } while ($iterator > 0);
+
+        if (!empty($keys)) {
+            $redis->del($keys);
+        }
+    }
 
     public function Update(StoreCategoryRequest $request)
     {
@@ -37,8 +60,20 @@ class CategoriesController extends Controller
                     ]);
             });
 
-            //  Forget categories_version
+            // Bust categories cache — new version will be created on
+            // next read via Cache::put (see index/EditView).
             Cache::forget("user:{$userId}:categories_version");
+            $store = Cache::getStore();
+            if (method_exists($store, 'getRedis')) {
+                try {
+                    $redis = $store->getRedis();
+                    $prefix = Cache::getPrefix();
+                    $this->scanAndDelete($redis, $prefix . "categories:user:{$userId}:*");
+                    $this->scanAndDelete($redis, $prefix . "category:*:user:{$userId}:*");
+                } catch (Exception $e) {
+                    Log::warning('Categories cache pattern deletion failed: ' . $e->getMessage());
+                }
+            }
 
             return redirect()
                 ->route('categories.index')
@@ -112,21 +147,26 @@ class CategoriesController extends Controller
         try {
             $userId = auth()->id();
 
-            // Version 
             $versionKey = "user:{$userId}:categories_version";
-            $version = Cache::rememberForever($versionKey, fn() => time());
+            if (Cache::get($versionKey) === null) {
+                Cache::put($versionKey, now()->timestamp, now()->addHours(6));
+            }
+            $version = Cache::get($versionKey, now()->timestamp);
 
-            // Cache Key create
             $cacheKey = "category:{$categoryId}:user:{$userId}:v:{$version}";
 
-            $category = Cache::rememberForever($cacheKey, function () use ($userId, $categoryId) {
-                return DB::table('categories')
-                    ->where('user_id', $userId)
-                    ->where('category_id', $categoryId)
-                    ->where('isActive', 1)
-                    ->select('category_id', 'category_name', 'category_description', 'color_name', 'isActive')
-                    ->first();
-            });
+            $category = Cache::remember(
+                $cacheKey,
+                now()->addHours(6),
+                function () use ($userId, $categoryId) {
+                    return DB::table('categories')
+                        ->where('user_id', $userId)
+                        ->where('category_id', $categoryId)
+                        ->where('isActive', 1)
+                        ->select('category_id', 'category_name', 'category_description', 'color_name', 'isActive')
+                        ->first();
+                }
+            );
 
             // return $category;
 
@@ -166,9 +206,13 @@ class CategoriesController extends Controller
             $search = $request->query('q');
             $page = $request->query('page', 1);
 
-            // Get categories version
+            // Version — TTL-based so a Cache::forget() bust on
+            // create/update/delete forces a fresh timestamp on next read.
             $versionKey = "user:{$userId}:categories_version";
-            $version = Cache::rememberForever($versionKey, fn() => time());
+            if (Cache::get($versionKey) === null) {
+                Cache::put($versionKey, now()->timestamp, now()->addHours(6));
+            }
+            $version = Cache::get($versionKey, now()->timestamp);
 
             // Build dynamic cache key including search and page
             $searchHash = md5($search ?? '');
@@ -197,7 +241,14 @@ class CategoriesController extends Controller
 
             });
 
-            return view('categories.index', compact('categories', 'search'));
+            // Aggregate stat for the page header strip
+            $totalSnippets = DB::table('snippets')
+                ->where('user_id', $userId)
+                ->where('isActive', 1)
+                ->whereNotNull('category_id')
+                ->count();
+
+            return view('categories.index', compact('categories', 'search', 'totalSnippets'));
 
         } catch (Exception $e) {
 
@@ -223,8 +274,18 @@ class CategoriesController extends Controller
                     ]);
             });
 
-            //  Forget categories_version
+            // Bust categories cache
             Cache::forget("user:{$userId}:categories_version");
+            $store = Cache::getStore();
+            if (method_exists($store, 'getRedis')) {
+                try {
+                    $redis = $store->getRedis();
+                    $prefix = Cache::getPrefix();
+                    $this->scanAndDelete($redis, $prefix . "categories:user:{$userId}:*");
+                } catch (Exception $e) {
+                    Log::warning('Categories cache pattern deletion failed: ' . $e->getMessage());
+                }
+            }
 
             return redirect()
                 ->route('categories.index')
@@ -255,8 +316,18 @@ class CategoriesController extends Controller
 
             if ($updated) {
 
-                //  Forget categories_version
+                // Bust categories cache
                 Cache::forget("user:{$userId}:categories_version");
+                $store = Cache::getStore();
+                if (method_exists($store, 'getRedis')) {
+                    try {
+                        $redis = $store->getRedis();
+                        $prefix = Cache::getPrefix();
+                        $this->scanAndDelete($redis, $prefix . "categories:user:{$userId}:*");
+                    } catch (Exception $e) {
+                        Log::warning('Categories cache pattern deletion failed: ' . $e->getMessage());
+                    }
+                }
 
                 return redirect()->route('categories.index')->with('success', 'Deleted successfully.');
             }

@@ -20,35 +20,44 @@ class SnippetController extends Controller
      */
     private function invalidateUserSnippetCaches($userId)
     {
-        //  Use increment instead of forever with time()
-        Cache::increment("user:{$userId}:version");
+        // ──────────────────────────────────────────────────────────
+        // Bump version atomically using Cache::put (timestamp).
+        //
+        // WHY NOT Cache::increment()?
+        // If the key doesn't exist yet, Redis INCR creates it with
+        // value 1.  A concurrent request that also calls increment()
+        // sees value 2, then its null-check fails and the version is
+        // never initialised with forever().  Both requests may then
+        // write to cache keys whose version they read *before* the
+        // bump — stale data is cached under a version that now
+        // belongs to nobody.
+        //
+        // Using Cache::put() with a timestamp makes the operation
+        // atomic AND gives each invalidation cycle a unique version,
+        // so in-flight requests that read the *old* version will
+        // write to keys that are immediately superseded.
+        // ──────────────────────────────────────────────────────────
+        $newVersion = now()->timestamp;
+        Cache::put("user:{$userId}:version", $newVersion, now()->addDays(30));
 
-        // If no version exists, set to 1
-        if (Cache::get("user:{$userId}:version") === null) {
-            Cache::forever("user:{$userId}:version", 1);
-        }
-
-        // Forget specific static keys
+        // Explicitly forget static (non-versioned) cache keys
         Cache::forget("languages:user:{$userId}:list");
         Cache::forget("partnerships:user:{$userId}:shared_with_me");
 
-        // Delete pattern-based caches for this user
+        // Delete pattern-based versioned caches for this user via
+        // Redis SCAN (safe for large key sets — no blocking KEYS).
         $store = Cache::getStore();
         if (method_exists($store, 'getRedis')) {
             try {
                 $redis = $store->getRedis();
                 $prefix = Cache::getPrefix();
 
-                // Use scan instead of keys
                 $dashboardPattern = $prefix . "snippets:user:{$userId}:dashboard:*";
                 $this->scanAndDelete($redis, $dashboardPattern);
 
-                // Delete all search caches for this user
                 $searchPattern = $prefix . "search:user:{$userId}:*";
                 $this->scanAndDelete($redis, $searchPattern);
-
             } catch (Exception $e) {
-                // TTL worked
                 Log::warning('Redis pattern deletion failed: ' . $e->getMessage());
             }
         }
@@ -76,14 +85,32 @@ class SnippetController extends Controller
                     $keys = [];
                 }
             }
-        } while ($iterator > 0);
-
-        // Delete remaining keys
+        } while ($iterator > 0);        // Delete remaining keys
         if (!empty($keys)) {
             $redis->del($keys);
         }
     }
 
+    /**
+     * Check if the authenticated user can modify a snippet.
+     * Returns true when the user is either:
+     *   - the snippet owner, OR
+     *   - a partner with is_edit = 1.
+     */
+    private function canEditSnippet($snippet, int $userId): bool
+    {
+        // Owner always has edit rights
+        if ($snippet->user_id == $userId) {
+            return true;
+        }
+
+        // Check partner with editor access
+        return DB::table('partnerships')
+            ->where('user_id', $snippet->user_id)
+            ->where('partner_id', $userId)
+            ->where('is_edit', 1)
+            ->exists();
+    }
 
 
 
@@ -108,8 +135,14 @@ class SnippetController extends Controller
                 }
             );
 
-            // Get version
-            $version = Cache::get("user:{$currentUserId}:version", 1);
+            // Get version — initialise for first-time users so
+            // Cache::increment in invalidateUserSnippetCaches has a
+            // concrete integer to work with (avoids null → 1 race).
+            $versionKey = "user:{$currentUserId}:version";
+            if (Cache::get($versionKey) === null) {
+                Cache::put($versionKey, 1, now()->addDays(30));
+            }
+            $version = Cache::get($versionKey, 1);
             $queryString = $request->getQueryString() ?? '';
             $dashboardCacheKey = "snippets:user:{$currentUserId}:dashboard:v{$version}:" . md5($queryString);
 
@@ -218,19 +251,20 @@ class SnippetController extends Controller
            // return $recentActivity;
            //return languages;
 
+            // Check if user has seen welcome modal
+            $hasSeenWelcome = auth()->user()->has_seen_welcome ?? 0;
+
             // Pass variables to view
-            return view('user.dashboard', compact('snippets', 'languages', 'recentActivity'));
-
-
-        } catch (Exception $e) {
-
+            return view('user.dashboard', compact('snippets', 'languages', 'recentActivity', 'hasSeenWelcome'));        } catch (Exception $e) {
 
             //Log::error('Dashboard error: ' . $e->getMessage());
             // Even on error, pass empty arrays
+            $hasSeenWelcome = auth()->user()->has_seen_welcome ?? 0;
             return view('user.dashboard', [
                 'snippets' => collect(),
                 'languages' => [],
-                'recentActivity' => collect()
+                'recentActivity' => collect(),
+                'hasSeenWelcome' => $hasSeenWelcome
             ]);
         }
     }
@@ -313,7 +347,24 @@ class SnippetController extends Controller
         $currentUserId = auth()->id();
 
         try {
-            $version = Cache::get("user:{$currentUserId}:version", 1);
+            $snippet = Snippet::with(['user:id,name', 'files'])->findOrFail($id);
+
+            // Only the owner or a partner with access may view a snippet.
+            $isOwner = $snippet->user_id === $currentUserId;
+            $isPartner = DB::table('partnerships')
+                ->where('user_id', $snippet->user_id)
+                ->where('partner_id', $currentUserId)
+                ->exists();
+
+            if (!$isOwner && !$isPartner) {
+                return response()->json(['error' => 'Snippet not found'], 404);
+            }
+
+            $versionKey = "user:{$currentUserId}:version";
+            if (Cache::get($versionKey) === null) {
+                Cache::put($versionKey, 1, now()->addDays(30));
+            }
+            $version = Cache::get($versionKey, 1);
             $cacheKey = "snippet:user:{$currentUserId}:v{$version}:{$id}";
 
             //Added TTL
@@ -338,10 +389,12 @@ class SnippetController extends Controller
         $currentUserId = auth()->id();
 
         try {
-            //  instead of rememberForever
-            $version = Cache::get("user:{$currentUserId}:version", 1);
+            $versionKey = "user:{$currentUserId}:version";
+            if (Cache::get($versionKey) === null) {
+                Cache::put($versionKey, 1, now()->addDays(30));
+            }
+            $version = Cache::get($versionKey, 1);
 
-            // Create a unique code for the current search
             $searchKey = md5($request->getQueryString() ?? '');
             $searchCacheKey = "search:user:{$currentUserId}:v{$version}:" . $searchKey;
 
@@ -423,20 +476,18 @@ class SnippetController extends Controller
 
     public function edit($id)
     {
-
-        //return $id;
-
         try {
-
             $userId = auth()->id();
 
-            $snippet = DB::table('snippets')
-                ->where('id', $id)
-                ->where('user_id', $userId)
-                ->first();
+            $snippet = DB::table('snippets')->where('id', $id)->first();
 
             if (!$snippet) {
-                return back()->with('error', 'Snippet not found or you are not authorized to perform this action.');
+                return back()->with('error', 'Snippet not found.');
+            }
+
+            // Owner OR partner with editor access
+            if (!$this->canEditSnippet($snippet, $userId)) {
+                return back()->with('error', 'You are not authorized to edit this snippet.');
             }
 
             $files = DB::table('snippet_files')
@@ -450,8 +501,9 @@ class SnippetController extends Controller
                     ];
                 });
 
+            // Categories belong to the snippet owner, not the editor partner
             $categories = DB::table('categories')
-                ->where('user_id', $userId)
+                ->where('user_id', $snippet->user_id)
                 ->where('isActive', 1)
                 ->get();
 
@@ -490,6 +542,12 @@ class SnippetController extends Controller
             return DB::transaction(function () use ($request, $id) {
                 // Get snippet to find user_id for cache invalidation
                 $snippet = Snippet::findOrFail($id);
+
+                // Owner OR partner with editor access
+                if (!$this->canEditSnippet($snippet, auth()->id())) {
+                    return redirect()->back()->with('error', 'You are not authorized to update this snippet.');
+                }
+
                 $userId = $snippet->user_id;
 
                 // Snippet
@@ -552,8 +610,8 @@ class SnippetController extends Controller
     {
         $snippet = Snippet::findOrFail($id);
 
-        // Check if the snippet belongs to the authenticated user
-        if ($snippet->user_id !== Auth::id()) {
+        // Owner OR partner with editor access
+        if (!$this->canEditSnippet($snippet, Auth::id())) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -589,10 +647,13 @@ class SnippetController extends Controller
     {
         $currentUserId = auth()->id();
 
-        //Use get() instead of rememberForever
-        $version = Cache::get("user:{$currentUserId}:version", 1);
+        // Initialise version key for first-time users (same as index())
+        $versionKey = "user:{$currentUserId}:version";
+        if (Cache::get($versionKey) === null) {
+            Cache::put($versionKey, 1, now()->addDays(30));
+        }
+        $version = Cache::get($versionKey, 1);
 
-        // unique code for the current search 
         $partnershipCacheKey = "partnerships:user:{$currentUserId}:shared_with_me:v{$version}";
 
         $ownersWhoSharedWithMe = Cache::remember(
@@ -757,9 +818,17 @@ class SnippetController extends Controller
         $snippetId = $request->input('snippet_id');
 
         try {
-            // Get snippet before deletion to find user_id for cache invalidation
             $snippet = Snippet::find($snippetId);
-            $userId = $snippet ? $snippet->user_id : auth()->id();
+            if (!$snippet) {
+                return redirect()->back()->with('error', 'Snippet not found.');
+            }
+
+            // Owner OR partner with editor access
+            if (!$this->canEditSnippet($snippet, auth()->id())) {
+                return redirect()->back()->with('error', 'You are not authorized to delete this snippet.');
+            }
+
+            $userId = $snippet->user_id;
 
             DB::transaction(function () use ($snippetId) {
                 // Delete associated files first
@@ -798,10 +867,15 @@ class SnippetController extends Controller
         $snippetId = $request->input('snippet_id');
 
         try {
-            $snippet = DB::table('snippets')->where('id', $snippetId)->first(['user_id', 'isMark']);
+            $snippet = DB::table('snippets')->where('id', $snippetId)->first();
 
             if (!$snippet) {
                 return redirect()->back()->with('error', 'Snippet not found.');
+            }
+
+            // Owner OR partner with editor access
+            if (!$this->canEditSnippet($snippet, auth()->id())) {
+                return redirect()->back()->with('error', 'You are not authorized to modify this snippet.');
             }
 
             $newStatus = $snippet->isMark == 1 ? 0 : 1;
@@ -845,19 +919,29 @@ class SnippetController extends Controller
         }
 
         try {
+            // Timestamp-based version: when CategoriesController busts
+            // the key via Cache::forget(), the next read re-creates it
+            // with a fresh timestamp, producing a new cache key.
+            // TTL 6 h ensures even a missed bust eventually expires.
             $versionKey = "user:{$userId}:categories_version";
-            $version = Cache::rememberForever($versionKey, fn() => time());
+            if (Cache::get($versionKey) === null) {
+                Cache::put($versionKey, now()->timestamp, now()->addHours(6));
+            }
+            $version = Cache::get($versionKey, now()->timestamp);
 
-            // Version Key 
             $cacheKey = "categories:user:{$userId}:v:{$version}";
 
-            $categories = Cache::rememberForever($cacheKey, function () use ($userId) {
-                return DB::table('categories')
-                    ->where('user_id', $userId)
-                    ->where('isActive', 1)
-                    ->select('category_id', 'category_name', 'category_description', 'color_name', 'isActive')
-                    ->get();
-            });
+            $categories = Cache::remember(
+                $cacheKey,
+                now()->addHours(6),
+                function () use ($userId) {
+                    return DB::table('categories')
+                        ->where('user_id', $userId)
+                        ->where('isActive', 1)
+                        ->select('category_id', 'category_name', 'category_description', 'color_name', 'isActive')
+                        ->get();
+                }
+            );
 
             return view('user.snippetcreate', compact('categories'));
 
@@ -875,10 +959,12 @@ class SnippetController extends Controller
         $currentUserId = auth()->id();
 
         try {
-            //  instead of rememberForever
-            $version = Cache::get("user:{$currentUserId}:version", 1);
+            $versionKey = "user:{$currentUserId}:version";
+            if (Cache::get($versionKey) === null) {
+                Cache::put($versionKey, 1, now()->addDays(30));
+            }
+            $version = Cache::get($versionKey, 1);
 
-            // Create a unique code for the current search
             $searchKey = md5($request->getQueryString() ?? '');
             $searchCacheKey = "search:user:{$currentUserId}:v{$version}:" . $searchKey;
 

@@ -6,59 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') | CodeVault</title>
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+
+    <!-- Shared Design System -->
+    <link rel="stylesheet" href="{{ asset('css/design-system.css') }}">
+
+    <!-- Auth Page Styles (overflow, glow effects) -->
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+
+    <!-- CDN Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
 
-    <style>
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background: #0a0a0a;
-            overflow-y: auto;
-        }
-
-        [x-cloak] {
-            display: none !important;
-        }
-
-        .glass-card {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .input-field {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.2s ease;
-        }
-
-        .input-field:focus {
-            border-color: rgba(59, 130, 246, 0.5);
-            background: rgba(255, 255, 255, 0.07);
-            outline: none;
-        }
-
-        .image-glow-blue {
-            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-        }
-
-        .image-glow-red {
-            background: radial-gradient(circle at center, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
-        }
-
-        .btn-primary {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.2s;
-        }
-
-        .btn-primary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-1px);
-        }
-    </style>
     @stack('styles')
 </head>
 
@@ -74,27 +32,22 @@
 
     <script>
         $(document).ready(function() {
-            // 1. Handle Form Submits
+            // Show loader on form submissions
             $(document).on('submit', 'form', function() {
                 $('#custom-loader').css('display', 'flex').fadeIn(200);
             });
 
-            // 2. Handle Link Clicks (Event Delegation)
-            // This catches clicks on the <a>, the <svg>, or the <path>
+            // Show loader on load-button clicks (event delegation for dynamic content)
             $(document).on('click', '.load-btn', function() {
                 $('#custom-loader').css('display', 'flex').show();
             });
         });
 
-        // 3. Robust Hide logic
+        // Robust loader hide — fires on page restore from bfcache
         window.addEventListener('pageshow', function() {
             $('#custom-loader').fadeOut(300);
         });
     </script>
-
-    
-
-
 
     @stack('scripts')
 

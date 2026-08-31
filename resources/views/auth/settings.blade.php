@@ -232,8 +232,8 @@
     {{-- Profile Image Upload Modal --}}
     <div id="profileImageModal" class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
         <div onclick="event.stopPropagation()" class="relative w-full max-w-md glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
-            <button onclick="closeModal('profileImageModal')" class="absolute top-5 right-5 z-50 text-gray-400 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button onclick="closeModal('profileImageModal')" class="absolute top-5 right-5 z-50 w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
@@ -283,8 +283,8 @@
     {{-- Two-Factor Authentication Modal --}}
     <div id="twoFactorModal" class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
         <div onclick="event.stopPropagation()" class="relative w-full max-w-md glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
-            <button onclick="closeModal('twoFactorModal')" class="absolute top-5 right-5 z-50 text-gray-400 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button onclick="closeModal('twoFactorModal')" class="absolute top-5 right-5 z-50 w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
@@ -330,8 +330,8 @@
     {{-- Change Password Modal --}}
     <div id="passwordModal" class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
         <div onclick="event.stopPropagation()" class="relative w-full max-w-md glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
-            <button onclick="closeModal('passwordModal')" class="absolute top-5 right-5 z-50 text-gray-400 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button onclick="closeModal('passwordModal')" class="absolute top-5 right-5 z-50 w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
@@ -385,8 +385,8 @@
     {{-- Delete Account Modal --}}
     <div id="deleteModal" class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
         <div onclick="event.stopPropagation()" class="relative w-full max-w-md glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
-            <button onclick="closeModal('deleteModal')" class="absolute top-5 right-5 z-50 text-gray-400 hover:text-white transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button onclick="closeModal('deleteModal')" class="absolute top-5 right-5 z-50 w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>

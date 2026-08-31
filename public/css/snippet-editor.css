@@ -1,0 +1,95 @@
+/* ============================================================
+   Snippet Editor — Create/Edit Snippet View
+   ============================================================
+   Extracted from layout/snippet.blade.php inline <style> block.
+   Contains tab system, file list, modal backdrop, custom
+   scrollbars, and responsive mobile sidebar behavior.
+   ============================================================ */
+
+/* Active tab indicator — blue glow border with shadow */
+.tab-active {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* File list item hover — subtle slide-right micro-interaction */
+.file-item {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.file-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateX(2px);
+}
+
+/* Modal backdrop — heavy blur overlay for focused editing context */
+.modal-backdrop {
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(24px);
+}
+
+/* Custom thin scrollbar for editor panels */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+/* Hidden horizontal scrollbar for textarea/code input areas */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* ----------------------------------------------------------------
+   Responsive: Mobile Sidebar
+   On screens < 768px, the file sidebar transforms into a slide-in
+   overlay panel with a backdrop blur, instead of inline layout.
+   ---------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .sidebar-container {
+        position: fixed !important;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 50;
+        width: 85% !important;
+        max-width: 300px;
+        transform: translateX(-100%);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar-container.mobile-open {
+        transform: translateX(0);
+    }
+
+    .sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 45;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+    }
+
+    .sidebar-backdrop.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .hide-on-mobile {
+        display: none !important;
+    }
+}

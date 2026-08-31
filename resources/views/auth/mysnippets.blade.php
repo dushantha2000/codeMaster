@@ -4,6 +4,38 @@
 
 @section('content')
     <div x-init="init()" class="w-full">
+        {{-- Right-Click Context Menu --}}
+        <div x-show="contextMenuVisible"
+            x-cloak
+            @click.away="closeContextMenu()"
+            x-transition:enter="transition ease-out duration-100"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="fixed z-[200] w-48 glass-card border border-white/10 rounded-xl shadow-2xl shadow-black/50 py-1.5 overflow-hidden"
+            :style="`left: ${contextMenuX}px; top: ${contextMenuY}px;`">
+            
+            <a :href="contextMenuSnippet ? `/snippets/${contextMenuSnippet.id}/edit` : '#'"
+                class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-blue-400 hover:bg-blue-500/10 transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                <span class="font-medium">Edit</span>
+            </a>
+
+            <div class="mx-3 my-1 border-t border-white/5"></div>
+
+            <button @click="openEraseModal(contextMenuSnippet.id); closeContextMenu()"
+                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-red-400 hover:bg-red-500/10 transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span class="font-medium">Delete</span>
+            </button>
+        </div>
+
         <div id="main-page-content" class="w-full max-w-6xl mx-auto px-4" x-cloak>
 
             {{-- Breadcrumb --}}
@@ -70,10 +102,7 @@
                                             class="text-5xl font-black text-blue-500/40">{{ substr(Auth::user()->name, 0, 1) }}</span>
                                     @endif
                                 </div>
-                                <div
-                                    class="absolute -bottom-2 -right-2 bg-blue-600 text-white text-[10px] font-black px-3 py-1.5 rounded-xl border-4 border-[#0a0a0a] shadow-xl uppercase tracking-widest">
-                                    lvl 1
-                                </div>
+                                
                             </div>
 
                             <h2 class="text-2xl font-black text-white tracking-tight mb-1">{{ Auth::user()->name }}</h2>
@@ -166,96 +195,54 @@
                     </div>
 
                     {{-- Loading Indicator --}}
-                    <div x-show="loading" class="space-y-4 py-8">
-                        <template x-for="i in 2">
-                            <div class="glass-card p-10 animate-pulse  border border-white/5">
-                                <div class="h-6 bg-white/5 rounded-xl w-1/4 mb-4"></div>
-                                <div class="h-3.5 bg-white/5 rounded-xl w-full mb-2"></div>
-                                <div class="h-3.5 bg-white/5 rounded-xl w-3/4"></div>
+                    <div x-show="loading" class="space-y-3 py-4">
+                        <template x-for="i in 10">
+                            <div class="glass-card px-5 py-4 animate-pulse border border-white/5">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <div class="h-4 bg-white/5 rounded w-1/3 mb-2"></div>
+                                        <div class="h-3 bg-white/5 rounded w-2/3"></div>
+                                    </div>
+                                    <div class="h-3 bg-white/5 rounded w-16"></div>
+                                </div>
                             </div>
                         </template>
                     </div>
 
                     {{-- Logic Stream Items --}}
-                    <div class="space-y-4" x-show="!loading">
+                    <div class="space-y-3" x-show="!loading">
                         <template x-for="snippet in snippets" :key="snippet.id">
-                            <div class="glass-card group p-6 hover:border-blue-500/30 transition-all duration-500 cursor-pointer relative overflow-hidden shadow-lg"
-                                @click="openSnippet(snippet.id)">
+                            <div class="glass-card group px-5 py-4 border border-white/5 hover:border-blue-500/30 transition-all duration-300 cursor-pointer relative overflow-hidden"
+                                @click="openSnippet(snippet.id)"
+                                @contextmenu.prevent="openContextMenu($event, snippet)"
 
-                                <div
-                                    class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 relative z-10">
+                                <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 relative z-10">
                                     <div class="flex-1 min-w-0">
-                                        <div class="flex items-center gap-3 mb-2 flex-wrap">
-                                            <h3 class="text-white text-xl font-black group-hover:text-blue-400 transition-colors tracking-tight"
+                                        {{-- Title + Language inline --}}
+                                        <div class="flex items-center gap-2.5 mb-1">
+                                            <h3 class="text-white text-base font-bold group-hover:text-blue-400 transition-colors truncate"
                                                 x-text="snippet.title"></h3>
-                                            <div class="flex items-center gap-2">
-                                                <span
-                                                    class="px-2.5 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[9px] rounded-lg font-black uppercase tracking-widest">Archived</span>
-                                                <template x-if="snippet.isMark == 1">
-                                                    <span
-                                                        class="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.4)]"></span>
-                                                </template>
-                                            </div>
-                                        </div>
-
-                                        <p class="text-gray-400 text-sm font-medium mb-6 line-clamp-2 leading-relaxed"
-                                            x-text="snippet.description || 'No specialized description provided.'"></p>
-
-                                        <div
-                                            class="flex flex-wrap items-center gap-6 text-gray-500 text-[10px] font-black uppercase tracking-widest">
                                             <template x-if="snippet.language">
-                                                <div
-                                                    class="flex items-center gap-2 px-3 py-1.5 bg-[#030303] rounded-xl border border-white/5 group-hover:border-blue-500/20 transition-colors shadow-inner">
-                                                    <span class="text-xs" x-text="getFileIcon(snippet.language)"></span>
-                                                    <span class="text-gray-300 group-hover:text-blue-400 transition-colors"
-                                                        x-text="snippet.language"></span>
-                                                </div>
+                                                <span class="shrink-0 px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[11px] rounded-md font-medium capitalize"
+                                                    x-text="snippet.language"></span>
                                             </template>
-
-                                            <div class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2.5"
-                                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                                <span x-text="formatDate(snippet.created_at)"></span>
-                                            </div>
-
-                                            <div class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2.5"
-                                                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                                                </svg>
-                                                <span
-                                                    x-text="(snippet.files ? snippet.files.length : 0) + ' Resources'"></span>
-                                            </div>
+                                            <template x-if="snippet.isMark == 1">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.4)] shrink-0"></span>
+                                            </template>
                                         </div>
+
+                                        {{-- Description (single line) --}}
+                                        <p class="text-gray-500 text-sm truncate"
+                                            x-text="snippet.description"></p>
                                     </div>
 
-                                    <div
-                                        class="flex items-center gap-3 mt-4 md:mt-0 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
-                                        <a :href="`/snippets/${snippet.id}/edit`" @click.stop
-                                            class="p-3 bg-[#0a0a0a] hover:bg-blue-500/10 text-gray-500 hover:text-blue-400 border border-white/5 hover:border-blue-500/30 rounded-2xl transition-all shadow-inner">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                                </path>
-                                            </svg>
-                                        </a>
-
-                                        <button @click.stop="openEraseModal(snippet.id)"
-                                            class="p-3 bg-[#0a0a0a] hover:bg-red-500/10 text-gray-500 hover:text-red-400 border border-white/5 hover:border-red-500/30 rounded-2xl transition-all shadow-inner">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                </path>
-                                            </svg>
-                                        </button>
+                                    {{-- Metadata + Actions row --}}
+                                    <div class="flex items-center gap-4 shrink-0">
+                                        <span class="text-gray-600 text-xs hidden md:inline" x-text="formatDate(snippet.created_at)"></span>
+                                        <span class="text-gray-600 text-xs hidden md:flex items-center gap-1.5">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
+                                            <span x-text="(snippet.files ? snippet.files.length : 0) + ' files'"></span>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -264,56 +251,45 @@
 
                     {{-- Empty Stream --}}
                     <div x-show="initialized && !loading && snippets.length === 0" x-cloak class="py-12">
-                        <div
-                            class="glass-card rounded-[3rem] p-16 text-center border-dashed border-white/10 bg-[#050505]/30">
-                            <div
-                                class="w-20 h-20 bg-blue-500/5 rounded-[2.2rem] flex items-center justify-center mx-auto mb-6 border border-blue-500/10 shadow-lg">
-                                <svg class="w-10 h-10 text-blue-400/30" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        <div class="glass-card p-12 text-center border border-white/5">
+                            <div class="w-16 h-16 bg-blue-500/5 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-blue-500/10">
+                                <svg class="w-8 h-8 text-blue-400/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </div>
-                            <h3 class="text-2xl font-black text-white mb-2 tracking-tight">Stream Empty</h3>
-                            <p class="text-gray-500 mb-8 max-w-sm mx-auto text-sm font-medium leading-relaxed">The archived
-                                search parameters returned no active logic nodes in your vault.</p>
-                            <button @click="resetFilters()"
-                                class="btn-primary  items-center gap-x-2 py-2 px-6 rounded-xl btn-primary  font-bold">
-                                  Clear Discovery
-                            </button>
+                            <h3 class="text-lg font-bold text-white mb-1">No snippets yet</h3>
+                            <p class="text-gray-500 mb-6 max-w-sm mx-auto text-sm">Your vault is empty. Create your first snippet to get started.</p>
+                            <a href="{{ route('snippets-create') }}" class="btn-primary px-5 py-2 rounded-lg text-sm font-semibold inline-flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                New snippet
+                            </a>
                         </div>
                     </div>
 
-                    {{-- Data Stream Pagination --}}
+                    {{-- Pagination --}}
                     <div x-show="lastPage > 1 && !loading" x-cloak
-                        class="flex flex-col sm:flex-row items-center justify-between mt-12 pt-8 border-t border-white/5 gap-6">
-                        <div class="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-gray-500">
-                            <span
-                                class="flex items-center justify-center w-10 h-10 rounded-xl bg-[#030303] border border-white/5 text-white shadow-inner"
-                                x-text="currentPage"></span>
+                        class="flex flex-col sm:flex-row items-center justify-between mt-8 pt-6 border-t border-white/5 gap-4">
+                        <div class="flex items-center gap-3 text-sm text-gray-500">
+                            <span class="font-semibold text-white" x-text="currentPage"></span>
                             <span>of</span>
-                            <span class="text-white" x-text="lastPage"></span>
-                            <span class="ml-1 opacity-40">Pages</span>
+                            <span x-text="lastPage"></span>
+                            <span class="opacity-50">pages</span>
                         </div>
 
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2">
                             <button @click="fetchSnippets(currentPage - 1)" :disabled="currentPage === 1"
-                                class="group flex items-center gap-2 px-6 py-3 bg-[#030303] border border-white/5 rounded-2xl hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
-                                <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                        d="M15 19l-7-7 7-7" />
+                                class="group flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/5 rounded-xl hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-sm font-medium text-gray-300">
+                                <svg class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                                 </svg>
-                                <span>Previous</span>
+                                <span>Prev</span>
                             </button>
 
                             <button @click="fetchSnippets(currentPage + 1)" :disabled="currentPage === lastPage"
-                                class="group flex items-center gap-2 px-6 py-3 bg-[#030303] border border-white/5 rounded-2xl hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-[10px] font-black uppercase tracking-widest text-white shadow-xl">
+                                class="group flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/5 rounded-xl hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed transition-all text-sm font-medium text-gray-300">
                                 <span>Next</span>
-                                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                        d="M9 5l7 7-7 7" />
+                                <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                 </svg>
                             </button>
                         </div>
@@ -330,10 +306,9 @@
             <div
                 class="relative w-full max-w-md glass-card rounded-[3rem] p-10 border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.8)] animate-in zoom-in-95 duration-300">
                 <button @click="closeEraseModal()"
-                    class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12">
-                        </path>
+                    class="absolute top-5 right-5 z-50 w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
 
@@ -371,8 +346,14 @@
 
     </div>
 
+    {{-- ============================================================
+         My Snippets — Alpine.js Snippet Manager
+         ============================================================
+         Manages personal snippet list with search, filtering,
+         context menu (right-click), delete modal, and preview.
+         Uses server-side Blade data for initial hydration.
+         ============================================================ --}}
     <script>
-        // Define snippetBrowser globally
         window.snippetBrowser = function() {
             return {
                 snippets: [],
@@ -383,6 +364,12 @@
                 selectedLanguage: 'all',
                 selectedSort: 'latest',
                 loading: false,
+
+                // Context Menu state
+                contextMenuVisible: false,
+                contextMenuX: 0,
+                contextMenuY: 0,
+                contextMenuSnippet: null,
 
                 // Preview Modal state
                 showPreview: false,
@@ -499,6 +486,24 @@
                         modal.classList.add('hidden');
                         modal.classList.remove('flex');
                     }
+                },
+
+                openContextMenu(event, snippet) {
+                    this.contextMenuSnippet = snippet;
+                    this.contextMenuX = event.clientX;
+                    this.contextMenuY = event.clientY;
+                    this.contextMenuVisible = true;
+
+                    // Close on next click anywhere
+                    this.$nextTick(() => {
+                        document.addEventListener('click', this.closeContextMenu, { once: true });
+                        document.addEventListener('contextmenu', this.closeContextMenu, { once: true });
+                    });
+                },
+
+                closeContextMenu() {
+                    this.contextMenuVisible = false;
+                    this.contextMenuSnippet = null;
                 },
 
                 formatDate(dateStr) {

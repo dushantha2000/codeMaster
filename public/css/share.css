@@ -1,0 +1,26 @@
+/* ============================================================
+   Shared Snippet View — Public Link Display
+   ============================================================
+   Extracted from layout/share.blade.php inline <style> block.
+   These styles apply only to the public shared snippet view.
+   ============================================================ */
+
+/* Glass card hover for share view — subtle border glow, no transform lift */
+.glass-card:hover {
+    border-color: var(--color-accent-border);
+}
+
+/* Smooth transitions for interactive elements in share view */
+.glass-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mini scrollbar for code/file panels */
+.custom-mini-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.custom-mini-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}

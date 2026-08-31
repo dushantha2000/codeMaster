@@ -33,8 +33,7 @@
                                 class="w-full h-full object-contain transform scale-125">
                         </div>
                         <h1 class="text-xl font-bold text-white tracking-tight hide-on-mobile">
-                            <a href="{{ url('/') }}">CodeVault</a> <span
-                                class="text-blue-500 text-xs font-normal">v1.1</span>
+                            <a href="{{ url('/') }}">CodeVault</a> 
                         </h1>
                     </div>
                 </div>
@@ -92,10 +91,9 @@
 
                             <!-- Close Button (Mobile) -->
                             <button type="button" @click="mobileMenuOpen = false"
-                                class="md:hidden p-1 -mr-2 text-gray-500 hover:text-white">
+                                class="md:hidden text-gray-400 hover:text-white transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
                             </button>
 
@@ -286,7 +284,11 @@
                         <div class="flex items-center justify-between mb-8">
                             <h3 class="text-xl font-bold text-white">Project Specs</h3>
                             <button @click="showProjectModal = false"
-                                class="text-gray-500 hover:text-white transition-colors text-2xl">&times;</button>
+                                class="text-gray-400 hover:text-white transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
                         </div>
 
                         <div class="space-y-6">
@@ -344,7 +346,11 @@
                         <div class="flex items-center justify-between mb-8">
                             <h3 class="text-xl font-bold text-white">New Logic Node</h3>
                             <button @click="showAddFileModal = false"
-                                class="text-gray-500 hover:text-white transition-colors text-2xl">&times;</button>
+                                class="text-gray-400 hover:text-white transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
                         </div>
 
                         <div class="space-y-6">
