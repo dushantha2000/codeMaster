@@ -31,16 +31,12 @@
         @php
             $files = $snippet->files;
             $codeClass = 'language-' . strtolower((string) $snippet->language);
-            $iconFor = function ($name) {
-                $name = strtolower((string) $name);
-                if (str_contains($name, 'php') || str_contains($name, 'laravel')) return '🐘';
-                if (str_contains($name, 'js') || str_contains($name, 'javascript')) return '🟨';
-                if (str_contains($name, 'py')) return '🐍';
-                if (str_contains($name, 'react')) return '⚛️';
-                if (str_contains($name, 'html')) return '🌐';
-                if (str_contains($name, 'css')) return '🎨';
-                if (str_contains($name, 'tailwind')) return '🍃';
-                return '📄';
+            $highlighter = app(\App\Services\SyntaxHighlighter::class);
+            $iconFor = function ($name) use ($highlighter) {
+                $logo = $highlighter->logoForFile((string) $name);
+                return $logo
+                    ? '<img src="' . asset('tech_logo/' . $logo) . '" alt="" class="w-4 h-4 object-contain inline-block align-middle">'
+                    : '📄';
             };
         @endphp
 
@@ -54,7 +50,7 @@
                             ? 'bg-blue-600/10 text-blue-400 border-blue-500/50'
                             : 'text-gray-500 border-transparent hover:text-gray-300 hover:bg-white/5'"
                         class="shrink-0 px-4 py-2 rounded-lg text-[11px] font-mono border transition-all flex items-center gap-2">
-                        <span>{{ $iconFor($file->file_name) }}</span>
+                        <span>{!! $iconFor($file->file_name) !!}</span>
                         <span>{{ $file->file_name }}</span>
                     </button>
                 @endforeach

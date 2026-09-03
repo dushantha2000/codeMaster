@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Services\SyntaxHighlighter;
 
 class SnippetController extends Controller
 {
@@ -304,6 +305,7 @@ class SnippetController extends Controller
                 ]);
 
                 // create array
+                $highlighter = app(SyntaxHighlighter::class);
                 $filesData = [];
 
                 foreach ($request->file_names as $index => $fileName) {
@@ -312,6 +314,9 @@ class SnippetController extends Controller
                         'file_name' => $fileName,
                         'content' => $request->contents[$index],
                         'extension' => pathinfo($fileName, PATHINFO_EXTENSION) ?: 'txt',
+                        'language' => $highlighter->detectLanguage($fileName),
+                        'line_count' => substr_count($request->contents[$index], "\n") + 1,
+                        'char_count' => strlen($request->contents[$index]),
                         'file_path' => $request->file_paths[$index] ?? null,
                         'created_at' => now(),
                         'updated_at' => now(),
@@ -510,11 +515,9 @@ class SnippetController extends Controller
             // arry of files data
             $files = $files->toArray();
 
-            // return $files;
+            $supportedLanguages = app(SyntaxHighlighter::class)->getSupportedLanguages();
 
-
-            // $snippet = Snippet::with('files')->findOrFail($id);
-            return view('user.editsnippet', compact('snippet', 'files', 'categories'));
+            return view('user.editsnippet', compact('snippet', 'files', 'categories', 'supportedLanguages'));
 
         } catch (Exception $e) {
             Log::error('Edit error: ' . $e->getMessage());
@@ -568,6 +571,8 @@ class SnippetController extends Controller
                 $filePaths = $request->file_paths ?? [];
                 $contents = $request->contents;
 
+                $highlighter = app(SyntaxHighlighter::class);
+
                 foreach ($fileNames as $index => $fileName) {
                     $extension = pathinfo($fileName, PATHINFO_EXTENSION) ?: 'txt';
 
@@ -577,6 +582,9 @@ class SnippetController extends Controller
                         'file_path' => $filePaths[$index] ?? null,
                         'content' => $contents[$index],
                         'extension' => $extension,
+                        'language' => $highlighter->detectLanguage($fileName),
+                        'line_count' => substr_count($contents[$index], "\n") + 1,
+                        'char_count' => strlen($contents[$index]),
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
@@ -943,7 +951,9 @@ class SnippetController extends Controller
                 }
             );
 
-            return view('user.snippetcreate', compact('categories'));
+            $supportedLanguages = app(SyntaxHighlighter::class)->getSupportedLanguages();
+
+            return view('user.snippetcreate', compact('categories', 'supportedLanguages'));
 
         } catch (Exception $e) {
 

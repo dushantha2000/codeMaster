@@ -133,7 +133,13 @@
                                 :class="activeTab === index ? 'tab-active text-white border-blue-500/30' : 'text-gray-500 hover:bg-white/5 hover:text-gray-300 border-transparent'"
                                 class="file-item flex items-center justify-between p-3 rounded-xl cursor-pointer group transition-all border">
                                 <div class="flex items-center gap-3 flex-1 min-w-0">
-                                    <div class="text-xl" x-text="getFileIcon(file.name)">📄</div>
+                                    <div class="w-5 h-5 flex items-center justify-center shrink-0">
+                                        <template x-if="getFileIcon(file.name)">
+                                            <img x-cloak :src="getFileIcon(file.name)" :alt="file.name"
+                                                :title="file.name" class="w-5 h-5 object-contain">
+                                        </template>
+                                        <span x-cloak x-show="!getFileIcon(file.name)" class="text-lg leading-none">📄</span>
+                                    </div>
                                     <div class="flex-1 min-w-0">
                                         <div x-text="file.name || 'untitled'" class="text-sm font-bold truncate"></div>
                                         <div x-text="file.path || 'root'" class="text-[10px] opacity-40 truncate"></div>
@@ -188,9 +194,30 @@
                                 </div>
                             </div>
 
-                            <!-- Editor Textarea -->
-                            <div class="flex-1 relative bg-black/20 overflow-hidden">
+                            <!-- Editor / Preview Toggle Bar -->
+                            <div class="flex items-center gap-2 px-3 md:px-6 py-2 border-b border-white/5 bg-white/[0.01]">
+                                <button type="button" @click="editorMode = 'edit'"
+                                    :class="editorMode === 'edit' ? 'text-blue-400 bg-blue-500/10 border-blue-500/30' : 'text-gray-500 hover:text-gray-300 border-transparent'"
+                                    class="px-3 py-1 rounded-lg text-[11px] font-bold transition-all border flex items-center gap-1.5">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                    Editor
+                                </button>
+                                <button type="button" @click="editorMode = 'preview'; highlightPreview()"
+                                    :class="editorMode === 'preview' ? 'text-blue-400 bg-blue-500/10 border-blue-500/30' : 'text-gray-500 hover:text-gray-300 border-transparent'"
+                                    class="px-3 py-1 rounded-lg text-[11px] font-bold transition-all border flex items-center gap-1.5">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                    Preview
+                                </button>
+                                <div class="flex-1"></div>
+                                <span class="text-[10px] text-gray-600 font-mono" x-text="getLanguageLabel(file.name)"></span>
+                                <span class="text-[10px] text-gray-700">•</span>
+                                <span class="text-[10px] text-gray-600" x-text="getCodeStats(file.content)"></span>
+                            </div>
+
+                            <!-- Editor Mode -->
+                            <div x-show="editorMode === 'edit'" class="flex-1 relative bg-black/20 overflow-hidden">
                                 <textarea name="contents[]" x-model="file.content" required
+                                    @keydown.tab.prevent="handleTabKey($event, $el)"
                                     class="absolute inset-0 w-full h-full bg-transparent left-2 md:left-5 p-4 md:p-10 pl-10 md:pl-16 code-font text-[13px] md:text-[14px] text-gray-400 focus:text-white outline-none resize-none leading-relaxed transition-colors scrollbar-hide"
                                     placeholder="// Enter code here..."></textarea>
 
@@ -200,6 +227,14 @@
                                     <template x-for="(line, i) in (file.content || '').split('\n')" :key="i">
                                         <div class="leading-relaxed h-[1.5em]" x-text="i + 1"></div>
                                     </template>
+                                </div>
+                            </div>
+
+                            <!-- Preview Mode -->
+                            <div x-show="editorMode === 'preview'" class="flex-1 overflow-auto bg-black/40 p-3 md:p-6">
+                                <pre class="!bg-transparent !border-0 !p-0 !m-0" x-show="file.content"><code :class="'language-' + detectLanguageFromFile(file.name)" x-text="file.content"></code></pre>
+                                <div x-show="!file.content" class="flex items-center justify-center h-full">
+                                    <p class="text-gray-600 text-sm">No code to preview</p>
                                 </div>
                             </div>
                         </div>
@@ -242,13 +277,9 @@
                                     <label class="text-xs font-bold text-gray-500 mb-2 block ml-1">Language</label>
                                     <select x-model="projectInfo.language"
                                         class="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none appearance-none">
-                                        <option value="laravel">Laravel</option>
-                                        <option value="tailwind">Tailwind CSS</option>
-                                        <option value="react">React</option>
-                                        <option value="vue">Vue.js</option>
-                                        <option value="javascript">JavaScript</option>
-                                        <option value="php">PHP</option>
-                                        <option value="python">Python</option>
+                                        @foreach ($supportedLanguages as $key => $name)
+                                            <option value="{{ $key }}">{{ $name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div>
@@ -357,6 +388,7 @@
                 deleteConfirm: null,
                 deleting: false,
                 mobileMenuOpen: false,
+                editorMode: 'edit',
                 projectInfo: {
                     title: '',
                     description: '',
@@ -434,15 +466,78 @@
                 },
 
                 getFileIcon(filename) {
-                    if (!filename) return '📄';
+                    if (!filename) return '';
+                    return (typeof CodeFormatter !== 'undefined') ? CodeFormatter.fileLogoUrl(filename) : '';
+                },
+
+                // Syntax highlighting helpers
+                detectLanguageFromFile(filename) {
+                    if (typeof CodeFormatter !== 'undefined') {
+                        return CodeFormatter.detectLanguage(filename);
+                    }
+                    if (!filename) return 'plaintext';
                     const ext = filename.split('.').pop().toLowerCase();
-                    const icons = {
-                        'php': '🐘', 'js': '🟨', 'jsx': '⚛️', 'ts': '📘', 'tsx': '⚛️',
-                        'css': '🎨', 'html': '🌐', 'json': '📋', 'md': '📝', 'py': '🐍',
-                        'sql': '🗄️', 'vue': '💚', 'xml': '📰', 'java': '☕', 'cpp': '⚙️',
-                        'c': '⚙️', 'rb': '💎', 'go': '🔷', 'rs': '🦀'
+                    const map = {
+                        'php': 'php', 'js': 'javascript', 'ts': 'typescript',
+                        'jsx': 'jsx', 'tsx': 'tsx', 'py': 'python',
+                        'rb': 'ruby', 'go': 'go', 'rs': 'rust',
+                        'java': 'java', 'kt': 'kotlin', 'swift': 'swift',
+                        'c': 'c', 'cpp': 'cpp', 'cs': 'csharp',
+                        'html': 'markup', 'css': 'css', 'scss': 'scss',
+                        'json': 'json', 'yaml': 'yaml', 'sh': 'bash',
+                        'sql': 'sql', 'graphql': 'graphql',
                     };
-                    return icons[ext] || '📄';
+                    return map[ext] || 'plaintext';
+                },
+
+                getLanguageLabel(filename) {
+                    const lang = this.detectLanguageFromFile(filename);
+                    if (typeof CodeFormatter !== 'undefined') {
+                        return CodeFormatter.getLanguageName(lang);
+                    }
+                    const names = {
+                        'markup': 'HTML', 'css': 'CSS', 'scss': 'SCSS',
+                        'javascript': 'JavaScript', 'typescript': 'TypeScript',
+                        'jsx': 'JSX', 'tsx': 'TSX', 'json': 'JSON',
+                        'yaml': 'YAML', 'php': 'PHP', 'python': 'Python',
+                        'ruby': 'Ruby', 'go': 'Go', 'rust': 'Rust',
+                        'java': 'Java', 'kotlin': 'Kotlin', 'swift': 'Swift',
+                        'dart': 'Dart', 'c': 'C', 'cpp': 'C++', 'csharp': 'C#',
+                        'bash': 'Bash', 'sql': 'SQL', 'graphql': 'GraphQL',
+                        'docker': 'Dockerfile', 'markdown': 'Markdown',
+                    };
+                    return names[lang] || lang;
+                },
+
+                getCodeStats(content) {
+                    if (!content) return '0 lines';
+                    const lines = content.split('\n').length;
+                    const bytes = new Blob([content]).size;
+                    const size = bytes > 1024 ? (bytes / 1024).toFixed(1) + ' KB' : bytes + ' B';
+                    return lines + ' lines · ' + size;
+                },
+
+                highlightPreview() {
+                    this.$nextTick(() => {
+                        if (typeof Prism !== 'undefined') {
+                            Prism.highlightAll();
+                        }
+                    });
+                },
+
+                handleTabKey(e, textarea) {
+                    if (typeof CodeFormatter !== 'undefined') {
+                        CodeFormatter.handleTab(e, textarea);
+                    } else {
+                        if (e.key === 'Tab') {
+                            e.preventDefault();
+                            const start = textarea.selectionStart;
+                            const end = textarea.selectionEnd;
+                            textarea.value = textarea.value.substring(0, start) + '  ' + textarea.value.substring(end);
+                            textarea.selectionStart = textarea.selectionEnd = start + 2;
+                            textarea.dispatchEvent(new Event('input'));
+                        }
+                    }
                 },
 
                 updateStats() {

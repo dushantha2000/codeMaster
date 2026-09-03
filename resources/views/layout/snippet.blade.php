@@ -15,7 +15,11 @@
     <!-- CDN Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Prism.js — Full language support via autoloader (50+ languages) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('css/prism-custom-themes.css') }}">
 
 </head>
 
@@ -47,6 +51,16 @@
             $('#custom-loader').fadeOut(300);
         });
     </script>
+
+    <!-- Prism.js — autoloader for all 50+ languages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        if (typeof Prism !== 'undefined' && Prism.plugins && Prism.plugins.autoloader) {
+            Prism.plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+        }
+    </script>
+    <script src="{{ asset('js/code-formatting.js') }}"></script>
 
     @stack('scripts')
 </body>

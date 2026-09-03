@@ -132,25 +132,24 @@ function snippetBrowser() {
         },
 
         // ─── Icon helpers ─────────────────────────────────────────
+        /**
+         * Tech logo URL for a language label, or '' when no logo exists.
+         * @param {string} lang
+         * @returns {string}
+         */
         getLangIcon(lang) {
-            if (!lang) return '📄';
-            const icons = {
-                'php': '🐘', 'laravel': '🟠', 'javascript': '🟨', 'js': '🟨',
-                'typescript': '📘', 'ts': '📘', 'python': '🐍', 'html': '🌐',
-                'css': '🎨', 'react': '⚛️', 'vue': '💚', 'database': '🗄️', 'sql': '🗄️',
-            };
-            return icons[lang.toLowerCase()] || '📄';
+            if (!lang) return '';
+            return (typeof CodeFormatter !== 'undefined') ? CodeFormatter.langLogoUrl(lang) : '';
         },
 
+        /**
+         * Tech logo URL for a filename, or '' when no logo exists.
+         * @param {string} filename
+         * @returns {string}
+         */
         getFileIcon(filename) {
-            if (!filename) return '📄';
-            const ext = filename.split('.').pop().toLowerCase();
-            const icons = {
-                'js': '🟨', 'jsx': '⚛️', 'ts': '📘', 'tsx': '⚛️', 'php': '🐘',
-                'py': '🐍', 'html': '🌐', 'css': '🎨', 'json': '📋',
-                'md': '📝', 'vue': '💚', 'sql': '🗄️',
-            };
-            return icons[ext] || '📄';
+            if (!filename) return '';
+            return (typeof CodeFormatter !== 'undefined') ? CodeFormatter.fileLogoUrl(filename) : '';
         },
 
         // ─── Mobile handlers ──────────────────────────────────────

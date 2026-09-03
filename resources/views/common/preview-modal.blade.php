@@ -100,7 +100,12 @@
                                 'text-gray-500 border-transparent hover:text-gray-300 hover:bg-white/5'"
                             class="w-full text-left px-3 md:px-4 py-2.5 md:py-3 rounded-lg md:rounded-xl text-xs md:text-[11px] font-mono border transition-all flex items-center justify-between group">
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="text-sm md:text-base" x-text="getFileIcon(file.file_name)"></span>
+                                <template x-if="getFileIcon(file.file_name)">
+                                    <img x-cloak :src="getFileIcon(file.file_name)" :alt="file.file_name"
+                                        :title="file.file_name" class="w-4 h-4 md:w-5 md:h-5 object-contain shrink-0">
+                                </template>
+                                <span x-cloak x-show="!getFileIcon(file.file_name)"
+                                    class="text-sm md:text-base leading-none shrink-0">📄</span>
                                 <span class="truncate" x-text="file.file_name"></span>
                             </div>
                         </button>
@@ -112,7 +117,7 @@
             <div class="flex-1 flex flex-col bg-[#050505]/60">
                 <template x-for="(file, index) in selectedSnippet?.files || []" :key="index">
                     <div x-show="activeFileTab === index" class="h-full flex flex-col p-3 md:p-6">
-                        {{-- File info bar — shows current filename --}}
+                        {{-- File info bar — shows current filename + metadata --}}
                         <div
                             class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3 md:mb-4 bg-white/5 px-3 md:px-4 py-2 rounded-lg border border-white/5">
                             <div class="flex items-center gap-2 text-xs">
@@ -120,6 +125,10 @@
                                 <span
                                     class="text-white font-mono text-xs md:text-sm truncate max-w-[150px] md:max-w-none"
                                     x-text="file.file_name"></span>
+                            </div>
+                            <div class="flex items-center gap-3 text-[10px] text-gray-500 font-mono">
+                                <span x-text="getPreviewLanguageLabel(file.file_name, selectedSnippet?.language)" class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400"></span>
+                                <span x-text="getPreviewFileStats(file.content)"></span>
                             </div>
                         </div>
 

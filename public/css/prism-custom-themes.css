@@ -1,0 +1,475 @@
+/* ============================================================
+   CodeVault Custom Prism.js Themes
+   ============================================================
+   5 dark themes designed for the CodeVault glass-card aesthetic.
+   Theme is controlled via data-theme attribute on <html>.
+
+   Usage: <html data-theme="codevault">
+   ============================================================ */
+
+/* ==================== BASE OVERRIDES ==================== */
+/* Override Prism's default pre/code styling to match CodeVault */
+
+pre[class*="language-"],
+code[class*="language-"] {
+    font-family: var(--font-mono, 'Fira Code', ui-monospace, monospace) !important;
+}
+
+/* Remove Prism's default margin/padding so our containers control it */
+pre[class*="language-"] {
+    margin: 0 !important;
+    padding: 1.5rem !important;
+    tab-size: 2;
+    hyphens: none;
+}
+
+/* Line numbers plugin integration */
+pre[class*="language-"].line-numbers {
+    position: relative;
+    padding-left: 3.8em !important;
+    counter-reset: linenumber;
+}
+
+pre[class*="language-"].line-numbers > code {
+    position: relative;
+    white-space: inherit;
+}
+
+.line-numbers .line-numbers-rows {
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    font-size: 100%;
+    left: -3.8em;
+    width: 3em;
+    letter-spacing: -1px;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    user-select: none;
+}
+
+.line-numbers-rows > span {
+    display: block;
+    counter-increment: linenumber;
+}
+
+.line-numbers-rows > span:before {
+    content: counter(linenumber);
+    color: rgba(255, 255, 255, 0.15);
+    display: block;
+    padding-right: 0.8em;
+    text-align: right;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* ===================== THEME: CODEVAULT ==================== */
+/* Default theme — deep blacks with blue accents */
+
+[data-theme="codevault"] pre[class*="language-"] {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: #d4d4d8 !important;
+    border-radius: var(--radius-lg, 1rem) !important;
+}
+
+[data-theme="codevault"] code[class*="language-"] {
+    color: #d4d4d8;
+    text-shadow: none !important;
+}
+
+[data-theme="codevault"] .token.comment,
+[data-theme="codevault"] .token.prolog,
+[data-theme="codevault"] .token.doctype,
+[data-theme="codevault"] .token.cdata {
+    color: #6b7280 !important;
+    font-style: italic;
+}
+
+[data-theme="codevault"] .token.punctuation {
+    color: #9ca3af !important;
+}
+
+[data-theme="codevault"] .token.property,
+[data-theme="codevault"] .token.tag,
+[data-theme="codevault"] .token.boolean,
+[data-theme="codevault"] .token.number,
+[data-theme="codevault"] .token.constant,
+[data-theme="codevault"] .token.symbol {
+    color: #f59e0b !important;
+}
+
+[data-theme="codevault"] .token.selector,
+[data-theme="codevault"] .token.attr-name,
+[data-theme="codevault"] .token.string,
+[data-theme="codevault"] .token.char,
+[data-theme="codevault"] .token.builtin {
+    color: #34d399 !important;
+}
+
+[data-theme="codevault"] .token.operator,
+[data-theme="codevault"] .token.entity,
+[data-theme="codevault"] .token.url {
+    color: #60a5fa !important;
+}
+
+[data-theme="codevault"] .token.atrule,
+[data-theme="codevault"] .token.attr-value {
+    color: #c084fc !important;
+}
+
+[data-theme="codevault"] .token.keyword {
+    color: #60a5fa !important;
+    font-weight: 500;
+}
+
+[data-theme="codevault"] .token.function,
+[data-theme="codevault"] .token.class-name {
+    color: #c084fc !important;
+}
+
+[data-theme="codevault"] .token.regex,
+[data-theme="codevault"] .token.important,
+[data-theme="codevault"] .token.variable {
+    color: #fb923c !important;
+}
+
+[data-theme="codevault"] .token.deleted {
+    color: #f87171 !important;
+}
+
+[data-theme="codevault"] .token.inserted {
+    color: #34d399 !important;
+}
+
+/* ===================== THEME: NEON PULSE ==================== */
+/* Cyberpunk-inspired with vivid neon highlights */
+
+[data-theme="neon"] pre[class*="language-"] {
+    background: rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid rgba(0, 255, 255, 0.1) !important;
+    color: #e0e0e0 !important;
+    border-radius: var(--radius-lg, 1rem) !important;
+    box-shadow: inset 0 0 60px rgba(0, 255, 255, 0.02);
+}
+
+[data-theme="neon"] code[class*="language-"] {
+    color: #e0e0e0;
+    text-shadow: none !important;
+}
+
+[data-theme="neon"] .token.comment,
+[data-theme="neon"] .token.prolog,
+[data-theme="neon"] .token.doctype,
+[data-theme="neon"] .token.cdata {
+    color: #555e70 !important;
+    font-style: italic;
+}
+
+[data-theme="neon"] .token.punctuation {
+    color: #7a8299 !important;
+}
+
+[data-theme="neon"] .token.property,
+[data-theme="neon"] .token.tag,
+[data-theme="neon"] .token.boolean,
+[data-theme="neon"] .token.number,
+[data-theme="neon"] .token.constant,
+[data-theme="neon"] .token.symbol {
+    color: #ff6b6b !important;
+    text-shadow: 0 0 8px rgba(255, 107, 107, 0.3);
+}
+
+[data-theme="neon"] .token.selector,
+[data-theme="neon"] .token.attr-name,
+[data-theme="neon"] .token.string,
+[data-theme="neon"] .token.char,
+[data-theme="neon"] .token.builtin {
+    color: #00ff88 !important;
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+}
+
+[data-theme="neon"] .token.operator,
+[data-theme="neon"] .token.entity,
+[data-theme="neon"] .token.url {
+    color: #00d4ff !important;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+[data-theme="neon"] .token.atrule,
+[data-theme="neon"] .token.attr-value {
+    color: #c792ea !important;
+    text-shadow: 0 0 8px rgba(199, 146, 234, 0.3);
+}
+
+[data-theme="neon"] .token.keyword {
+    color: #ff79c6 !important;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(255, 121, 198, 0.4);
+}
+
+[data-theme="neon"] .token.function,
+[data-theme="neon"] .token.class-name {
+    color: #ffcb6b !important;
+    text-shadow: 0 0 8px rgba(255, 203, 107, 0.3);
+}
+
+[data-theme="neon"] .token.regex,
+[data-theme="neon"] .token.important,
+[data-theme="neon"] .token.variable {
+    color: #89ddff !important;
+}
+
+[data-theme="neon"] .token.deleted {
+    color: #ff5555 !important;
+    text-shadow: 0 0 10px rgba(255, 85, 85, 0.4);
+}
+
+[data-theme="neon"] .token.inserted {
+    color: #50fa7b !important;
+    text-shadow: 0 0 10px rgba(80, 250, 123, 0.4);
+}
+
+/* ===================== THEME: MONOKAI ==================== */
+/* Classic warm Monokai tones */
+
+[data-theme="monokai"] pre[class*="language-"] {
+    background: #272822 !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: #f8f8f2 !important;
+    border-radius: var(--radius-lg, 1rem) !important;
+}
+
+[data-theme="monokai"] code[class*="language-"] {
+    color: #f8f8f2;
+    text-shadow: none !important;
+}
+
+[data-theme="monokai"] .token.comment,
+[data-theme="monokai"] .token.prolog,
+[data-theme="monokai"] .token.doctype,
+[data-theme="monokai"] .token.cdata {
+    color: #75715e !important;
+    font-style: italic;
+}
+
+[data-theme="monokai"] .token.punctuation {
+    color: #f8f8f2 !important;
+}
+
+[data-theme="monokai"] .token.property,
+[data-theme="monokai"] .token.tag,
+[data-theme="monokai"] .token.boolean,
+[data-theme="monokai"] .token.number,
+[data-theme="monokai"] .token.constant,
+[data-theme="monokai"] .token.symbol {
+    color: #ae81ff !important;
+}
+
+[data-theme="monokai"] .token.selector,
+[data-theme="monokai"] .token.attr-name,
+[data-theme="monokai"] .token.string,
+[data-theme="monokai"] .token.char,
+[data-theme="monokai"] .token.builtin {
+    color: #e6db74 !important;
+}
+
+[data-theme="monokai"] .token.operator,
+[data-theme="monokai"] .token.entity,
+[data-theme="monokai"] .token.url {
+    color: #f92672 !important;
+}
+
+[data-theme="monokai"] .token.atrule,
+[data-theme="monokai"] .token.attr-value {
+    color: #e6db74 !important;
+}
+
+[data-theme="monokai"] .token.keyword {
+    color: #f92672 !important;
+    font-weight: 500;
+}
+
+[data-theme="monokai"] .token.function,
+[data-theme="monokai"] .token.class-name {
+    color: #a6e22e !important;
+}
+
+[data-theme="monokai"] .token.regex,
+[data-theme="monokai"] .token.important,
+[data-theme="monokai"] .token.variable {
+    color: #fd971f !important;
+}
+
+[data-theme="monokai"] .token.deleted {
+    color: #f92672 !important;
+}
+
+[data-theme="monokai"] .token.inserted {
+    color: #a6e22e !important;
+}
+
+/* ===================== THEME: DRACULA ==================== */
+/* Purple-pink Dracula palette */
+
+[data-theme="dracula"] pre[class*="language-"] {
+    background: #282a36 !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: #f8f8f2 !important;
+    border-radius: var(--radius-lg, 1rem) !important;
+}
+
+[data-theme="dracula"] code[class*="language-"] {
+    color: #f8f8f2;
+    text-shadow: none !important;
+}
+
+[data-theme="dracula"] .token.comment,
+[data-theme="dracula"] .token.prolog,
+[data-theme="dracula"] .token.doctype,
+[data-theme="dracula"] .token.cdata {
+    color: #6272a4 !important;
+    font-style: italic;
+}
+
+[data-theme="dracula"] .token.punctuation {
+    color: #f8f8f2 !important;
+}
+
+[data-theme="dracula"] .token.property,
+[data-theme="dracula"] .token.tag,
+[data-theme="dracula"] .token.boolean,
+[data-theme="dracula"] .token.number,
+[data-theme="dracula"] .token.constant,
+[data-theme="dracula"] .token.symbol {
+    color: #bd93f9 !important;
+}
+
+[data-theme="dracula"] .token.selector,
+[data-theme="dracula"] .token.attr-name,
+[data-theme="dracula"] .token.string,
+[data-theme="dracula"] .token.char,
+[data-theme="dracula"] .token.builtin {
+    color: #f1fa8c !important;
+}
+
+[data-theme="dracula"] .token.operator,
+[data-theme="dracula"] .token.entity,
+[data-theme="dracula"] .token.url {
+    color: #ff79c6 !important;
+}
+
+[data-theme="dracula"] .token.atrule,
+[data-theme="dracula"] .token.attr-value {
+    color: #f1fa8c !important;
+}
+
+[data-theme="dracula"] .token.keyword {
+    color: #ff79c6 !important;
+    font-weight: 500;
+}
+
+[data-theme="dracula"] .token.function,
+[data-theme="dracula"] .token.class-name {
+    color: #50fa7b !important;
+}
+
+[data-theme="dracula"] .token.regex,
+[data-theme="dracula"] .token.important,
+[data-theme="dracula"] .token.variable {
+    color: #8be9fd !important;
+}
+
+[data-theme="dracula"] .token.deleted {
+    color: #ff5555 !important;
+}
+
+[data-theme="dracula"] .token.inserted {
+    color: #50fa7b !important;
+}
+
+/* ===================== THEME: GITHUB DARK ==================== */
+/* Muted professional GitHub Dark palette */
+
+[data-theme="github"] pre[class*="language-"] {
+    background: #0d1117 !important;
+    border: 1px solid rgba(240, 246, 252, 0.1) !important;
+    color: #c9d1d9 !important;
+    border-radius: var(--radius-lg, 1rem) !important;
+}
+
+[data-theme="github"] code[class*="language-"] {
+    color: #c9d1d9;
+    text-shadow: none !important;
+}
+
+[data-theme="github"] .token.comment,
+[data-theme="github"] .token.prolog,
+[data-theme="github"] .token.doctype,
+[data-theme="github"] .token.cdata {
+    color: #8b949e !important;
+    font-style: italic;
+}
+
+[data-theme="github"] .token.punctuation {
+    color: #c9d1d9 !important;
+}
+
+[data-theme="github"] .token.property,
+[data-theme="github"] .token.tag,
+[data-theme="github"] .token.boolean,
+[data-theme="github"] .token.number,
+[data-theme="github"] .token.constant,
+[data-theme="github"] .token.symbol {
+    color: #79c0ff !important;
+}
+
+[data-theme="github"] .token.selector,
+[data-theme="github"] .token.attr-name,
+[data-theme="github"] .token.string,
+[data-theme="github"] .token.char,
+[data-theme="github"] .token.builtin {
+    color: #a5d6ff !important;
+}
+
+[data-theme="github"] .token.operator,
+[data-theme="github"] .token.entity,
+[data-theme="github"] .token.url {
+    color: #ff7b72 !important;
+}
+
+[data-theme="github"] .token.atrule,
+[data-theme="github"] .token.attr-value {
+    color: #a5d6ff !important;
+}
+
+[data-theme="github"] .token.keyword {
+    color: #ff7b72 !important;
+    font-weight: 500;
+}
+
+[data-theme="github"] .token.function,
+[data-theme="github"] .token.class-name {
+    color: #d2a8ff !important;
+}
+
+[data-theme="github"] .token.regex,
+[data-theme="github"] .token.important,
+[data-theme="github"] .token.variable {
+    color: #ffa657 !important;
+}
+
+[data-theme="github"] .token.deleted {
+    color: #ffa198 !important;
+}
+
+[data-theme="github"] .token.inserted {
+    color: #7ee787 !important;
+}
+
+/* ==================== THEME TRANSITION ==================== */
+/* Smooth transition when switching themes */
+html[data-theme] pre[class*="language-"],
+html[data-theme] code[class*="language-"],
+html[data-theme] .token {
+    transition: color 0.3s ease, background-color 0.3s ease;
+}

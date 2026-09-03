@@ -138,21 +138,6 @@
                             {{-- Filters Group --}}
                             <div
                                 class="flex flex-wrap items-center gap-2 bg-black/40 p-1.5 rounded-2xl border border-white/5">
-                                {{-- Language Filter --}}
-                                <div class="relative">
-                                    <select x-model="selectedLanguage" @change="fetchSnippets()"
-                                        class="bg-transparent text-gray-400 hover:text-white text-[11px] font-bold uppercase tracking-widest px-4 py-2.5 pr-8 focus:outline-none cursor-pointer transition-all appearance-none border-r border-white/5">
-                                        <option value="all">Language</option>
-                                        <option value="php">PHP</option>
-                                        <option value="blade">Blade</option>
-                                        <option value="javascript">JavaScript</option>
-                                    </select>
-                                    <svg class="w-3 h-3 text-gray-600 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
 
                                 {{-- Status Filter --}}
                                 <div class="relative">
@@ -189,6 +174,9 @@
                     </div>
                 </div>
 
+                {{-- Language quick filters (tech logos) --}}
+                @include('common.language-chips')
+
                 {{-- Loading Skeleton --}}
                 <div x-show="loading" class="space-y-3 py-4" style="display: none;">
                     <template x-for="i in 3">
@@ -216,8 +204,18 @@
                                         <h3 class="text-white text-base font-bold group-hover:text-blue-400 transition-colors truncate"
                                             x-text="snippet.title"></h3>
                                         <template x-if="snippet.language">
-                                            <span class="shrink-0 px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[11px] rounded-md font-medium capitalize"
-                                                x-text="snippet.language"></span>
+                                            <span class="shrink-0 inline-flex items-center">
+                                                <img x-cloak
+                                                    x-show="langLogoUrl(snippet.language)"
+                                                    :src="langLogoUrl(snippet.language)"
+                                                    :alt="snippet.language"
+                                                    :title="snippet.language"
+                                                    class="w-5 h-5 object-contain">
+                                                <span x-cloak
+                                                    x-show="!langLogoUrl(snippet.language)"
+                                                    class="shrink-0 px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[11px] rounded-md font-medium capitalize"
+                                                    x-text="snippet.language"></span>
+                                            </span>
                                         </template>
                                         <template x-if="snippet.isMark == 1">
                                             <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.4)] shrink-0"></span>
@@ -440,41 +438,18 @@
                 },
 
                 getLangIcon(lang) {
-                    if (!lang) return '📄';
-                    const icons = {
-                        'php': '🐘',
-                        'laravel': '🟠',
-                        'javascript': '🟨',
-                        'js': '🟨',
-                        'python': '🐍',
-                        'html': '🌐',
-                        'css': '🎨',
-                        'react': '⚛️',
-                        'vue': '🖖',
-                        'database': '🗄️',
-                        'sql': '💾'
-                    };
-                    return icons[lang.toLowerCase()] || '📄';
+                    if (!lang) return '';
+                    return (typeof CodeFormatter !== 'undefined') ? CodeFormatter.langLogoUrl(lang) : '';
+                },
+
+                langLogoUrl(lang) {
+                    const file = (typeof CodeFormatter !== 'undefined') ? CodeFormatter.getLangLogo(lang) : '';
+                    return file ? '/tech_logo/' + file : '';
                 },
 
                 getFileIcon(filename) {
-                    if (!filename) return '📄';
-                    const ext = filename.split('.').pop().toLowerCase();
-                    const icons = {
-                        'js': '📘',
-                        'jsx': '⚛️',
-                        'ts': '📘',
-                        'tsx': '⚛️',
-                        'php': '🐘',
-                        'py': '🐍',
-                        'html': '🌐',
-                        'css': '🎨',
-                        'json': '📋',
-                        'md': '📝',
-                        'vue': '💚',
-                        'sql': '🗄️'
-                    };
-                    return icons[ext] || '📄';
+                    if (!filename) return '';
+                    return (typeof CodeFormatter !== 'undefined') ? CodeFormatter.fileLogoUrl(filename) : '';
                 }
             }
         }

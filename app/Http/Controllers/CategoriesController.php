@@ -130,7 +130,17 @@ class CategoriesController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->paginate(12);
 
-            return view('categories.show', compact('snippets', 'categories', 'totalSnippets', 'uniqueLanguages'));
+            //distinct snippet languages in this category (for the logo filter chips)
+            $languages = DB::table('snippets')
+                ->where('user_id', $userId)
+                ->where('category_id', $category_id)
+                ->where('isActive', 1)
+                ->whereNotNull('language')
+                ->distinct()
+                ->orderBy('language')
+                ->pluck('language');
+
+            return view('categories.show', compact('snippets', 'categories', 'totalSnippets', 'uniqueLanguages', 'languages'));
 
 
         } catch (Exception $e) {

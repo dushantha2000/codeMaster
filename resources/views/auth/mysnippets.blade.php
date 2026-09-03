@@ -150,21 +150,6 @@
                                 {{-- Filters Group --}}
                                 <div
                                     class="flex flex-wrap items-center gap-2 bg-black/40 p-1.5 rounded-2xl border border-white/5">
-                                    {{-- Language Filter --}}
-                                    <div class="relative">
-                                        <select x-model="selectedLanguage" @change="fetchSnippets()"
-                                            class="bg-transparent text-gray-400 hover:text-white text-[11px] font-bold uppercase tracking-widest px-4 py-2.5 pr-8 focus:outline-none cursor-pointer transition-all appearance-none border-r border-white/5">
-                                            <option value="all">Language</option>
-                                            @foreach ($languages as $language)
-                                                <option value="{{ $language }}">{{ $language }}</option>
-                                            @endforeach
-                                        </select>
-                                        <svg class="w-3 h-3 text-gray-600 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
-                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                                d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </div>
 
                                     {{-- Status --}}
                                     <div class="relative">
@@ -193,6 +178,9 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- Language quick filters (tech logos) --}}
+                    @include('common.language-chips')
 
                     {{-- Loading Indicator --}}
                     <div x-show="loading" class="space-y-3 py-4">
@@ -223,8 +211,18 @@
                                             <h3 class="text-white text-base font-bold group-hover:text-blue-400 transition-colors truncate"
                                                 x-text="snippet.title"></h3>
                                             <template x-if="snippet.language">
-                                                <span class="shrink-0 px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[11px] rounded-md font-medium capitalize"
-                                                    x-text="snippet.language"></span>
+                                                <span class="shrink-0 inline-flex items-center">
+                                                    <img x-cloak
+                                                        x-show="langLogoUrl(snippet.language)"
+                                                        :src="langLogoUrl(snippet.language)"
+                                                        :alt="snippet.language"
+                                                        :title="snippet.language"
+                                                        class="w-5 h-5 object-contain">
+                                                    <span x-cloak
+                                                        x-show="!langLogoUrl(snippet.language)"
+                                                        class="shrink-0 px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[11px] rounded-md font-medium capitalize"
+                                                        x-text="snippet.language"></span>
+                                                </span>
                                             </template>
                                             <template x-if="snippet.isMark == 1">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.4)] shrink-0"></span>
@@ -519,17 +517,43 @@
                 },
 
                 getFileIcon(filename) {
-                    if (!filename) return '📄';
-                    const name = filename.toLowerCase();
-                    if (name.includes('php') || name.includes('laravel')) return '🐘';
-                    if (name.includes('js') || name.includes('javascript')) return '🟨';
-                    if (name.includes('py')) return '🐍';
-                    if (name.includes('react')) return '⚛️';
-                    if (name.includes('html')) return '🌐';
-                    if (name.includes('css')) return '🎨';
-                    if (name.includes('tailwind')) return '🍃';
-                    return '📄';
-                }
+                    if (!filename) return '';
+                    return (typeof CodeFormatter !== 'undefined') ? CodeFormatter.fileLogoUrl(filename) : '';
+                },
+
+                langLogoUrl(lang) {
+                    const file = (typeof CodeFormatter !== 'undefined') ? CodeFormatter.getLangLogo(lang) : '';
+                    return file ? '/tech_logo/' + file : '';
+                },
+
+                // Preview metadata helpers
+                getPreviewLanguageLabel(filename, snippetLanguage) {
+                    if (typeof CodeFormatter !== 'undefined') {
+                        const lang = CodeFormatter.detectLanguage(filename);
+                        if (lang && lang !== 'plaintext') return CodeFormatter.getLanguageName(lang);
+                    }
+                    // Fallback to snippet-level language
+                    if (snippetLanguage) {
+                        const names = {
+                            'laravel': 'PHP', 'php': 'PHP', 'javascript': 'JavaScript',
+                            'typescript': 'TypeScript', 'python': 'Python', 'ruby': 'Ruby',
+                            'go': 'Go', 'rust': 'Rust', 'java': 'Java', 'kotlin': 'Kotlin',
+                            'swift': 'Swift', 'c': 'C', 'cpp': 'C++', 'csharp': 'C#',
+                            'html': 'HTML', 'css': 'CSS', 'scss': 'SCSS',
+                            'react': 'React', 'vue': 'Vue.js', 'tailwind': 'Tailwind CSS',
+                        };
+                        return names[snippetLanguage.toLowerCase()] || snippetLanguage;
+                    }
+                    return 'Code';
+                },
+
+                getPreviewFileStats(content) {
+                    if (!content) return '0 lines';
+                    const lines = content.split('\n').length;
+                    const bytes = new Blob([content]).size;
+                    const size = bytes > 1024 ? (bytes / 1024).toFixed(1) + ' KB' : bytes + ' B';
+                    return lines + ' lines · ' + size;
+                },
             }
         }
     </script>

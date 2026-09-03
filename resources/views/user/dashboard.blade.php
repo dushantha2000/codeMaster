@@ -39,19 +39,6 @@
 
                             {{-- Filters Group --}}
                             <div class="flex flex-wrap items-center gap-2 bg-black/40 p-1.5 rounded-2xl border border-white/5">
-                                {{-- Language Filter --}}
-                                <div class="relative">
-                                    <select x-model="selectedLanguage" @change="fetchSnippets()"
-                                        class="bg-transparent text-gray-400 hover:text-white text-xs font-medium px-3 py-2 pr-8 focus:outline-none cursor-pointer transition-all appearance-none border-r border-white/5">
-                                        <option value="all">Language</option>
-                                        @foreach ($languages as $language)
-                                            <option value="{{ $language }}">{{ $language }}</option>
-                                        @endforeach
-                                    </select>
-                                    <svg class="w-3 h-3 text-gray-600 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
 
                                 {{-- Status Filter --}}
                                 <div class="relative">
@@ -83,6 +70,9 @@
                     </div>
                 </div>
 
+                {{-- Language quick filters (tech logos) --}}
+                @include('common.language-chips')
+
                 <!-- Loading State -->
                 <div x-show="loading" class="space-y-3 py-4">
                     <template x-for="i in 10">
@@ -103,13 +93,23 @@
                     <template x-for="snippet in snippets" :key="snippet.id">
                         <div class="glass-card group px-5 py-4 border border-white/5 hover:border-blue-500/30 transition-all duration-300 cursor-pointer relative overflow-hidden"
                             @click="openSnippet(snippet.id)">
-                            
+
+                            {{-- Language logo watermark — right side, full card height --}}
+                            <template x-if="snippet.language && langLogoUrl(snippet.language)">
+                                <img x-cloak
+                                    :src="langLogoUrl(snippet.language)"
+                                    :alt="snippet.language"
+                                    :title="snippet.language"
+                                    aria-hidden="true"
+                                    class="absolute right-0 top-0 h-full w-auto object-contain opacity-[0.07] pointer-events-none select-none">
+                            </template>
+
                             <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 relative z-10">
                                 <div class="flex-1 min-w-0">
-                                    {{-- Title + Language inline --}}
+                                    {{-- Title + Language pill (text only when no logo exists) --}}
                                     <div class="flex items-center gap-2.5 mb-1">
                                         <h3 class="text-white text-base font-bold group-hover:text-blue-400 transition-colors truncate" x-text="snippet.title"></h3>
-                                        <template x-if="snippet.language">
+                                        <template x-if="snippet.language && !langLogoUrl(snippet.language)">
                                             <span class="shrink-0 px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[11px] rounded-md font-medium capitalize" x-text="snippet.language"></span>
                                         </template>
                                     </div>
@@ -124,6 +124,14 @@
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
                                         <span x-text="(snippet.files ? snippet.files.length : 0) + ' files'"></span>
                                     </span>
+                                    {{-- Language logo (after file count) --}}
+                                    <template x-if="langLogoUrl(snippet.language)">
+                                        <img x-cloak
+                                            :src="langLogoUrl(snippet.language)"
+                                            :alt="snippet.language"
+                                            :title="snippet.language"
+                                            class="hidden md:block w-5 h-5 object-contain">
+                                    </template>
                                     <span class="text-gray-600 text-xs hidden md:inline" x-text="formatDate(snippet.created_at)"></span>
                                     {{-- View arrow (always visible on mobile, hover on desktop) --}}
                                     <div class="text-gray-600 group-hover:text-blue-400 transition-colors">
@@ -406,17 +414,42 @@
                 },
 
                 getFileIcon(filename) {
-                    if (!filename) return '📄';
-                    const name = filename.toLowerCase();
-                    if (name.includes('php') || name.includes('laravel')) return '🐘';
-                    if (name.includes('js') || name.includes('javascript')) return '🟨';
-                    if (name.includes('py')) return '🐍';
-                    if (name.includes('react')) return '⚛️';
-                    if (name.includes('html')) return '🌐';
-                    if (name.includes('css')) return '🎨';
-                    if (name.includes('tailwind')) return '🍃';
-                    return '📄';
-                }
+                    if (!filename) return '';
+                    return (typeof CodeFormatter !== 'undefined') ? CodeFormatter.fileLogoUrl(filename) : '';
+                },
+
+                langLogoUrl(lang) {
+                    const file = (typeof CodeFormatter !== 'undefined') ? CodeFormatter.getLangLogo(lang) : '';
+                    return file ? '/tech_logo/' + file : '';
+                },
+
+                // Preview metadata helpers
+                getPreviewLanguageLabel(filename, snippetLanguage) {
+                    if (typeof CodeFormatter !== 'undefined') {
+                        const lang = CodeFormatter.detectLanguage(filename);
+                        if (lang && lang !== 'plaintext') return CodeFormatter.getLanguageName(lang);
+                    }
+                    if (snippetLanguage) {
+                        const names = {
+                            'laravel': 'PHP', 'php': 'PHP', 'javascript': 'JavaScript',
+                            'typescript': 'TypeScript', 'python': 'Python', 'ruby': 'Ruby',
+                            'go': 'Go', 'rust': 'Rust', 'java': 'Java', 'kotlin': 'Kotlin',
+                            'swift': 'Swift', 'c': 'C', 'cpp': 'C++', 'csharp': 'C#',
+                            'html': 'HTML', 'css': 'CSS', 'scss': 'SCSS',
+                            'react': 'React', 'vue': 'Vue.js', 'tailwind': 'Tailwind CSS',
+                        };
+                        return names[snippetLanguage.toLowerCase()] || snippetLanguage;
+                    }
+                    return 'Code';
+                },
+
+                getPreviewFileStats(content) {
+                    if (!content) return '0 lines';
+                    const lines = content.split('\n').length;
+                    const bytes = new Blob([content]).size;
+                    const size = bytes > 1024 ? (bytes / 1024).toFixed(1) + ' KB' : bytes + ' B';
+                    return lines + ' lines · ' + size;
+                },
             }
         }
     </script>
