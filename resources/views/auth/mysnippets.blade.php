@@ -299,12 +299,11 @@
         </div>
 
         {{-- Centered Erase Logic Modal --}}
-        <div id="deleteModal" class="hidden fixed inset-0 z-[100] items-center justify-center p-6"
+        <div id="deleteModal" class="hidden fixed inset-0 z-[100] items-center justify-center p-6 bg-black/80 backdrop-blur-md"
             @click.self="closeEraseModal()">
-            <div class="fixed inset-0 bg-black/90 backdrop-blur-2xl animate-in fade-in duration-500"></div>
 
             <div
-                class="relative w-full max-w-md glass-card rounded-[3rem] p-10 border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.8)] animate-in zoom-in-95 duration-300">
+                class="relative w-full max-w-md glass-card rounded-3xl p-8 border border-white/10 shadow-2xl animate-in zoom-in-95 duration-300">
                 <button @click="closeEraseModal()"
                     class="absolute top-5 right-5 z-50 w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -314,28 +313,29 @@
 
                 <div class="text-center">
                     <div
-                        class="w-20 h-20 bg-red-600/10 rounded-[2.5rem] flex items-center justify-center mx-auto mb-6 border border-red-500/20 shadow-2xl">
-                        <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                        class="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </div>
 
-                    <h3 class="text-3xl font-black text-white tracking-tighter mb-2">Purge Logic?</h3>
-                    <p class="text-gray-400 text-sm font-medium mb-10 leading-relaxed px-4">Permanent erasure of the
-                        selected data node. Recovery is technically impossible after execution.</p>
+                    <h3 class="text-xl font-bold text-white mb-2">Delete Snippet?</h3>
+                    <p class="text-gray-400 text-sm mb-8 leading-relaxed px-4">This action is irreversible. The snippet and all its data will be permanently removed.</p>
 
-                    <form action="{{ url('snippet-delete') }}" method="POST" class="space-y-3">
+                    <form action="{{ url('snippet-delete') }}" method="POST" class="">
                         @csrf
                         <input type="hidden" name="snippet_id" id="modalSnippetId">
-                        <button type="submit"
-                            class="w-full bg-red-600 hover:bg-red-500 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-red-900/10">
-                            Execute Purge
-                        </button>
-                        <button type="button" @click="closeEraseModal()"
-                            class="w-full py-4 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all border border-white/5">
-                            Abort
-                        </button>
+                        <div class="flex gap-3">
+                            <button type="button" @click="closeEraseModal()"
+                                class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-gray-400 hover:text-white font-bold text-sm transition-all">
+                                Cancel
+                            </button>
+                            <button type="submit" :disabled="deleting"
+                                class="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-bold text-sm transition-all active:scale-[0.98]">
+                                <span x-text="deleting ? 'Deleting...' : 'Delete'"></span>
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -364,6 +364,9 @@
                 selectedLanguage: 'all',
                 selectedSort: 'latest',
                 loading: false,
+
+                // Delete state
+                deleting: false,
 
                 // Context Menu state
                 contextMenuVisible: false,

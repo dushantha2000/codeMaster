@@ -1,13 +1,4 @@
-{{-- ============================================================
-     Toast Notification System — Cyber-Themed Alerts
-     ============================================================
-     Renders a fixed-position toast container and a <template>
-     for cloning toast cards. Uses a showToast() JS function
-     for programmatic alerts, and auto-shows Laravel session
-     flash messages (success, error, validation errors).
-     
-     Toast styles are linked from public/css/notifications.css.
-     ============================================================ --}}
+
 
 {{-- Fixed container — toast cards append here --}}
 <div id="toast-container" class="fixed top-6 right-6 z-[100] flex flex-col items-end gap-4 pointer-events-none"></div>

@@ -383,7 +383,7 @@
     </div>
 
     {{-- Delete Account Modal --}}
-    <div id="deleteModal" class="hidden fixed inset-0 z-[99999] bg-black/60 flex items-center justify-center p-4">
+    <div id="deleteModal" class="hidden fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
         <div onclick="event.stopPropagation()" class="relative w-full max-w-md glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 animate-[menuPopIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)]">
             <button onclick="closeModal('deleteModal')" class="absolute top-5 right-5 z-50 w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -391,13 +391,11 @@
                 </svg>
             </button>
 
-            <div class="p-8">
-                <div class="flex justify-center mb-6">
+            <div class="p-8">                    <div class="flex justify-center mb-6">
                     <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center border border-red-500/20">
-                        <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                            </path>
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </div>
                 </div>
@@ -413,16 +411,16 @@
                             class="bg-[#050505] border border-white/5 w-full rounded-xl px-4 py-3 text-sm text-white focus:outline-none text-center">
                     </div>
 
-                    <div class="flex flex-col gap-3 pt-4">
+                    <div class="flex gap-3 pt-4">
+                        <button type="button" onclick="closeModal('deleteModal')"
+                            class="flex-1 py-3 rounded-xl text-sm font-bold text-gray-400 hover:text-white transition bg-white/5 border border-white/10 hover:bg-white/10">Keep My Account</button>
                         <button type="submit"
-                            class="w-full bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl font-bold transition flex justify-center items-center gap-2 text-sm">
+                            class="flex-1 bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl font-bold transition flex justify-center items-center gap-2 text-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                             Confirm Delete
                         </button>
-                        <button type="button" onclick="closeModal('deleteModal')"
-                            class="w-full py-3 text-sm font-bold text-gray-400 hover:text-white transition">Keep My Account</button>
                     </div>
                 </form>
             </div>

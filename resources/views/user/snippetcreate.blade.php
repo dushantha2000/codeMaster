@@ -380,11 +380,11 @@
 
                 <!-- Delete Confirmation Modal -->
                 <div x-show="deleteConfirm !== null" x-cloak @click.self="deleteConfirm = null"
-                    class="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 backdrop-blur-lg p-4">
+                    class="fixed inset-0 z-[110] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
                     <div
-                        class="glass-card rounded-2xl p-8 w-full max-w-sm shadow-2xl border border-white/10 text-center animate-in zoom-in-95 duration-300">
-                        <div class="mx-auto w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center mb-6">
-                            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="glass-card rounded-3xl p-8 w-full max-w-sm shadow-2xl border border-white/10 text-center animate-in zoom-in-95 duration-300">
+                        <div class="mx-auto w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
@@ -393,12 +393,13 @@
                         <h3 class="text-xl font-bold text-white mb-2">Delete Node?</h3>
                         <p class="text-sm text-gray-500 mb-8">This action cannot be undone.</p>
 
-                        <div class="flex flex-col gap-2">
-                            <button @click="removeFile(deleteConfirm)"
-                                class="w-full bg-red-600 hover:bg-red-500 text-white py-3 rounded-lg font-bold text-sm transition-all shadow-lg">Confirm
-                                Delete</button>
+                        <div class="flex gap-3">
                             <button @click="deleteConfirm = null"
-                                class="w-full py-3 bg-white/5 hover:bg-white/10 text-gray-500 hover:text-white rounded-lg font-bold text-sm transition-all">Cancel</button>
+                                class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-gray-500 hover:text-white font-bold text-sm transition-all">Cancel</button>
+                            <button @click="removeFile(deleteConfirm)" :disabled="deleting"
+                                class="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-bold text-sm transition-all active:scale-[0.98]">
+                                <span x-text="deleting ? 'Deleting...' : 'Delete'"></span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -419,6 +420,7 @@
                 showLineNumbers: true,
                 autoSave: false,
                 deleteConfirm: null,
+                deleting: false,
                 mobileMenuOpen: false,
                 projectInfo: {
                     title: '',

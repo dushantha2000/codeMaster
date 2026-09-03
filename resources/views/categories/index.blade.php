@@ -339,14 +339,14 @@
 
     {{-- Delete Confirmation Modal --}}
     <div id="delete-confirmation-modal"
-        class="hidden fixed inset-0 z-[99999] bg-black/70 flex items-center justify-center p-4">
+        class="hidden fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
         <div onclick="event.stopPropagation()"
             class="glass-card rounded-3xl p-8 flex flex-col gap-5 min-w-[340px] max-w-md border border-white/10 shadow-2xl animate-[menuPopIn_0.3s_cubic-bezier(0.34,1.56,0.64,1)]">
             <div class="flex justify-center">
-                <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
-                    <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                 </div>
             </div>
@@ -358,25 +358,24 @@
                 <p class="text-gray-500 text-xs mt-2">This action cannot be undone.</p>
             </div>
 
-            <div class="flex flex-col gap-3 mt-2">
-                <form id="delete-form" method="POST">
+            <div class="flex gap-3 mt-2">
+                <button onclick="closeDeleteConfirmation()"
+                    class="flex-1 py-3 px-4 rounded-xl font-bold bg-white/5 border border-white/10 hover:bg-white/10 transition text-sm text-gray-400 hover:text-white">
+                    Cancel
+                </button>
+                <form id="delete-form" method="POST" class="contents">
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="category_id" id="deleteCategoryId">
-                    <button type="submit"
-                        class="w-full py-3 px-8 rounded-2xl font-bold bg-red-600 text-white hover:bg-red-700 transition text-sm flex items-center justify-center gap-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button type="submit" id="delete-submit-btn"
+                        class="flex-1 py-3 px-4 rounded-xl font-bold bg-red-600 hover:bg-red-500 text-white transition text-sm flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
-                        Delete
+                        <span>Delete</span>
                     </button>
                 </form>
-
-                <button onclick="closeDeleteConfirmation()"
-                    class="w-full py-3 px-8 rounded-2xl font-bold input-field hover:bg-white/10 transition text-sm text-gray-300 hover:text-white">
-                    Cancel
-                </button>
             </div>
         </div>
     </div>
@@ -460,6 +459,13 @@
         function closeDeleteConfirmation() {
             document.getElementById('delete-confirmation-modal').classList.add('hidden');
         }
+
+        // Delete form loading state
+        document.getElementById('delete-form').addEventListener('submit', function() {
+            const btn = document.getElementById('delete-submit-btn');
+            btn.disabled = true;
+            btn.querySelector('span').textContent = 'Deleting...';
+        });
 
         // Color Selection for Create Modal
         document.addEventListener('DOMContentLoaded', function () {

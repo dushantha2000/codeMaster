@@ -260,11 +260,11 @@
         <div class="absolute inset-0 bg-black/80 backdrop-blur-md" @click="cancelRevoke()"></div>
 
         <div class="relative w-full max-w-sm glass-card rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
-            <div class="p-6">
+            <div class="p-8">
                 <div class="text-center">
                     <div
-                        class="w-12 h-12 mx-auto mb-3 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="w-16 h-16 mx-auto mb-6 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                         </svg>
@@ -275,11 +275,11 @@
                 </div>
                 <div class="flex gap-3 mt-6">
                     <button @click="cancelRevoke()"
-                        class="flex-1 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-sm font-bold transition-all">
+                        class="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-sm font-bold transition-all">
                         Cancel
                     </button>
                     <button @click="confirmRevoke()" :disabled="revoking"
-                        class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white text-sm font-bold transition-all active:scale-[0.98]">
+                        class="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white text-sm font-bold transition-all active:scale-[0.98]">
                         <span x-text="revoking ? 'Revoking...' : 'Yes, revoke'"></span>
                     </button>
                 </div>
