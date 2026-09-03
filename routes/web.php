@@ -22,23 +22,16 @@ Route::middleware('guest')->group(function () {
     
 
 
-
+//caching for use that development
     Route::get('/fix-cache-now', function () {
-        // 1. Clear all application caches
         Artisan::call('route:clear');
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
         Artisan::call('view:clear');
         Artisan::call('session:table');
-
-        // 2. Drop all tables and re-run migrations
-       
-        Artisan::call('migrate:fresh', ['--force' => true]);
-
-       
         // Artisan::call('db:seed', ['--force' => true]);
 
-        return '✅ All Caches Cleared and Database Refreshed Successfully!';
+        return 'All Caches Cleared and Database Refreshed Successfully!';
     });
 
 
@@ -59,7 +52,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/reset', [AuthController::class, 'ResetPassword']);
     Route::post('send-Reset-Code', [AuthController::class, 'sendResetCode']);
 
-    // This matches the link: /reset-password/64_character_token
+    //This matches the link: /reset-password/64_character_token
     Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
     Route::post('/reset-password', [AuthController::class, 'UpdatePassword']);
     Route::post('/password/email', [AuthController::class,'forgotPassword']);
